@@ -42,6 +42,10 @@ replay_*.log
 .env
 *.local
 
+# Art tooling
+.venv-art/
+tools/art_preview_sheet.png
+
 # Generated / remapped sources (Loom)
 .mixin.out/
 remappedSrc/

@@ -6,6 +6,12 @@ All notable changes to **Echoes in Ink** are documented here.
 
 ### Added
 
+#### Art pass
+- Full custom 16×16 pixel-art set for all items and workshop blocks.
+- Investigation stage variants (untouched / partial / done) with distinct dirt/ink/clean looks.
+- Press wood / metal / stone textures used by the press block model.
+- Regenerator script: `tools/generate_textures.py`.
+
 #### Phase 8 — Polish, security, release
 - Custom sound events with EN/PL accessibility subtitles (vanilla audio aliases).
 - Printing press hopper/dropper lock (`WorldlyContainer` with no accessible faces).

@@ -4,7 +4,7 @@
 
 | ID | Severity | Description | Status |
 |----|----------|-------------|--------|
-| TEX-01 | Minor | Item/block textures are temporary placeholders; gameplay is complete. | Deferred post-ModJam |
+| TEX-01 | Minor | Pixel art is handmade 16×16 procedural style (not hand-painted HD). Can be upgraded later. | Softened by art pass |
 | CFG-01 | Minor | Structure spacing JSON is not rewritten from `printshopSpacingChunks` config fields (datapack values apply). | Acceptable for MVP |
 | UI-01 | Minor | Printer's Archive uses system chat listing, not a full GUI book. | Deferred |
 

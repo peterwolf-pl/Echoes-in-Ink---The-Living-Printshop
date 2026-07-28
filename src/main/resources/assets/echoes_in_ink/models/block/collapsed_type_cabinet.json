@@ -1,1 +1,6 @@
-{"parent":"minecraft:block/cube_all","textures":{"all":"minecraft:block/barrel_side"}}
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "echoes_in_ink:block/collapsed_type_cabinet_untouched"
+  }
+}

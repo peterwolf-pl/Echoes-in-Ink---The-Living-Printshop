@@ -1,1 +1,6 @@
-{"parent":"minecraft:item/generated","textures":{"layer0":"minecraft:item/spyglass"}}
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "echoes_in_ink:item/magnifying_lens"
+  }
+}

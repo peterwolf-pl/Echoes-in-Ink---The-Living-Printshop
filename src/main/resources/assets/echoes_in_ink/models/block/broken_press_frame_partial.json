@@ -1,1 +1,6 @@
-{"parent":"minecraft:block/cube_all","textures":{"all":"block/stripped_dark_oak_log"}}
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "echoes_in_ink:block/broken_press_frame_partial"
+  }
+}

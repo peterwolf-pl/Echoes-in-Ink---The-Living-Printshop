@@ -1,1 +1,6 @@
-{"parent":"minecraft:block/cube_all","textures":{"all":"block/chiseled_bookshelf_empty"}}
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "echoes_in_ink:block/damaged_archive_shelf_partial"
+  }
+}
