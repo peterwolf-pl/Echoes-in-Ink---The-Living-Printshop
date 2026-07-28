@@ -1,0 +1,47 @@
+# Gradle
+.gradle/
+build/
+out/
+classes/
+
+# Eclipse
+*.launch
+.bin/
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+.history/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Fabric / Minecraft run directories
+run/
+runs/
+run-*/
+logs/
+
+# Java crash dumps
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
+
+# Local secrets / env
+.env
+*.local
+
+# Generated / remapped sources (Loom)
+.mixin.out/
+remappedSrc/

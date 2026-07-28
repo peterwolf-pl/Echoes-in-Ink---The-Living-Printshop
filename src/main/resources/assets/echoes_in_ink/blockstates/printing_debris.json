@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "investigation=untouched": { "model": "echoes_in_ink:block/printing_debris_untouched" },
+    "investigation=partially_cleaned": { "model": "echoes_in_ink:block/printing_debris_partial" },
+    "investigation=fully_investigated": { "model": "echoes_in_ink:block/printing_debris_done" }
+  }
+}

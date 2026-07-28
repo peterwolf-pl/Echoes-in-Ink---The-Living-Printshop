@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "echoes_in_ink",
+	"version": "${version}",
+	"name": "Echoes in Ink",
+	"description": "Discover abandoned print workshops, restore historical printing technology, reconstruct damaged texts, and experience echoes of the past. ModJam 2026 — Echoes of the Past.",
+	"authors": [
+		"Peter Wolf"
+	],
+	"contact": {
+		"homepage": "https://github.com/peterwolf-pl/Echoes-in-Ink---The-Living-Printshop",
+		"sources": "https://github.com/peterwolf-pl/Echoes-in-Ink---The-Living-Printshop",
+		"issues": "https://github.com/peterwolf-pl/Echoes-in-Ink---The-Living-Printshop/issues"
+	},
+	"license": "MPL-2.0",
+	"icon": "assets/echoes_in_ink/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"pl.peterwolf.echoesinink.EchoesInInk"
+		],
+		"client": [
+			"pl.peterwolf.echoesinink.client.EchoesInInkClient"
+		],
+		"fabric-datagen": [
+			"pl.peterwolf.echoesinink.datagen.EchoesInInkDataGenerator"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	},
+	"suggests": {}
+}
