@@ -1,0 +1,7 @@
+{
+  "type": "echoes_in_ink:abandoned_printshop",
+  "biomes": "#echoes_in_ink:has_structure/abandoned_printshop",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

@@ -5,7 +5,7 @@
 	"command.echoes_in_ink.player_only": "Ta komenda może być użyta tylko przez gracza.",
 	"command.echoes_in_ink.give_test_items.success": "[Echa w Atramencie] Wręczono przedmioty i bloki testowe.",
 	"command.echoes_in_ink.give_test_items.pending": "[Echa w Atramencie] Przedmioty testowe będą dostępne po Fazie 1.",
-	"command.echoes_in_ink.locate_printshop.pending": "[Echa w Atramencie] Generowanie drukarni pojawi się w Fazie 3. /locate zadziała po rejestracji struktury.",
+	"command.echoes_in_ink.locate_printshop.pending": "[Echa w Atramencie] Szukam…",
 	"command.echoes_in_ink.trigger_echo.pending": "[Echa w Atramencie] Wydarzenia echa pojawią się w Fazie 6.",
 	"command.echoes_in_ink.reset_archive.pending": "[Echa w Atramencie] Reset archiwum wyczyści postęp gracza %s (Faza 5).",
 	"command.echoes_in_ink.debug.on": "[Echa w Atramencie] Tryb debug: WŁĄCZONY",
@@ -72,5 +72,9 @@
 	"investigation.echoes_in_ink.plaque_clue": "Tablica nazywa warsztat: 'Prasa Popielatych Liter'.",
 	"investigation.echoes_in_ink.already_searched": "To miejsce zostało już w pełni przeszukane.",
 	"item.echoes_in_ink.investigation.tooltip": "Śledztwo: %s",
-	"item.echoes_in_ink.investigation.loot_done": "Łup już odzyskany"
+	"item.echoes_in_ink.investigation.loot_done": "Łup już odzyskany",
+	"structure.echoes_in_ink.abandoned_printshop": "Opuszczona drukarnia",
+	"command.echoes_in_ink.locate_printshop.success": "[Echa w Atramencie] Najbliższa opuszczona drukarnia: %s (%s bloków stąd)",
+	"command.echoes_in_ink.locate_printshop.failed": "[Echa w Atramencie] Nie znaleziono opuszczonej drukarni w pobliżu.",
+	"command.echoes_in_ink.locate_printshop.missing": "[Echa w Atramencie] Struktura nie jest zarejestrowana w tym świecie."
 }

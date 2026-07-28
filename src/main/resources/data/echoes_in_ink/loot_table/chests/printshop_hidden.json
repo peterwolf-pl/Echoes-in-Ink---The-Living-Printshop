@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "entries": [
+        { "type": "minecraft:item", "name": "echoes_in_ink:damaged_archive_page", "weight": 1 }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 1.0,
+        "max": 3.0
+      },
+      "entries": [
+        { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 3 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:press_screw", "weight": 2 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:press_platen", "weight": 2 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:press_carriage", "weight": 2 },
+        {
+          "type": "minecraft:item",
+          "name": "echoes_in_ink:metal_type_piece",
+          "weight": 4,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": { "type": "minecraft:uniform", "min": 2.0, "max": 6.0 }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

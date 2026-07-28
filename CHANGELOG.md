@@ -33,6 +33,13 @@ All notable changes to **Echoes in Ink** are documented here.
 - Anti-dupe: `investigation` data component on dropped blocks restores state on place.
 - Distinct models per investigation stage; item tooltips; `/echoesinink debug inspect`.
 
+#### Phase 3 — Abandoned Printshop
+- World-generated surface structure with main workshop + storage cellar.
+- Broken press remains, investigation blocks, debris, storytelling props.
+- Hidden chest with damaged chronicle page and press components.
+- Structure set placement (spacing 32 / separation 12), biome tag, beard_thin adaptation.
+- `/echoesinink locate_printshop` and vanilla `/locate structure echoes_in_ink:abandoned_printshop`.
+
 ### Notes
 
-- Structure generation, printing press, archive UI, and echoes are planned for later phases.
+- Printing press, archive UI, and echoes are planned for later phases.

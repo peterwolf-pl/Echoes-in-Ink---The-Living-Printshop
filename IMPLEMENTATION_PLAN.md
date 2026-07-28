@@ -80,10 +80,12 @@ Blocks: Dusty Printing Table, Collapsed Type Cabinet, Ink-Stained Floorboards, D
 
 ## Phase 3 — Abandoned Printshop structure
 
-Small ruined workshop + storage/basement, environmental storytelling, hidden compartment, damaged chronicle, machine parts.
-
-- Biome-appropriate, `/locate`, configurable frequency, structure processors.
-- Workshop id in structure data.
+- [x] Custom structure type + procedural piece (workshop + cellar)
+- [x] Investigation props, hidden chest, storage loot
+- [x] Biome tag, structure set, terrain adaptation
+- [x] Workshop id on piece NBT
+- [x] `/locate` + `/echoesinink locate_printshop`
+- [x] Config enable flag
 
 ## Phase 4 — Historical Screw Printing Press
 

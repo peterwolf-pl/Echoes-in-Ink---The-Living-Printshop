@@ -12,6 +12,7 @@ import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.item.ModCreativeTabs;
 import pl.peterwolf.echoesinink.item.ModDataComponents;
 import pl.peterwolf.echoesinink.item.ModItems;
+import pl.peterwolf.echoesinink.structure.ModStructures;
 
 /**
  * Common (client + dedicated server) entry point for Echoes in Ink.
@@ -31,6 +32,7 @@ public final class EchoesInInk implements ModInitializer {
 		ModBlockEntities.init();
 		ModItems.init();
 		ModCreativeTabs.init();
+		ModStructures.register();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
 			EchoesCommands.register(dispatcher));

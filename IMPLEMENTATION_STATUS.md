@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-07-28  
 **Version:** 0.1.0  
-**Current phase:** Phase 2 complete → Phase 3 next
+**Current phase:** Phase 3 complete → Phase 4 next
 
 ## Summary
 
@@ -11,47 +11,50 @@
 | 0 | Project foundation | **Complete** |
 | 1 | Basic items and materials | **Complete** |
 | 2 | Historical debris and investigation | **Complete** |
-| 3 | Abandoned printshop structure | Not started |
+| 3 | Abandoned printshop structure | **Complete** |
 | 4 | Functional printing press | Not started |
 | 5 | Archive book and progression | Not started |
 | 6 | Echoes of the past | Not started |
 | 7 | Chronicle and location discovery | Not started |
 | 8 | Polish and release | Not started |
 
-## Phase 2 checklist (acceptance)
+## Phase 3 checklist
 
 | Task | Status |
 |------|--------|
-| All required workshop blocks | Done |
-| Brush cleaning with progress | Done |
-| Three visual states (untouched / partial / full) | Done |
-| InvestigationBlockEntity NBT persistence | Done |
-| Once-only loot (`LootGenerated`) | Done |
-| Weighted server-side loot (no client roll) | Done |
-| Results: nothing, type, matrix, press, page, clue, hidden | Done |
-| Break/place does not re-roll loot (item data component) | Done |
-| Survives chunk unload / restart | Done |
-| `/echoesinink debug inspect` | Done |
-| EN + PL investigation messages | Done |
+| Custom structure type + piece registration | Done |
+| Procedural ruined workshop layout | Done |
+| Workshop room + storage cellar | Done |
+| Broken press, tables, cabinets, shelves, debris | Done |
+| Hidden compartment chest (damaged chronicle + parts) | Done |
+| Storage chest loot table | Done |
+| Environmental storytelling props | Done |
+| Workshop id stored on structure piece NBT | Done |
+| Biome tag + structure set (spacing 32 / sep 12) | Done |
+| `terrain_adaptation: beard_thin` | Done |
+| Config flag `enablePrintshopGeneration` | Done |
+| `/echoesinink locate_printshop` | Done |
+| `/locate structure echoes_in_ink:abandoned_printshop` | Supported via datapack |
 | Clean build + dedicated server | Done |
 
-## How to test Phase 2
+## How to test Phase 3
 
-1. `/echoesinink give_test_items`
-2. Place `printing_debris` (or table/shelf/press/cabinet).
-3. Hold **Printer's Brush**, use on block until state advances twice.
-4. On full investigation: message + possible item loot.
-5. Brush again: no second loot.
-6. Break the block → pick up → place again → `/echoesinink debug inspect` → `lootGenerated=true`.
-7. Leave area / reload world → state and loot flag remain.
+1. Create a **new world** (or explore far enough for new chunks).
+2. `/echoesinink locate_printshop` (op) or  
+   `/locate structure echoes_in_ink:abandoned_printshop`
+3. Visit the ruin: main room, annex, ladder to cellar, chests, investigation blocks.
+4. Disable generation via `config/echoes_in_ink.json` → `"enablePrintshopGeneration": false` (requires restart for new chunks).
+
+**Note:** Structure set spacing lives in  
+`data/echoes_in_ink/worldgen/structure_set/abandoned_printshops.json`  
+(config spacing fields document the intended rarity; edit the JSON to change placement density).
 
 ## Remaining (next)
 
-### Phase 3
-- Abandoned Printshop structure + `/locate`
-- Structure processors, biome placement, workshop id
+### Phase 4
+- Historical Screw Printing Press (assembly + physical sequence + recipes + animation)
 
 ## Tech notes
 
-- Do not `ofFullCopy` axis-dependent log blocks onto plain `Block`.
-- Investigation anti-dupe uses `echoes_in_ink:investigation` data component on dropped block items.
+- Structure is code-built (`ScatteredFeaturePiece`), not NBT template — reliable CI and custom blocks.
+- Workshop id format: `printshop_<hex>` from chunk coordinates.

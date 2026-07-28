@@ -2,14 +2,26 @@ package pl.peterwolf.echoesinink.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.BlockHitResult;
 import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.block.InvestigatableBlock;
@@ -17,6 +29,7 @@ import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
 import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.item.ModItems;
+import pl.peterwolf.echoesinink.structure.ModStructures;
 
 /**
  * Development / operator commands. Permission level: game masters (2).
@@ -91,11 +104,50 @@ public final class EchoesCommands {
 	}
 
 	private static int locatePrintshop(CommandContext<CommandSourceStack> ctx) {
-		ctx.getSource().sendSuccess(
-			() -> Component.translatable("command.echoes_in_ink.locate_printshop.pending"),
+		CommandSourceStack source = ctx.getSource();
+		ServerLevel level = source.getLevel();
+		BlockPos origin = BlockPos.containing(source.getPosition());
+
+		var structure = level.registryAccess()
+			.lookupOrThrow(Registries.STRUCTURE)
+			.get(ModStructures.ABANDONED_PRINTSHOP);
+
+		if (structure.isEmpty()) {
+			source.sendFailure(Component.translatable("command.echoes_in_ink.locate_printshop.missing"));
+			return 0;
+		}
+
+		// Search radius in chunks (100 ≈ similar to vanilla locate).
+		Pair<BlockPos, Holder<Structure>> result = level.getChunkSource().getGenerator()
+			.findNearestMapStructure(level, HolderSet.direct(structure.get()), origin, 100, false);
+
+		if (result == null) {
+			source.sendFailure(Component.translatable("command.echoes_in_ink.locate_printshop.failed"));
+			return 0;
+		}
+
+		BlockPos found = result.getFirst();
+		int teleportY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, found.getX(), found.getZ());
+		if (teleportY <= level.getMinY()) {
+			teleportY = found.getY();
+		}
+		int distance = Mth.floor(Mth.sqrt((float) origin.distSqr(new BlockPos(found.getX(), origin.getY(), found.getZ()))));
+		String tp = "/tp @s " + found.getX() + " " + teleportY + " " + found.getZ();
+
+		Component coordinates = ComponentUtils.wrapInSquareBrackets(
+				Component.translatable("chat.coordinates", found.getX(), teleportY, found.getZ())
+			)
+			.withStyle(style -> style
+				.withColor(ChatFormatting.GREEN)
+				.withClickEvent(new ClickEvent.RunCommand(tp))
+				.withHoverEvent(new HoverEvent.ShowText(Component.translatable("chat.coordinates.tooltip")))
+			);
+
+		source.sendSuccess(
+			() -> Component.translatable("command.echoes_in_ink.locate_printshop.success", coordinates, distance),
 			false
 		);
-		return 1;
+		return distance;
 	}
 
 	private static int triggerEcho(CommandContext<CommandSourceStack> ctx) {

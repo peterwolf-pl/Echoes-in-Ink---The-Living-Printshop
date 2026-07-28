@@ -5,7 +5,7 @@
 	"command.echoes_in_ink.player_only": "This command can only be used by a player.",
 	"command.echoes_in_ink.give_test_items.success": "[Echoes in Ink] Gave test items and sample blocks.",
 	"command.echoes_in_ink.give_test_items.pending": "[Echoes in Ink] Test items will be available after Phase 1.",
-	"command.echoes_in_ink.locate_printshop.pending": "[Echoes in Ink] Printshop structure generation arrives in Phase 3. /locate will work once registered.",
+	"command.echoes_in_ink.locate_printshop.pending": "[Echoes in Ink] Locating…",
 	"command.echoes_in_ink.trigger_echo.pending": "[Echoes in Ink] Echo events arrive in Phase 6.",
 	"command.echoes_in_ink.reset_archive.pending": "[Echoes in Ink] Archive reset will clear progression for %s (Phase 5).",
 	"command.echoes_in_ink.debug.on": "[Echoes in Ink] Debug mode: ON",
@@ -72,5 +72,9 @@
 	"investigation.echoes_in_ink.plaque_clue": "The plaque names a workshop: 'Ashen Letter Press'.",
 	"investigation.echoes_in_ink.already_searched": "This has already been fully searched.",
 	"item.echoes_in_ink.investigation.tooltip": "Investigation: %s",
-	"item.echoes_in_ink.investigation.loot_done": "Loot already recovered"
+	"item.echoes_in_ink.investigation.loot_done": "Loot already recovered",
+	"structure.echoes_in_ink.abandoned_printshop": "Abandoned Printshop",
+	"command.echoes_in_ink.locate_printshop.success": "[Echoes in Ink] Nearest abandoned printshop: %s (%s blocks away)",
+	"command.echoes_in_ink.locate_printshop.failed": "[Echoes in Ink] Could not find an abandoned printshop nearby (try expanding search or explore further).",
+	"command.echoes_in_ink.locate_printshop.missing": "[Echoes in Ink] Structure is not registered in this world. Ensure the datapack loaded."
 }
