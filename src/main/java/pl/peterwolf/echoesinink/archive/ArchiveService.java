@@ -5,7 +5,9 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import pl.peterwolf.echoesinink.EchoesInInk;
+import pl.peterwolf.echoesinink.sound.ModSounds;
 
 /**
  * Server-side archive unlock + advancement helpers.
@@ -38,6 +40,7 @@ public final class ArchiveService {
 		set(player, archive);
 		player.sendOverlayMessage(Component.translatable("archive.echoes_in_ink.unlocked",
 			Component.translatable("archive.echoes_in_ink.entry." + entryId + ".title")));
+		player.level().playSound(null, player.blockPosition(), ModSounds.ARCHIVE_UNLOCK, SoundSource.PLAYERS, 0.35F, 1.2F);
 		if (advancementId != null) {
 			grantAdvancement(player, advancementId);
 		}

@@ -235,6 +235,17 @@
 	"echo.echoes_in_ink.last_print.fade": "The figures fade into dust.",
 	"echo.echoes_in_ink.last_print.clue": "A clue settles into your archive…",
 	"echo.echoes_in_ink.last_print.complete": "The Last Print Run ends. Search for what they hid.",
-	"command.echoes_in_ink.trigger_echo.success": "[Echoes in Ink] Triggered The Last Print Run."
+	"command.echoes_in_ink.trigger_echo.success": "[Echoes in Ink] Triggered The Last Print Run.",
+	"subtitles.echoes_in_ink.printing_press.assemble": "Press part installed",
+	"subtitles.echoes_in_ink.printing_press.load": "Press loaded",
+	"subtitles.echoes_in_ink.printing_press.carriage": "Press carriage moves",
+	"subtitles.echoes_in_ink.printing_press.work": "Printing press works",
+	"subtitles.echoes_in_ink.printing_press.impression": "Press impression",
+	"subtitles.echoes_in_ink.printing_press.collect": "Print collected",
+	"subtitles.echoes_in_ink.chronicle.read": "Chronicle page turns",
+	"subtitles.echoes_in_ink.archive.unlock": "Archive entry unlocks",
+	"subtitles.echoes_in_ink.echo.ambient": "Historical echo whispers",
+	"subtitles.echoes_in_ink.echo.impact": "Echo impact",
+	"subtitles.echoes_in_ink.echo.clue": "Echo leaves a clue"
 }
 

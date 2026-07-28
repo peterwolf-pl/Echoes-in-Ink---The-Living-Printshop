@@ -6,6 +6,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import pl.peterwolf.echoesinink.archive.ArchiveEntries;
 import pl.peterwolf.echoesinink.archive.ArchiveService;
 import pl.peterwolf.echoesinink.archive.PlayerArchive;
+import pl.peterwolf.echoesinink.sound.ModSounds;
 import pl.peterwolf.echoesinink.structure.ModStructures;
 
 /**
@@ -37,6 +39,15 @@ public final class ChronicleClueService {
 			player.sendOverlayMessage(Component.translatable("chronicle.echoes_in_ink.need_investigation"));
 			return false;
 		}
+
+		boolean progressed = readStages(player, level, archive);
+		if (progressed) {
+			level.playSound(null, player.blockPosition(), ModSounds.CHRONICLE_READ, SoundSource.PLAYERS, 0.7F, 1.05F);
+		}
+		return progressed;
+	}
+
+	private static boolean readStages(ServerPlayer player, ServerLevel level, PlayerArchive archive) {
 
 		// Stage 1 — biome
 		if (!archive.has(ArchiveEntries.CLUE_CHRONICLE_BIOME)) {

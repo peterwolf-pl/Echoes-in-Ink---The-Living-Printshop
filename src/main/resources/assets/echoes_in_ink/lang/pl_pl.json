@@ -235,6 +235,17 @@
 	"echo.echoes_in_ink.last_print.fade": "Postaci rozpływają się w pył.",
 	"echo.echoes_in_ink.last_print.clue": "Trop osiada w twoim archiwum…",
 	"echo.echoes_in_ink.last_print.complete": "Ostatni nakład dobiega końca. Szukaj tego, co ukryli.",
-	"command.echoes_in_ink.trigger_echo.success": "[Echa w Atramencie] Wyzwolono Ostatni nakład."
+	"command.echoes_in_ink.trigger_echo.success": "[Echa w Atramencie] Wyzwolono Ostatni nakład.",
+	"subtitles.echoes_in_ink.printing_press.assemble": "Zainstalowano część prasy",
+	"subtitles.echoes_in_ink.printing_press.load": "Załadowano prasę",
+	"subtitles.echoes_in_ink.printing_press.carriage": "Wózek prasy się przesuwa",
+	"subtitles.echoes_in_ink.printing_press.work": "Prasa drukarska pracuje",
+	"subtitles.echoes_in_ink.printing_press.impression": "Wycisk prasy",
+	"subtitles.echoes_in_ink.printing_press.collect": "Zebrano odbitkę",
+	"subtitles.echoes_in_ink.chronicle.read": "Obrót karty kroniki",
+	"subtitles.echoes_in_ink.archive.unlock": "Odblokowanie wpisu archiwum",
+	"subtitles.echoes_in_ink.echo.ambient": "Szept historycznego echa",
+	"subtitles.echoes_in_ink.echo.impact": "Uderzenie echa",
+	"subtitles.echoes_in_ink.echo.clue": "Echo zostawia trop"
 }
 

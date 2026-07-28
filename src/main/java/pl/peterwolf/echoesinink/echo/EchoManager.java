@@ -18,6 +18,7 @@ import pl.peterwolf.echoesinink.archive.ArchiveEntries;
 import pl.peterwolf.echoesinink.archive.ArchiveService;
 import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.networking.EchoPayloads;
+import pl.peterwolf.echoesinink.sound.ModSounds;
 
 /**
  * Server-authoritative historical echoes. No permanent entities or blocks.
@@ -185,18 +186,18 @@ public final class EchoManager {
 		switch (beat.sfx()) {
 			case "dust" -> spawnDust(level, c);
 			case "footstep" -> level.playSound(null, c, SoundEvents.WOOD_STEP, SoundSource.AMBIENT, 0.4F * vol, 0.9F);
-			case "press" -> level.playSound(null, c, SoundEvents.UI_STONECUTTER_TAKE_RESULT, SoundSource.AMBIENT, 0.5F * vol, 0.7F);
+			case "press" -> level.playSound(null, c, ModSounds.PRESS_WORK, SoundSource.AMBIENT, 0.5F * vol, 0.7F);
 			case "impact" -> {
 				if (!ModConfig.INSTANCE.echoReducedFlashes) {
 					level.playSound(null, c, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.AMBIENT, 0.25F * vol, 1.4F);
 				} else {
-					level.playSound(null, c, SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR, SoundSource.AMBIENT, 0.4F * vol, 0.8F);
+					level.playSound(null, c, ModSounds.ECHO_IMPACT, SoundSource.AMBIENT, 0.4F * vol, 0.8F);
 				}
 			}
 			case "hide" -> level.playSound(null, c, SoundEvents.CHEST_CLOSE, SoundSource.AMBIENT, 0.5F * vol, 1.1F);
-			case "fade" -> level.playSound(null, c, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.AMBIENT, 0.3F * vol, 0.6F);
-			case "clue" -> level.playSound(null, c, SoundEvents.BOOK_PAGE_TURN, SoundSource.AMBIENT, 0.6F * vol, 1.0F);
-			default -> level.playSound(null, c, SoundEvents.AMBIENT_CAVE.value(), SoundSource.AMBIENT, 0.2F * vol, 1.0F);
+			case "fade" -> level.playSound(null, c, ModSounds.ECHO_CLUE, SoundSource.AMBIENT, 0.3F * vol, 0.6F);
+			case "clue" -> level.playSound(null, c, ModSounds.ECHO_CLUE, SoundSource.AMBIENT, 0.6F * vol, 1.0F);
+			default -> level.playSound(null, c, ModSounds.ECHO_AMBIENT, SoundSource.AMBIENT, 0.2F * vol, 1.0F);
 		}
 
 		for (ServerPlayer player : nearby(level, c)) {

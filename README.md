@@ -6,7 +6,7 @@ Discover abandoned historical print workshops, restore lost printing technology,
 
 **Author:** Peter Wolf  
 **Mod ID:** `echoes_in_ink`  
-**Version:** 0.1.0  
+**Version:** 1.0.0  
 **Licence:** MPL-2.0  
 **Repository:** https://github.com/peterwolf-pl/Echoes-in-Ink---The-Living-Printshop
 
@@ -74,12 +74,20 @@ Identifiers are centralized in:
 
 | File | Purpose |
 |------|---------|
+| [MODJAM_CHECKLIST.md](MODJAM_CHECKLIST.md) | ModJam 2026 submit checklist |
 | [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) | Phased plan |
 | [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) | Progress tracker |
 | [TESTING.md](TESTING.md) | Test checklist |
 | [KNOWN_ISSUES.md](KNOWN_ISSUES.md) | Bugs and workarounds |
 | [FUTURE_ROADMAP.md](FUTURE_ROADMAP.md) | Post-MVP features |
 | [CHANGELOG.md](CHANGELOG.md) | Release notes |
+
+## Production JAR
+
+```bash
+./gradlew clean build
+# → build/libs/echoes-in-ink-1.0.0.jar
+```
 
 ## Multiplayer
 

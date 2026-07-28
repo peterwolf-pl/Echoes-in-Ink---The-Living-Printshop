@@ -51,7 +51,9 @@
 
 ## Exploit checks
 
-- [ ] Break/replace investigated blocks
-- [ ] Hopper insertion during press transitions
+- [ ] Break/replace investigated blocks (no second loot)
+- [ ] Hopper / dropper against press: no insert or extract
+- [ ] Break press mid-cycle: drops parts + inputs once
 - [ ] Chunk-unload duplication
 - [ ] No arbitrary code execution from item NBT / components
+- [ ] Invalid config values clamped on load

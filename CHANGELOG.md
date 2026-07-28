@@ -2,7 +2,23 @@
 
 All notable changes to **Echoes in Ink** are documented here.
 
-## [0.1.0] — 2026-07-28
+## [1.0.0] — 2026-07-28
+
+### Added
+
+#### Phase 8 — Polish, security, release
+- Custom sound events with EN/PL accessibility subtitles (vanilla audio aliases).
+- Printing press hopper/dropper lock (`WorldlyContainer` with no accessible faces).
+- Config sanitization (clamped durations, volume, spacing).
+- ModJam checklist and release notes.
+- Version **1.0.0** production JAR target.
+
+### Notes
+
+- Temporary textures remain intentional for ModJam; art pass is post-event.
+- Full gameplay loop Phases 0–7 included below.
+
+## [0.1.0] — 2026-07-28 (development)
 
 ### Added
 
@@ -74,4 +90,4 @@ All notable changes to **Echoes in Ink** are documented here.
 
 ### Notes
 
-- Phase 8 remains: sounds, art polish, balance, ModJam packaging.
+- Superseded by 1.0.0 Phase 8 release packaging.

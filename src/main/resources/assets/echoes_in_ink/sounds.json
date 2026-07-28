@@ -1,0 +1,68 @@
+{
+  "block.printing_press.assemble": {
+    "subtitle": "subtitles.echoes_in_ink.printing_press.assemble",
+    "sounds": [
+      { "name": "block.anvil.place", "type": "event" }
+    ]
+  },
+  "block.printing_press.load": {
+    "subtitle": "subtitles.echoes_in_ink.printing_press.load",
+    "sounds": [
+      { "name": "entity.item_frame.add_item", "type": "event" }
+    ]
+  },
+  "block.printing_press.carriage": {
+    "subtitle": "subtitles.echoes_in_ink.printing_press.carriage",
+    "sounds": [
+      { "name": "block.wooden_door.open", "type": "event" }
+    ]
+  },
+  "block.printing_press.work": {
+    "subtitle": "subtitles.echoes_in_ink.printing_press.work",
+    "sounds": [
+      { "name": "ui.stonecutter.take_result", "type": "event" }
+    ]
+  },
+  "block.printing_press.impression": {
+    "subtitle": "subtitles.echoes_in_ink.printing_press.impression",
+    "sounds": [
+      { "name": "block.anvil.land", "type": "event" }
+    ]
+  },
+  "block.printing_press.collect": {
+    "subtitle": "subtitles.echoes_in_ink.printing_press.collect",
+    "sounds": [
+      { "name": "item.book.page_turn", "type": "event" }
+    ]
+  },
+  "item.chronicle.read": {
+    "subtitle": "subtitles.echoes_in_ink.chronicle.read",
+    "sounds": [
+      { "name": "item.book.page_turn", "type": "event" }
+    ]
+  },
+  "item.archive.unlock": {
+    "subtitle": "subtitles.echoes_in_ink.archive.unlock",
+    "sounds": [
+      { "name": "ui.toast.in", "type": "event" }
+    ]
+  },
+  "echo.ambient": {
+    "subtitle": "subtitles.echoes_in_ink.echo.ambient",
+    "sounds": [
+      { "name": "ambient.cave", "type": "event" }
+    ]
+  },
+  "echo.impact": {
+    "subtitle": "subtitles.echoes_in_ink.echo.impact",
+    "sounds": [
+      { "name": "entity.zombie.attack_wooden_door", "type": "event" }
+    ]
+  },
+  "echo.clue": {
+    "subtitle": "subtitles.echoes_in_ink.echo.clue",
+    "sounds": [
+      { "name": "block.amethyst_block.chime", "type": "event" }
+    ]
+  }
+}

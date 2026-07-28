@@ -1,6 +1,7 @@
 package pl.peterwolf.echoesinink.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -9,11 +10,12 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.Nullable;
 import pl.peterwolf.echoesinink.archive.ArchiveEntries;
 import pl.peterwolf.echoesinink.archive.ArchiveService;
 import pl.peterwolf.echoesinink.block.PressPhase;
@@ -31,16 +34,20 @@ import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.item.ModItems;
 import pl.peterwolf.echoesinink.recipe.PrintingRecipe;
 import pl.peterwolf.echoesinink.recipe.PrintingRecipes;
+import pl.peterwolf.echoesinink.sound.ModSounds;
 
 /**
  * Server-authoritative screw press. Client only reads phase + progress for animation.
+ * Implements {@link WorldlyContainer} with no hopper-accessible faces so automation
+ * cannot skip the physical print sequence or extract mid-cycle.
  */
-public class PrintingPressBlockEntity extends BlockEntity implements Container {
+public class PrintingPressBlockEntity extends BlockEntity implements WorldlyContainer {
 	public static final int SLOT_MATRIX = 0;
 	public static final int SLOT_INK = 1;
 	public static final int SLOT_PAPER = 2;
 	public static final int SLOT_OUTPUT = 3;
 	public static final int SLOT_COUNT = 4;
+	private static final int[] NO_SLOTS = new int[0];
 
 	private final NonNullList<ItemStack> items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
 
@@ -119,7 +126,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 				ArchiveService.unlock(serverPlayer, ArchiveEntries.WORKSHOP_ASHEN);
 			}
 		}
-		play(SoundEvents.ANVIL_PLACE, 0.6F, 1.2F);
+		play(ModSounds.PRESS_ASSEMBLE, 0.6F, 1.2F);
 		sync();
 		return true;
 	}
@@ -210,7 +217,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 				}
 			}
 		}
-		play(SoundEvents.ITEM_FRAME_ADD_ITEM, 0.7F, 1.0F);
+		play(ModSounds.PRESS_LOAD, 0.7F, 1.0F);
 		sync();
 		return true;
 	}
@@ -277,7 +284,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		}
 		phase = PressPhase.CARRIAGE_IN;
 		animProgress = 0.0F;
-		play(SoundEvents.WOODEN_DOOR_OPEN, 0.5F, 0.8F);
+		play(ModSounds.PRESS_CARRIAGE, 0.5F, 0.8F);
 		sync();
 		return "press.echoes_in_ink.carriage_in";
 	}
@@ -299,7 +306,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		if (player instanceof ServerPlayer serverPlayer) {
 			ArchiveService.grantAdvancement(serverPlayer, pl.peterwolf.echoesinink.EchoesInInk.id("pull_the_handle"));
 		}
-		play(SoundEvents.UI_STONECUTTER_TAKE_RESULT, 0.7F, 0.7F);
+		play(ModSounds.PRESS_WORK, 0.7F, 0.7F);
 		sync();
 		return "press.echoes_in_ink.handle_pulled";
 	}
@@ -307,7 +314,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 	private String tryPullCarriage(Player player) {
 		phase = PressPhase.OUTPUT_READY;
 		animProgress = 1.0F;
-		play(SoundEvents.WOODEN_DOOR_CLOSE, 0.5F, 0.9F);
+		play(ModSounds.PRESS_CARRIAGE, 0.5F, 0.9F);
 		sync();
 		return "press.echoes_in_ink.carriage_out";
 	}
@@ -340,7 +347,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		phase = PressPhase.IDLE;
 		animProgress = 0.0F;
 		progress = 0;
-		play(SoundEvents.BOOK_PAGE_TURN, 0.8F, 1.0F);
+		play(ModSounds.PRESS_COLLECT, 0.8F, 1.0F);
 		sync();
 		return "press.echoes_in_ink.collected";
 	}
@@ -392,7 +399,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 				be.phase = PressPhase.IMPRESSION_DONE;
 				be.progress = 0;
 				be.animProgress = 1.0F;
-				be.play(SoundEvents.UI_STONECUTTER_TAKE_RESULT, 0.5F, 1.3F);
+				be.play(ModSounds.PRESS_WORK, 0.5F, 1.3F);
 				be.sync();
 			}
 		}
@@ -418,7 +425,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		phase = PressPhase.RESETTING;
 		progress = 0;
 		animProgress = 1.0F;
-		play(SoundEvents.ANVIL_LAND, 0.4F, 1.5F);
+		play(ModSounds.PRESS_IMPRESSION, 0.4F, 1.5F);
 		sync();
 	}
 
@@ -505,6 +512,27 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		items.clear();
 	}
 
+	/** Players insert via tryInsertInput; hoppers/droppers must not automate the press. */
+	@Override
+	public boolean canPlaceItem(int slot, ItemStack stack) {
+		return false;
+	}
+
+	@Override
+	public int[] getSlotsForFace(Direction side) {
+		return NO_SLOTS;
+	}
+
+	@Override
+	public boolean canPlaceItemThroughFace(int index, ItemStack itemStack, @Nullable Direction direction) {
+		return false;
+	}
+
+	@Override
+	public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
+		return false;
+	}
+
 	// ── Persistence + sync ─────────────────────────────────────────────────
 
 	private void sync() {
@@ -531,7 +559,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		};
 	}
 
-	private void play(net.minecraft.sounds.SoundEvent sound, float volume, float pitch) {
+	private void play(SoundEvent sound, float volume, float pitch) {
 		if (level != null && !level.isClientSide()) {
 			level.playSound(null, worldPosition, sound, SoundSource.BLOCKS, volume, pitch);
 		}
