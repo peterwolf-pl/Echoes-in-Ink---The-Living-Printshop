@@ -62,6 +62,19 @@ public final class ModItems {
 	public static final Item CHARCOAL_RUBBING = register("charcoal_rubbing",
 		props -> new CharcoalRubbingItem(props.stacksTo(16)));
 
+	// ── Print outputs (Phase 4) ────────────────────────────────────────────
+	public static final Item PRINTERS_INSTRUCTION_SHEET = register("printers_instruction_sheet",
+		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.printers_instruction_sheet.desc"));
+
+	public static final Item WORKSHOP_MAP_FRAGMENT = register("workshop_map_fragment",
+		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.workshop_map_fragment.desc"));
+
+	public static final Item DECORATIVE_WOODCUT = register("decorative_woodcut",
+		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.decorative_woodcut.desc"));
+
+	public static final Item PRINTED_WARNING_POSTER = register("printed_warning_poster",
+		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.printed_warning_poster.desc"));
+
 	private ModItems() {}
 
 	public static void init() {

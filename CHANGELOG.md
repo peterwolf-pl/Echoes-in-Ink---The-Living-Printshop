@@ -40,6 +40,13 @@ All notable changes to **Echoes in Ink** are documented here.
 - Structure set placement (spacing 32 / separation 12), biome tag, beard_thin adaptation.
 - `/echoesinink locate_printshop` and vanilla `/locate structure echoes_in_ink:abandoned_printshop`.
 
+#### Phase 4 — Historical Screw Printing Press
+- Assemblable press block with matrix / ink / paper / output slots.
+- Physical use sequence: install parts → load → carriage → handle → wait → collect.
+- Five printable outputs and server-side recipe matching.
+- Client block-entity animation driven by server phase.
+- Safe drops on break; multiplayer-safe state machine.
+
 ### Notes
 
-- Printing press, archive UI, and echoes are planned for later phases.
+- Archive UI and echoes are planned for later phases.

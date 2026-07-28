@@ -83,11 +83,16 @@ public final class EchoesCommands {
 		give(player, new ItemStack(ModItems.PRESS_PLATEN));
 		give(player, new ItemStack(ModItems.PRESS_CARRIAGE));
 		give(player, new ItemStack(ModItems.RESTORED_CHRONICLE_PAGE));
+		give(player, new ItemStack(ModItems.PRINTERS_INSTRUCTION_SHEET));
+		give(player, new ItemStack(ModItems.WORKSHOP_MAP_FRAGMENT));
+		give(player, new ItemStack(ModItems.DECORATIVE_WOODCUT));
+		give(player, new ItemStack(ModItems.PRINTED_WARNING_POSTER));
 		give(player, new ItemStack(ModBlocks.PRINTING_DEBRIS));
 		give(player, new ItemStack(ModBlocks.CARVED_WOODEN_MATRIX));
 		give(player, new ItemStack(ModBlocks.DUSTY_PRINTING_TABLE));
 		give(player, new ItemStack(ModBlocks.DAMAGED_ARCHIVE_SHELF));
 		give(player, new ItemStack(ModBlocks.BROKEN_PRESS_FRAME));
+		give(player, new ItemStack(ModBlocks.PRINTING_PRESS));
 
 		ctx.getSource().sendSuccess(
 			() -> Component.translatable("command.echoes_in_ink.give_test_items.success"),

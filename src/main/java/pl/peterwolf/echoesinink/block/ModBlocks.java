@@ -98,6 +98,17 @@ public final class ModBlocks {
 		InvestigatableBlockItem::new
 	);
 
+	/** Phase 4 — historical screw printing press controller. */
+	public static final PrintingPressBlock PRINTING_PRESS = register(
+		"printing_press",
+		key -> new PrintingPressBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
+			.setId(key)
+			.strength(2.5F, 6.0F)
+			.sound(SoundType.WOOD)
+			.noOcclusion()),
+		BlockItem::new
+	);
+
 	private ModBlocks() {}
 
 	public static void init() {

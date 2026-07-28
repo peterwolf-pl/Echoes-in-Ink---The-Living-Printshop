@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-07-28  
 **Version:** 0.1.0  
-**Current phase:** Phase 3 complete → Phase 4 next
+**Current phase:** Phase 4 complete → Phase 5 next
 
 ## Summary
 
@@ -12,49 +12,47 @@
 | 1 | Basic items and materials | **Complete** |
 | 2 | Historical debris and investigation | **Complete** |
 | 3 | Abandoned printshop structure | **Complete** |
-| 4 | Functional printing press | Not started |
+| 4 | Functional printing press | **Complete** |
 | 5 | Archive book and progression | Not started |
 | 6 | Echoes of the past | Not started |
 | 7 | Chronicle and location discovery | Not started |
 | 8 | Polish and release | Not started |
 
-## Phase 3 checklist
+## Phase 4 checklist
 
 | Task | Status |
 |------|--------|
-| Custom structure type + piece registration | Done |
-| Procedural ruined workshop layout | Done |
-| Workshop room + storage cellar | Done |
-| Broken press, tables, cabinets, shelves, debris | Done |
-| Hidden compartment chest (damaged chronicle + parts) | Done |
-| Storage chest loot table | Done |
-| Environmental storytelling props | Done |
-| Workshop id stored on structure piece NBT | Done |
-| Biome tag + structure set (spacing 32 / sep 12) | Done |
-| `terrain_adaptation: beard_thin` | Done |
-| Config flag `enablePrintshopGeneration` | Done |
-| `/echoesinink locate_printshop` | Done |
-| `/locate structure echoes_in_ink:abandoned_printshop` | Supported via datapack |
-| Clean build + dedicated server | Done |
+| `printing_press` block + BE | Done |
+| Assembly from screw / platen / handle / carriage | Done |
+| Physical sequence (world interaction, no furnace GUI) | Done |
+| Server phase machine + tick progress | Done |
+| 5 printing recipes / outputs | Done |
+| Drop contents + parts on break (no double-drop) | Done |
+| Client BER animation (carriage / platen / handle) | Done |
+| EN + PL messages | Done |
+| Build + dedicated server | Done |
 
-## How to test Phase 3
+## How to test Phase 4
 
-1. Create a **new world** (or explore far enough for new chunks).
-2. `/echoesinink locate_printshop` (op) or  
-   `/locate structure echoes_in_ink:abandoned_printshop`
-3. Visit the ruin: main room, annex, ladder to cellar, chests, investigation blocks.
-4. Disable generation via `config/echoes_in_ink.json` → `"enablePrintshopGeneration": false` (requires restart for new chunks).
+1. `/echoesinink give_test_items`
+2. Place **Historical Screw Printing Press**.
+3. Right-click with **Press Screw, Platen, Handle, Carriage** (install).
+4. Insert **Wooden Printing Matrix**, **Ink Ball**, **Blank Archive Page**.
+5. Empty hand: push carriage → pull handle → wait → pull carriage → collect.
+6. Sneak + use: status line.
+7. Break press: parts and inputs drop.
 
-**Note:** Structure set spacing lives in  
-`data/echoes_in_ink/worldgen/structure_set/abandoned_printshops.json`  
-(config spacing fields document the intended rarity; edit the JSON to change placement density).
+### Recipes
+
+| Matrix | Paper | Ink | Output |
+|--------|-------|-----|--------|
+| Wooden matrix | Blank page | Ink ball | Printer's Instruction Sheet |
+| Wooden matrix | Damaged page | Ink ball | Restored Chronicle Page |
+| Wooden matrix | Blank page | Ink pad | Decorative Woodcut |
+| Metal type piece | Blank page | Ink ball | Printed Warning Poster |
+| Charcoal rubbing | Blank page | Ink pad | Workshop Map Fragment |
 
 ## Remaining (next)
 
-### Phase 4
-- Historical Screw Printing Press (assembly + physical sequence + recipes + animation)
-
-## Tech notes
-
-- Structure is code-built (`ScatteredFeaturePiece`), not NBT template — reliable CI and custom blocks.
-- Workshop id format: `printshop_<hex>` from chunk coordinates.
+### Phase 5
+- Printer's Archive UI + per-player progression + advancements

@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=north,phase=incomplete": { "model": "echoes_in_ink:block/printing_press_incomplete" },
+    "facing=south,phase=incomplete": { "model": "echoes_in_ink:block/printing_press_incomplete", "y": 180 },
+    "facing=west,phase=incomplete":  { "model": "echoes_in_ink:block/printing_press_incomplete", "y": 270 },
+    "facing=east,phase=incomplete":  { "model": "echoes_in_ink:block/printing_press_incomplete", "y": 90 },
+    "facing=north,phase=idle": { "model": "echoes_in_ink:block/printing_press" },
+    "facing=south,phase=idle": { "model": "echoes_in_ink:block/printing_press", "y": 180 },
+    "facing=west,phase=idle":  { "model": "echoes_in_ink:block/printing_press", "y": 270 },
+    "facing=east,phase=idle":  { "model": "echoes_in_ink:block/printing_press", "y": 90 },
+    "facing=north,phase=carriage_in": { "model": "echoes_in_ink:block/printing_press_active" },
+    "facing=south,phase=carriage_in": { "model": "echoes_in_ink:block/printing_press_active", "y": 180 },
+    "facing=west,phase=carriage_in":  { "model": "echoes_in_ink:block/printing_press_active", "y": 270 },
+    "facing=east,phase=carriage_in":  { "model": "echoes_in_ink:block/printing_press_active", "y": 90 },
+    "facing=north,phase=pressing": { "model": "echoes_in_ink:block/printing_press_active" },
+    "facing=south,phase=pressing": { "model": "echoes_in_ink:block/printing_press_active", "y": 180 },
+    "facing=west,phase=pressing":  { "model": "echoes_in_ink:block/printing_press_active", "y": 270 },
+    "facing=east,phase=pressing":  { "model": "echoes_in_ink:block/printing_press_active", "y": 90 },
+    "facing=north,phase=output_ready": { "model": "echoes_in_ink:block/printing_press" },
+    "facing=south,phase=output_ready": { "model": "echoes_in_ink:block/printing_press", "y": 180 },
+    "facing=west,phase=output_ready":  { "model": "echoes_in_ink:block/printing_press", "y": 270 },
+    "facing=east,phase=output_ready":  { "model": "echoes_in_ink:block/printing_press", "y": 90 },
+    "facing=north,phase=jammed": { "model": "echoes_in_ink:block/printing_press_incomplete" },
+    "facing=south,phase=jammed": { "model": "echoes_in_ink:block/printing_press_incomplete", "y": 180 },
+    "facing=west,phase=jammed":  { "model": "echoes_in_ink:block/printing_press_incomplete", "y": 270 },
+    "facing=east,phase=jammed":  { "model": "echoes_in_ink:block/printing_press_incomplete", "y": 90 }
+  }
+}
