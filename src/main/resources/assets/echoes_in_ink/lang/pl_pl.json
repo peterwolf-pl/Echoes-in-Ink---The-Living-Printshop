@@ -187,5 +187,22 @@
 	"archive.echoes_in_ink.entry.clue_plaque.title": "Tablica warsztatu",
 	"archive.echoes_in_ink.entry.clue_plaque.body": "Tablica nazywa Prasę Popielatych Liter.",
 	"archive.echoes_in_ink.none": "Brak odkryć. Badaj warsztaty i drukuj prace.",
-	"archive.echoes_in_ink.shift_hint": "Skradaj + użyj, aby pokazać pełny tekst wpisu."
+	"archive.echoes_in_ink.shift_hint": "Skradaj + użyj, aby pokazać pełny tekst wpisu.",
+	"echo.echoes_in_ink.started": "Budzi się echo przeszłości…",
+	"echo.echoes_in_ink.already_active": "Echo jest już aktywne w pobliżu.",
+	"echo.echoes_in_ink.skip_disabled": "Pomijanie echa wyłączone w konfiguracji.",
+	"echo.echoes_in_ink.skip_locked": "Obejrzyj całe echo raz, zanim będziesz mógł je pominąć.",
+	"echo.echoes_in_ink.nothing_to_skip": "Brak echa w pobliżu do pominięcia.",
+	"echo.echoes_in_ink.skipped": "Pominięto echo.",
+	"echo.echoes_in_ink.last_print.darken": "Warsztat ciemnieje… kurz unosi się w powietrzu.",
+	"echo.echoes_in_ink.last_print.dust": "Popiół i pył papieru dryfują po sali.",
+	"echo.echoes_in_ink.last_print.printer": "Przy szafie na czcionki pojawia się drukarz.",
+	"echo.echoes_in_ink.last_print.helper": "Drugi pracownik niesie kartę do prasy.",
+	"echo.echoes_in_ink.last_print.press": "Widmowa prasa kończy ostatni nakład.",
+	"echo.echoes_in_ink.last_print.impact": "Odległy wstrząs — praca przerwana!",
+	"echo.echoes_in_ink.last_print.hide": "Ukrywają matrycę i dokument.",
+	"echo.echoes_in_ink.last_print.fade": "Postaci rozpływają się w pył.",
+	"echo.echoes_in_ink.last_print.clue": "Trop osiada w twoim archiwum…",
+	"echo.echoes_in_ink.last_print.complete": "Ostatni nakład dobiega końca. Szukaj tego, co ukryli.",
+	"command.echoes_in_ink.trigger_echo.success": "[Echa w Atramencie] Wyzwolono Ostatni nakład."
 }

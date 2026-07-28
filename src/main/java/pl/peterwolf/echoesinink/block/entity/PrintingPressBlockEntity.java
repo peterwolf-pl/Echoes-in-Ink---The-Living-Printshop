@@ -326,6 +326,15 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			unlockPrintResult(serverPlayer, give);
+			// First meaningful print can stir The Last Print Run (once until archive entry exists).
+			if ((give.getItem() == ModItems.PRINTERS_INSTRUCTION_SHEET
+				|| give.getItem() == ModItems.RESTORED_CHRONICLE_PAGE)
+				&& !ArchiveService.get(serverPlayer).has(ArchiveEntries.ECHO_LAST_PRINT)
+				&& level instanceof ServerLevel serverLevel) {
+				pl.peterwolf.echoesinink.echo.EchoManager.startLastPrintRun(
+					serverLevel, worldPosition, serverPlayer
+				);
+			}
 		}
 		// Matrix stays for re-use; ink and paper already consumed when print finished.
 		phase = PressPhase.IDLE;

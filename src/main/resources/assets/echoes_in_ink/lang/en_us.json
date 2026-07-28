@@ -187,5 +187,22 @@
 	"archive.echoes_in_ink.entry.clue_plaque.title": "Workshop Plaque",
 	"archive.echoes_in_ink.entry.clue_plaque.body": "The plaque names the Ashen Letter Press.",
 	"archive.echoes_in_ink.none": "No discoveries yet. Investigate workshops and print works.",
-	"archive.echoes_in_ink.shift_hint": "Sneak + use to show full entry text."
+	"archive.echoes_in_ink.shift_hint": "Sneak + use to show full entry text.",
+	"echo.echoes_in_ink.started": "An echo of the past stirs…",
+	"echo.echoes_in_ink.already_active": "An echo is already active nearby.",
+	"echo.echoes_in_ink.skip_disabled": "Echo skip is disabled in config.",
+	"echo.echoes_in_ink.skip_locked": "Watch the full echo once before you can skip.",
+	"echo.echoes_in_ink.nothing_to_skip": "No nearby echo to skip.",
+	"echo.echoes_in_ink.skipped": "Echo skipped.",
+	"echo.echoes_in_ink.last_print.darken": "The workshop dims… dust hangs in the air.",
+	"echo.echoes_in_ink.last_print.dust": "Ash and paper dust drift through the room.",
+	"echo.echoes_in_ink.last_print.printer": "A printer appears by the type cabinet.",
+	"echo.echoes_in_ink.last_print.helper": "Another worker carries a page to the press.",
+	"echo.echoes_in_ink.last_print.press": "The ghostly press runs its last cycle.",
+	"echo.echoes_in_ink.last_print.impact": "A distant impact — the work is interrupted!",
+	"echo.echoes_in_ink.last_print.hide": "They hide a matrix and a document.",
+	"echo.echoes_in_ink.last_print.fade": "The figures fade into dust.",
+	"echo.echoes_in_ink.last_print.clue": "A clue settles into your archive…",
+	"echo.echoes_in_ink.last_print.complete": "The Last Print Run ends. Search for what they hid.",
+	"command.echoes_in_ink.trigger_echo.success": "[Echoes in Ink] Triggered The Last Print Run."
 }

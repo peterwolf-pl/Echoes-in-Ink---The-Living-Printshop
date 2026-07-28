@@ -55,6 +55,13 @@ All notable changes to **Echoes in Ink** are documented here.
 - Advancements: Dust and Ink, Letters from the Rubble, The Forgotten Machine, Pull the Handle, A Page Restored, Echoes in Ink.
 - `/echoesinink reset_archive` for testing.
 
+#### Phase 6 — Echoes of the Past
+- Server-driven **The Last Print Run** (~30s, configurable).
+- No permanent entities/blocks; client particles and subtitles only.
+- Mid-join sync; skip after first viewing (sneak); accessibility config flags.
+- Completing the echo unlocks archive entries and the Echoes in Ink advancement.
+- `/echoesinink trigger_echo` for development.
+
 ### Notes
 
-- Historical echo events are planned for Phase 6.
+- Chronicle location discovery is planned for Phase 7.

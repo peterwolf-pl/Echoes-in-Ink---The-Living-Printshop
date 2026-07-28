@@ -186,11 +186,27 @@ public final class EchoesCommands {
 	}
 
 	private static int triggerEcho(CommandContext<CommandSourceStack> ctx) {
-		ctx.getSource().sendSuccess(
-			() -> Component.translatable("command.echoes_in_ink.trigger_echo.pending"),
-			true
+		ServerPlayer player;
+		try {
+			player = ctx.getSource().getPlayerOrException();
+		} catch (Exception e) {
+			ctx.getSource().sendFailure(Component.translatable("command.echoes_in_ink.player_only"));
+			return 0;
+		}
+		boolean ok = pl.peterwolf.echoesinink.echo.EchoManager.startLastPrintRun(
+			(ServerLevel) player.level(),
+			player.blockPosition(),
+			player
 		);
-		return 1;
+		if (ok) {
+			ctx.getSource().sendSuccess(
+				() -> Component.translatable("command.echoes_in_ink.trigger_echo.success"),
+				true
+			);
+			return 1;
+		}
+		ctx.getSource().sendFailure(Component.translatable("echo.echoes_in_ink.already_active"));
+		return 0;
 	}
 
 	private static int resetArchive(CommandContext<CommandSourceStack> ctx) {

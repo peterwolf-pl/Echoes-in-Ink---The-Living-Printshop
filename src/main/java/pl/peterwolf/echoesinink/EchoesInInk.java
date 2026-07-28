@@ -5,14 +5,17 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import pl.peterwolf.echoesinink.archive.ModAttachments;
 import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.block.entity.ModBlockEntities;
 import pl.peterwolf.echoesinink.command.EchoesCommands;
 import pl.peterwolf.echoesinink.config.ModConfig;
+import pl.peterwolf.echoesinink.echo.EchoManager;
 import pl.peterwolf.echoesinink.item.ModCreativeTabs;
 import pl.peterwolf.echoesinink.item.ModDataComponents;
 import pl.peterwolf.echoesinink.item.ModItems;
+import pl.peterwolf.echoesinink.networking.EchoPayloads;
 import pl.peterwolf.echoesinink.recipe.PrintingRecipes;
 import pl.peterwolf.echoesinink.structure.ModStructures;
 
@@ -37,9 +40,17 @@ public final class EchoesInInk implements ModInitializer {
 		ModCreativeTabs.init();
 		PrintingRecipes.init();
 		ModStructures.register();
+		EchoPayloads.registerCommon();
+		EchoPayloads.registerServerReceivers();
+		EchoManager.init();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
 			EchoesCommands.register(dispatcher));
+
+		// Mid-join players receive active echo state near them.
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
+			server.execute(() -> EchoManager.syncPlayer(handler.player))
+		);
 
 		LOGGER.info("{} v{} initialized (Minecraft 26.2 / Fabric).", MOD_NAME, getModVersion());
 	}
