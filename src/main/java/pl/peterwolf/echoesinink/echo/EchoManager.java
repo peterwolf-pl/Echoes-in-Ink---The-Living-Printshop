@@ -1,7 +1,6 @@
 package pl.peterwolf.echoesinink.echo;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -125,12 +124,11 @@ public final class EchoManager {
 		if (ACTIVE.isEmpty()) {
 			return;
 		}
-		Iterator<ActiveEcho> it = ACTIVE.iterator();
-		while (it.hasNext()) {
-			ActiveEcho echo = it.next();
+		// Snapshot: finish() may remove from ACTIVE (also called from trySkip).
+		for (ActiveEcho echo : List.copyOf(ACTIVE)) {
 			ServerLevel level = server.getLevel(echo.dimension);
 			if (level == null) {
-				it.remove();
+				ACTIVE.remove(echo);
 				continue;
 			}
 
@@ -170,7 +168,6 @@ public final class EchoManager {
 
 			if (echo.finished()) {
 				finish(level, echo, true);
-				it.remove();
 			}
 		}
 	}
