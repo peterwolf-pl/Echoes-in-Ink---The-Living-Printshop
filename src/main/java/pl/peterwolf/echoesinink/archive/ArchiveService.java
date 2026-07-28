@@ -94,5 +94,9 @@ public final class ArchiveService {
 		if (entryId.equals(ArchiveEntries.ECHO_LAST_PRINT.id())) {
 			grantAdvancement(player, EchoesInInk.id("echoes_in_ink"));
 		}
+		if (entryId.equals(ArchiveEntries.SITE_INK_CACHE.id())
+			|| entryId.equals(ArchiveEntries.CLUE_CHRONICLE_MAP.id())) {
+			grantAdvancement(player, EchoesInInk.id("the_buried_cache"));
+		}
 	}
 }

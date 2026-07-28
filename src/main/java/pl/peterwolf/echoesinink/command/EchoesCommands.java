@@ -50,6 +50,8 @@ public final class EchoesCommands {
 					.executes(EchoesCommands::assemblePress))
 				.then(Commands.literal("locate_printshop")
 					.executes(EchoesCommands::locatePrintshop))
+				.then(Commands.literal("locate_cache")
+					.executes(EchoesCommands::locateCache))
 				.then(Commands.literal("trigger_echo")
 					.executes(EchoesCommands::triggerEcho))
 				.then(Commands.literal("reset_archive")
@@ -180,6 +182,52 @@ public final class EchoesCommands {
 
 		source.sendSuccess(
 			() -> Component.translatable("command.echoes_in_ink.locate_printshop.success", coordinates, distance),
+			false
+		);
+		return distance;
+	}
+
+	private static int locateCache(CommandContext<CommandSourceStack> ctx) {
+		CommandSourceStack source = ctx.getSource();
+		ServerLevel level = source.getLevel();
+		BlockPos origin = BlockPos.containing(source.getPosition());
+
+		var structure = level.registryAccess()
+			.lookupOrThrow(Registries.STRUCTURE)
+			.get(ModStructures.INK_ARCHIVE_CACHE);
+
+		if (structure.isEmpty()) {
+			source.sendFailure(Component.translatable("command.echoes_in_ink.locate_cache.missing"));
+			return 0;
+		}
+
+		Pair<BlockPos, Holder<Structure>> result = level.getChunkSource().getGenerator()
+			.findNearestMapStructure(level, HolderSet.direct(structure.get()), origin, 100, false);
+
+		if (result == null) {
+			source.sendFailure(Component.translatable("command.echoes_in_ink.locate_cache.failed"));
+			return 0;
+		}
+
+		BlockPos found = result.getFirst();
+		int teleportY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, found.getX(), found.getZ());
+		if (teleportY <= level.getMinY()) {
+			teleportY = found.getY();
+		}
+		int distance = Mth.floor(Mth.sqrt((float) origin.distSqr(new BlockPos(found.getX(), origin.getY(), found.getZ()))));
+		String tp = "/tp @s " + found.getX() + " " + teleportY + " " + found.getZ();
+
+		Component coordinates = ComponentUtils.wrapInSquareBrackets(
+				Component.translatable("chat.coordinates", found.getX(), teleportY, found.getZ())
+			)
+			.withStyle(style -> style
+				.withColor(ChatFormatting.GREEN)
+				.withClickEvent(new ClickEvent.RunCommand(tp))
+				.withHoverEvent(new HoverEvent.ShowText(Component.translatable("chat.coordinates.tooltip")))
+			);
+
+		source.sendSuccess(
+			() -> Component.translatable("command.echoes_in_ink.locate_cache.success", coordinates, distance),
 			false
 		);
 		return distance;

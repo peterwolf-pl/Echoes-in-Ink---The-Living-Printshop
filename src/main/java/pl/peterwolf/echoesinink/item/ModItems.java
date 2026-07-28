@@ -56,7 +56,7 @@ public final class ModItems {
 		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.press_carriage.desc"));
 
 	public static final Item RESTORED_CHRONICLE_PAGE = register("restored_chronicle_page",
-		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.restored_chronicle_page.desc"));
+		props -> new RestoredChroniclePageItem(props.stacksTo(16)));
 
 	/** Result of a successful charcoal rubbing (holds pattern component). */
 	public static final Item CHARCOAL_RUBBING = register("charcoal_rubbing",

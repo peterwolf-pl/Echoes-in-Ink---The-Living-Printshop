@@ -13,7 +13,7 @@ All notable changes to **Echoes in Ink** are documented here.
 - Data generation entrypoint scaffold.
 - English and Polish base translations.
 - Development commands under `/echoesinink` (permission level 2):
-  - `give_test_items`, `locate_printshop`, `trigger_echo`, `reset_archive`, `debug`
+  - `give_test_items`, `locate_printshop`, `locate_cache`, `trigger_echo`, `reset_archive`, `debug`
 - Documentation: README, implementation plan/status, testing, known issues, roadmap.
 - MPL-2.0 licence (repository default).
 
@@ -62,6 +62,16 @@ All notable changes to **Echoes in Ink** are documented here.
 - Completing the echo unlocks archive entries and the Echoes in Ink advancement.
 - `/echoesinink trigger_echo` for development.
 
+#### Phase 7 — Restored Chronicle and location discovery
+- Restored Chronicle Page progressive reading (server-only): biome → bearing → map → precise site.
+- Prerequisites gate stages (investigation / echo / map accessibility).
+- Explorer map with red X pointing to the nearest ink archive cache.
+- New structure **Ink Archive Cache**: half-buried chamber, ladder hatch, moss marker, loot chest.
+- Structure set, biome tag, loot table `chests/ink_archive_cache`.
+- Archive entries for chronicle clues and site discovery.
+- Advancement **The Buried Cache**.
+- `/echoesinink locate_cache` and vanilla `/locate structure echoes_in_ink:ink_archive_cache`.
+
 ### Notes
 
-- Chronicle location discovery is planned for Phase 7.
+- Phase 8 remains: sounds, art polish, balance, ModJam packaging.

@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-07-28  
 **Version:** 0.1.0  
-**Current phase:** Phase 6 complete → Phase 7 next
+**Current phase:** Phase 7 complete → Phase 8 next
 
 ## Summary
 
@@ -15,32 +15,37 @@
 | 4 | Functional printing press | **Complete** |
 | 5 | Archive book and progression | **Complete** |
 | 6 | Echoes of the past | **Complete** |
-| 7 | Chronicle and location discovery | Not started |
+| 7 | Chronicle and location discovery | **Complete** |
 | 8 | Polish and release | Not started |
 
-## Phase 6 checklist
+## Phase 7 checklist
 
 | Task | Status |
 |------|--------|
-| Server-authoritative echo manager (no permanent entities) | Done |
-| The Last Print Run scripted sequence (~config duration) | Done |
-| Client particles / ghost workers / subtitles | Done |
-| Mid-join sync for nearby players | Done |
-| Skip after first completion (sneak while active) | Done |
-| Config: duration, subtitles, reduced particles/flashes, volume | Done |
-| Archive + advancement unlock on completion | Done |
-| `/echoesinink trigger_echo` | Done |
-| Trigger on first instruction/chronicle print | Done |
-| Build + dedicated server | Done |
+| Restored Chronicle Page progressive use (server-side) | Done |
+| Clue stages: biome → bearing → map → precise site | Done |
+| Archive unlocks for chronicle clues + ink cache site | Done |
+| Ink Archive Cache structure (piece + type + datapack) | Done |
+| Cache loot table (matrices, pages, tools) | Done |
+| Explorer map with RED_X decoration | Done |
+| `/echoesinink locate_cache` | Done |
+| Advancement **The Buried Cache** | Done |
+| EN + PL language keys | Done |
+| Build | Pending this commit |
 
-## How to test Phase 6
+## How to test Phase 7
 
-1. `/echoesinink trigger_echo` at player feet (instant).
-2. Or complete a first print of instruction sheet / restored chronicle.
-3. Watch action-bar subtitles and particles for ~30s (`echoDurationTicks` in config).
-4. After first full view, sneak during an echo to skip (creative always can skip).
-5. Archive unlocks **The Last Print Run** + hidden clue; advancement **Echoes in Ink**.
+1. Investigate a printshop (unlocks dust/hidden clues) and print a restored chronicle page.
+2. Optionally witness The Last Print Run (bearing stage prefers echo or hidden clue).
+3. Use the Restored Chronicle Page repeatedly:
+   - Stage 1: biome flavour text + archive entry
+   - Stage 2: compass bearing (N/NE/…) toward nearest cache
+   - Stage 3: filled map item (red X)
+   - Stage 4: precise coordinates + site archive entry
+4. Or skip exploration with `/echoesinink locate_cache` (op).
+5. Dig at moss carpet / ladder hatch; loot the cache chest.
 
 ## Remaining
 
-### Phase 7 — Chronicle reconstruction and location discovery
+### Phase 8 — Polish and release
+Sounds, better textures, balance, exploit hardening, screenshots, ModJam checklist, production JAR.

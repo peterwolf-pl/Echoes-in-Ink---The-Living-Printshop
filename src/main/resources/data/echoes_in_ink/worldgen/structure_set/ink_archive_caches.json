@@ -1,0 +1,15 @@
+{
+  "structures": [
+    {
+      "structure": "echoes_in_ink:ink_archive_cache",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 20260729,
+    "spacing": 28,
+    "separation": 10,
+    "spread_type": "linear"
+  }
+}

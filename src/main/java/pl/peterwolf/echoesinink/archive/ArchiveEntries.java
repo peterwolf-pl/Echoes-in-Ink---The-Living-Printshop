@@ -27,14 +27,23 @@ public final class ArchiveEntries {
 	public static final Def CLUE_DUST = entry("clue_dust", ArchiveCategory.UNRESOLVED_CLUES);
 	public static final Def CLUE_HIDDEN = entry("clue_hidden", ArchiveCategory.UNRESOLVED_CLUES);
 	public static final Def CLUE_PLAQUE = entry("clue_plaque", ArchiveCategory.UNRESOLVED_CLUES);
+	/** Chronicle stage 1: rough biome of the follow-up site. */
+	public static final Def CLUE_CHRONICLE_BIOME = entry("clue_chronicle_biome", ArchiveCategory.UNRESOLVED_CLUES);
+	/** Chronicle stage 2: compass bearing toward the site. */
+	public static final Def CLUE_CHRONICLE_BEARING = entry("clue_chronicle_bearing", ArchiveCategory.UNRESOLVED_CLUES);
+	/** Chronicle stage 3: filled explorer map to the site. */
+	public static final Def CLUE_CHRONICLE_MAP = entry("clue_chronicle_map", ArchiveCategory.UNRESOLVED_CLUES);
+	/** Chronicle stage 4 / discovery of the buried ink archive cache. */
+	public static final Def SITE_INK_CACHE = entry("site_ink_cache", ArchiveCategory.WORKSHOPS);
 
 	private static final List<Def> ALL = List.of(
-		WORKSHOP_ASHEN,
+		WORKSHOP_ASHEN, SITE_INK_CACHE,
 		PART_SCREW, PART_HANDLE, PART_PLATEN, PART_CARRIAGE,
 		MATRIX_WOODEN, MATRIX_TYPE, MATRIX_RUBBING,
 		WORK_INSTRUCTION, WORK_CHRONICLE, WORK_WOODCUT, WORK_POSTER, WORK_MAP,
 		ECHO_LAST_PRINT,
-		CLUE_DUST, CLUE_HIDDEN, CLUE_PLAQUE
+		CLUE_DUST, CLUE_HIDDEN, CLUE_PLAQUE,
+		CLUE_CHRONICLE_BIOME, CLUE_CHRONICLE_BEARING, CLUE_CHRONICLE_MAP
 	);
 
 	private ArchiveEntries() {}

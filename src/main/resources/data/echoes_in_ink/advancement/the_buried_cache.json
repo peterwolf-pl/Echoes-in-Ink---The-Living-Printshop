@@ -1,0 +1,17 @@
+{
+  "parent": "echoes_in_ink:a_page_restored",
+  "display": {
+    "icon": { "id": "minecraft:filled_map" },
+    "title": { "translate": "advancement.echoes_in_ink.the_buried_cache.title" },
+    "description": { "translate": "advancement.echoes_in_ink.the_buried_cache.desc" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "unlocked": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

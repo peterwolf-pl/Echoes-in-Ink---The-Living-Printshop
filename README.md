@@ -52,6 +52,7 @@ export JAVA_HOME=$(/usr/libexec/java_home -v 25)   # macOS example
 |---------|---------|
 | `/echoesinink give_test_items` | Give Phase 1+ test items |
 | `/echoesinink locate_printshop` | Help locate generated printshop |
+| `/echoesinink locate_cache` | Help locate ink archive cache |
 | `/echoesinink trigger_echo` | Force-trigger echo event |
 | `/echoesinink reset_archive` | Reset player archive progression |
 | `/echoesinink debug [on\|off\|reload_config]` | Debug / config tools |

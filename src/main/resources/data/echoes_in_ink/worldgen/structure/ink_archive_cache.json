@@ -1,0 +1,7 @@
+{
+  "type": "echoes_in_ink:ink_archive_cache",
+  "biomes": "#echoes_in_ink:has_structure/ink_archive_cache",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

@@ -29,7 +29,9 @@
 - [ ] Recipe processing, no item duplication
 - [ ] Archive unlocks, advancements once
 - [ ] Echo event cleanup, join mid-event
-- [ ] Chronicle reconstruction and follow-up location
+- [ ] Chronicle reconstruction: use page four times (biome → bearing → map → coords)
+- [ ] Follow-up location: ink archive cache hatch + chest loot
+- [ ] `/echoesinink locate_cache` and vanilla `/locate structure echoes_in_ink:ink_archive_cache`
 
 ## Persistence
 
