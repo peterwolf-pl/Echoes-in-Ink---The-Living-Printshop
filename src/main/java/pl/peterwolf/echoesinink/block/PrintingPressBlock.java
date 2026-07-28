@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import pl.peterwolf.echoesinink.block.entity.ModBlockEntities;
@@ -33,9 +34,6 @@ import pl.peterwolf.echoesinink.block.entity.PrintingPressBlockEntity;
 
 /**
  * Historical screw printing press — physical world interaction (not a furnace GUI).
- * <p>
- * Sequence: install parts → insert matrix/ink/paper → push carriage → pull handle →
- * wait → pull carriage → collect print.
  */
 public class PrintingPressBlock extends BaseEntityBlock {
 	public static final MapCodec<PrintingPressBlock> CODEC = simpleCodec(PrintingPressBlock::new);
@@ -44,7 +42,12 @@ public class PrintingPressBlock extends BaseEntityBlock {
 		PressPhase.INCOMPLETE, PressPhase.IDLE, PressPhase.CARRIAGE_IN, PressPhase.PRESSING,
 		PressPhase.OUTPUT_READY, PressPhase.JAMMED);
 
-	private static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 14.0D, 16.0D);
+	/** Frame-like hitbox so it does not look like a solid cube. */
+	private static final VoxelShape SHAPE = Shapes.or(
+		Block.box(0, 0, 0, 16, 4, 16),
+		Block.box(1, 4, 1, 15, 12, 15),
+		Block.box(0, 12, 0, 16, 14, 16)
+	);
 
 	public PrintingPressBlock(Properties properties) {
 		super(properties);
@@ -75,6 +78,7 @@ public class PrintingPressBlock extends BaseEntityBlock {
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
+		// Draw block model + BER animation layers.
 		return RenderShape.MODEL;
 	}
 
@@ -102,26 +106,45 @@ public class PrintingPressBlock extends BaseEntityBlock {
 		InteractionHand hand,
 		BlockHitResult hit
 	) {
-		if (level.getBlockEntity(pos) instanceof PrintingPressBlockEntity press) {
-			if (level.isClientSide()) {
-				return InteractionResult.SUCCESS;
+		if (!(level.getBlockEntity(pos) instanceof PrintingPressBlockEntity press)) {
+			if (!level.isClientSide()) {
+				hint(player, Component.translatable("press.echoes_in_ink.no_entity"));
 			}
-			// 1) Install machine parts
-			if (press.tryInstallPart(player, stack)) {
-				message(player, "press.echoes_in_ink.part_installed");
-				return InteractionResult.SUCCESS_SERVER;
-			}
-			// 2) Insert matrix / ink / paper
-			if (press.tryInsertInput(player, stack)) {
-				message(player, "press.echoes_in_ink.input_inserted");
-				return InteractionResult.SUCCESS_SERVER;
-			}
-			if (player.isSecondaryUseActive()) {
-				player.sendSystemMessage(press.statusMessage());
-				return InteractionResult.SUCCESS_SERVER;
-			}
+			return InteractionResult.SUCCESS;
 		}
-		return InteractionResult.TRY_WITH_EMPTY_HAND;
+
+		// Client: only swing hand; server owns logic.
+		if (level.isClientSide()) {
+			return InteractionResult.SUCCESS;
+		}
+
+		// 1) Install machine parts
+		if (press.tryInstallPart(player, stack)) {
+			hint(player, Component.translatable("press.echoes_in_ink.part_installed"));
+			hint(player, press.nextStepMessage());
+			return InteractionResult.SUCCESS;
+		}
+
+		// 2) Insert matrix / ink / paper
+		if (press.tryInsertInput(player, stack)) {
+			hint(player, Component.translatable("press.echoes_in_ink.input_inserted"));
+			hint(player, press.nextStepMessage());
+			return InteractionResult.SUCCESS;
+		}
+
+		// 3) Item not usable here — still advance machine / show help
+		if (player.isSecondaryUseActive()) {
+			hint(player, press.statusMessage());
+			hint(player, press.nextStepMessage());
+			return InteractionResult.SUCCESS;
+		}
+
+		String key = press.interactEmptyHand(player);
+		if (key != null && !key.isEmpty()) {
+			hint(player, Component.translatable(key));
+		}
+		hint(player, press.nextStepMessage());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -133,25 +156,33 @@ public class PrintingPressBlock extends BaseEntityBlock {
 		BlockHitResult hit
 	) {
 		if (!(level.getBlockEntity(pos) instanceof PrintingPressBlockEntity press)) {
-			return InteractionResult.PASS;
+			if (!level.isClientSide()) {
+				hint(player, Component.translatable("press.echoes_in_ink.no_entity"));
+			}
+			return InteractionResult.SUCCESS;
 		}
 		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
 		if (player.isSecondaryUseActive()) {
-			player.sendSystemMessage(press.statusMessage());
-			return InteractionResult.SUCCESS_SERVER;
+			hint(player, press.statusMessage());
+			hint(player, press.nextStepMessage());
+			return InteractionResult.SUCCESS;
 		}
 		String key = press.interactEmptyHand(player);
 		if (key != null && !key.isEmpty()) {
-			player.sendSystemMessage(Component.translatable(key));
+			hint(player, Component.translatable(key));
 		}
-		return InteractionResult.SUCCESS_SERVER;
+		hint(player, press.nextStepMessage());
+		return InteractionResult.SUCCESS;
 	}
 
-	private static void message(Player player, String key) {
-		if (player instanceof ServerPlayer) {
-			player.sendSystemMessage(Component.translatable(key));
+	/** Action-bar feedback so the player always sees the next step. */
+	private static void hint(Player player, Component text) {
+		if (player instanceof ServerPlayer serverPlayer) {
+			serverPlayer.sendOverlayMessage(text);
+		} else {
+			player.sendSystemMessage(text);
 		}
 	}
 

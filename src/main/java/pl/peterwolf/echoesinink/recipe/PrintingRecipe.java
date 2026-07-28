@@ -20,9 +20,9 @@ public record PrintingRecipe(
 		return !matrixStack.isEmpty()
 			&& !paperStack.isEmpty()
 			&& !inkStack.isEmpty()
-			&& matrixStack.is(matrix)
-			&& paperStack.is(paper)
-			&& inkStack.is(ink);
+			&& matrixStack.getItem() == matrix
+			&& paperStack.getItem() == paper
+			&& inkStack.getItem() == ink;
 	}
 
 	public ItemStack createOutput() {

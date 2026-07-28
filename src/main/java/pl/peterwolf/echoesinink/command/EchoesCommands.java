@@ -27,6 +27,7 @@ import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.block.InvestigatableBlock;
 import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
+import pl.peterwolf.echoesinink.block.entity.PrintingPressBlockEntity;
 import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.item.ModItems;
 import pl.peterwolf.echoesinink.structure.ModStructures;
@@ -45,6 +46,8 @@ public final class EchoesCommands {
 				.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 				.then(Commands.literal("give_test_items")
 					.executes(EchoesCommands::giveTestItems))
+				.then(Commands.literal("assemble_press")
+					.executes(EchoesCommands::assemblePress))
 				.then(Commands.literal("locate_printshop")
 					.executes(EchoesCommands::locatePrintshop))
 				.then(Commands.literal("trigger_echo")
@@ -106,6 +109,32 @@ public final class EchoesCommands {
 		if (!player.getInventory().add(stack)) {
 			player.drop(stack, false);
 		}
+	}
+
+	/** Instantly completes press assembly on the looked-at block. */
+	private static int assemblePress(CommandContext<CommandSourceStack> ctx) {
+		ServerPlayer player;
+		try {
+			player = ctx.getSource().getPlayerOrException();
+		} catch (Exception e) {
+			ctx.getSource().sendFailure(Component.translatable("command.echoes_in_ink.player_only"));
+			return 0;
+		}
+		if (!(player.pick(8.0D, 0.0F, false) instanceof BlockHitResult hit)) {
+			ctx.getSource().sendFailure(Component.translatable("command.echoes_in_ink.assemble_press.fail"));
+			return 0;
+		}
+		if (!(player.level().getBlockEntity(hit.getBlockPos()) instanceof PrintingPressBlockEntity press)) {
+			ctx.getSource().sendFailure(Component.translatable("command.echoes_in_ink.assemble_press.fail"));
+			return 0;
+		}
+		press.forceAssemble();
+		ctx.getSource().sendSuccess(
+			() -> Component.translatable("command.echoes_in_ink.assemble_press.success"),
+			true
+		);
+		player.sendOverlayMessage(press.nextStepMessage());
+		return 1;
 	}
 
 	private static int locatePrintshop(CommandContext<CommandSourceStack> ctx) {

@@ -109,5 +109,18 @@
 	"press.echoes_in_ink.status.resetting": "Status: reset",
 	"press.echoes_in_ink.status.impression_done": "Status: odcisk gotowy — wyciągnij wózek",
 	"press.echoes_in_ink.status.output_ready": "Status: odbitka gotowa — zbierz",
-	"press.echoes_in_ink.status.jammed": "Status: zacięcie — pusta ręka aby wyczyścić"
+	"press.echoes_in_ink.status.jammed": "Status: zacięcie — pusta ręka aby wyczyścić",
+	"press.echoes_in_ink.no_entity": "Prasa nie ma danych — zniszcz i postaw ponownie.",
+	"press.echoes_in_ink.next.install": "DALEJ: zamontuj części → %s",
+	"press.echoes_in_ink.next.matrix": "DALEJ: PPM matrycą / czcionką / odciskiem",
+	"press.echoes_in_ink.next.ink": "DALEJ: PPM atramentem (Ink Ball / Ink Pad)",
+	"press.echoes_in_ink.next.paper": "DALEJ: PPM kartą archiwum (pusta lub uszkodzona)",
+	"press.echoes_in_ink.next.carriage": "DALEJ: pusta ręka → wsuń wózek",
+	"press.echoes_in_ink.next.handle": "DALEJ: pusta ręka → pociągnij dźwignię",
+	"press.echoes_in_ink.next.wait": "DALEJ: poczekaj na cykl prasy…",
+	"press.echoes_in_ink.next.pull_carriage": "DALEJ: pusta ręka → wyciągnij wózek",
+	"press.echoes_in_ink.next.collect": "DALEJ: pusta ręka → zbierz odbitkę",
+	"press.echoes_in_ink.next.clear_jam": "DALEJ: pusta ręka → usuń zacięcie",
+	"command.echoes_in_ink.assemble_press.success": "[Echa w Atramencie] Prasa w pełni zmontowana.",
+	"command.echoes_in_ink.assemble_press.fail": "[Echa w Atramencie] Spójrz na prasę drukarską."
 }

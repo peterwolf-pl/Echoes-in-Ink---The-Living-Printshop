@@ -109,5 +109,18 @@
 	"press.echoes_in_ink.status.resetting": "Status: resetting",
 	"press.echoes_in_ink.status.impression_done": "Status: impression done — pull carriage",
 	"press.echoes_in_ink.status.output_ready": "Status: output ready — collect print",
-	"press.echoes_in_ink.status.jammed": "Status: jammed — empty-hand to clear"
+	"press.echoes_in_ink.status.jammed": "Status: jammed — empty-hand to clear",
+	"press.echoes_in_ink.no_entity": "Press has no data — break and replace it.",
+	"press.echoes_in_ink.next.install": "NEXT: install parts → %s",
+	"press.echoes_in_ink.next.matrix": "NEXT: right-click with Wooden Matrix / Type / Rubbing",
+	"press.echoes_in_ink.next.ink": "NEXT: right-click with Ink Ball or Ink Pad",
+	"press.echoes_in_ink.next.paper": "NEXT: right-click with Blank or Damaged Archive Page",
+	"press.echoes_in_ink.next.carriage": "NEXT: empty hand → push carriage under platen",
+	"press.echoes_in_ink.next.handle": "NEXT: empty hand → pull the handle",
+	"press.echoes_in_ink.next.wait": "NEXT: wait for the press cycle…",
+	"press.echoes_in_ink.next.pull_carriage": "NEXT: empty hand → pull carriage out",
+	"press.echoes_in_ink.next.collect": "NEXT: empty hand → collect the print",
+	"press.echoes_in_ink.next.clear_jam": "NEXT: empty hand → clear jam",
+	"command.echoes_in_ink.assemble_press.success": "[Echoes in Ink] Press fully assembled.",
+	"command.echoes_in_ink.assemble_press.fail": "[Echoes in Ink] Look at a printing press."
 }

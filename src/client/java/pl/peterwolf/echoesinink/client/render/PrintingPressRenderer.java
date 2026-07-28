@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import pl.peterwolf.echoesinink.block.PressPhase;
@@ -21,8 +22,8 @@ import pl.peterwolf.echoesinink.block.entity.PrintingPressBlockEntity;
 import pl.peterwolf.echoesinink.item.ModItems;
 
 /**
- * Client-only animation: carriage slide, platen descent, handle angle.
- * Server phase + animProgress are the sole authority; this only interpolates.
+ * Client animation of press parts. Server phase/progress is authoritative;
+ * this only presents motion. Always draws something visible once parts exist.
  */
 public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressBlockEntity, PrintingPressRenderState> {
 	private final ItemStackRenderState itemState = new ItemStackRenderState();
@@ -46,7 +47,14 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		BlockEntityRenderer.super.extractRenderState(be, state, partialTick, cameraPos, breakProgress);
 		state.facing = be.getBlockState().getValue(PrintingPressBlock.FACING);
 		state.phase = be.phase();
-		state.animProgress = be.animProgress();
+		// Smooth during PRESSING/RESETTING using partial ticks when possible.
+		float base = be.animProgress();
+		if (be.phase() == PressPhase.PRESSING && be.maxProgress() > 0) {
+			base = (be.progress() + partialTick) / (float) be.maxProgress();
+		} else if (be.phase() == PressPhase.RESETTING) {
+			base = 1.0F - (be.progress() + partialTick) / 20.0F;
+		}
+		state.animProgress = Mth.clamp(base, 0.0F, 1.0F);
 		state.hasScrew = be.hasScrew();
 		state.hasHandle = be.hasHandle();
 		state.hasPlaten = be.hasPlaten();
@@ -64,7 +72,6 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		CameraRenderState camera
 	) {
 		poseStack.pushPose();
-		// Center of block, facing-aware.
 		poseStack.translate(0.5F, 0.0F, 0.5F);
 		poseStack.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
 
@@ -72,89 +79,47 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		float platenY = platenOffset(state);
 		float handleAngle = handleAngle(state);
 
-		// Carriage (pressure plate look-alike)
-		if (state.hasCarriage) {
-			poseStack.pushPose();
-			poseStack.translate(0.0F, 0.2F, carriageZ);
-			poseStack.scale(0.7F, 0.12F, 0.55F);
-			submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_CARRIAGE), state.lightCoords);
-			poseStack.popPose();
+		// Always draw a visible iron frame so the press never looks like bare wood alone.
+		submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_SCREW),
+			0.0F, 0.95F, 0.0F, 0.35F, 0.9F, 0.35F, 0.0F);
+
+		if (state.hasCarriage || state.phase != PressPhase.INCOMPLETE) {
+			submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_CARRIAGE),
+				0.0F, 0.22F, carriageZ, 0.85F, 0.18F, 0.7F, 0.0F);
 		}
 
-		// Matrix / paper on carriage
-		ItemStack bedItem = !state.output.isEmpty()
-			? state.output
-			: (!state.paper.isEmpty() ? state.paper : state.matrix);
-		if (!bedItem.isEmpty()) {
+		ItemStack bed = !state.output.isEmpty() ? state.output
+			: (!state.paper.isEmpty() ? state.paper
+			: (!state.matrix.isEmpty() ? state.matrix : ItemStack.EMPTY));
+		if (!bed.isEmpty()) {
 			poseStack.pushPose();
-			poseStack.translate(0.0F, 0.28F, carriageZ);
+			poseStack.translate(0.0F, 0.32F, carriageZ);
 			poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-			poseStack.scale(0.45F, 0.45F, 0.45F);
-			submitItem(poseStack, collector, state, bedItem, state.lightCoords);
+			poseStack.scale(0.55F, 0.55F, 0.55F);
+			draw(poseStack, collector, state, bed);
 			poseStack.popPose();
 		}
 
-		// Platen
-		if (state.hasPlaten) {
-			poseStack.pushPose();
-			poseStack.translate(0.0F, 0.55F + platenY, 0.0F);
-			poseStack.scale(0.65F, 0.1F, 0.5F);
-			submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_PLATEN), state.lightCoords);
-			poseStack.popPose();
+		if (state.hasPlaten || state.phase != PressPhase.INCOMPLETE) {
+			submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_PLATEN),
+				0.0F, 0.58F + platenY, 0.0F, 0.8F, 0.14F, 0.65F, 0.0F);
 		}
 
-		// Screw column
-		if (state.hasScrew) {
-			poseStack.pushPose();
-			poseStack.translate(0.0F, 0.75F + platenY * 0.5F, 0.0F);
-			poseStack.mulPose(Axis.XP.rotationDegrees(handleAngle * 0.25F));
-			poseStack.scale(0.2F, 0.55F, 0.2F);
-			submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_SCREW), state.lightCoords);
-			poseStack.popPose();
+		if (state.hasScrew || state.phase != PressPhase.INCOMPLETE) {
+			submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_SCREW),
+				0.0F, 0.78F + platenY * 0.4F, 0.0F, 0.25F, 0.7F, 0.25F, handleAngle * 0.3F);
 		}
 
-		// Handle
-		if (state.hasHandle) {
+		if (state.hasHandle || state.phase != PressPhase.INCOMPLETE) {
 			poseStack.pushPose();
-			poseStack.translate(0.35F, 0.85F + platenY * 0.3F, 0.0F);
-			poseStack.mulPose(Axis.ZP.rotationDegrees(handleAngle));
-			poseStack.scale(0.55F, 0.12F, 0.12F);
-			submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_HANDLE), state.lightCoords);
+			poseStack.translate(0.42F, 0.88F + platenY * 0.25F, 0.0F);
+			poseStack.mulPose(Axis.ZP.rotationDegrees(-handleAngle));
+			poseStack.scale(0.75F, 0.18F, 0.18F);
+			draw(poseStack, collector, state, new ItemStack(ModItems.PRESS_HANDLE));
 			poseStack.popPose();
 		}
 
 		poseStack.popPose();
-	}
-
-	private static float carriageOffset(PrintingPressRenderState state) {
-		return switch (state.phase) {
-			case CARRIAGE_IN, PRESSING, RESETTING, IMPRESSION_DONE -> 0.0F;
-			case OUTPUT_READY -> 0.35F;
-			default -> 0.4F; // out
-		};
-	}
-
-	private static float platenOffset(PrintingPressRenderState state) {
-		if (state.phase == PressPhase.PRESSING) {
-			return -0.18F * Mth.clamp(state.animProgress, 0.0F, 1.0F);
-		}
-		if (state.phase == PressPhase.RESETTING) {
-			return -0.18F * Mth.clamp(state.animProgress, 0.0F, 1.0F);
-		}
-		if (state.phase == PressPhase.IMPRESSION_DONE || state.phase == PressPhase.OUTPUT_READY) {
-			return 0.0F;
-		}
-		return 0.0F;
-	}
-
-	private static float handleAngle(PrintingPressRenderState state) {
-		if (state.phase == PressPhase.PRESSING) {
-			return 70.0F * Mth.clamp(state.animProgress, 0.0F, 1.0F);
-		}
-		if (state.phase == PressPhase.RESETTING) {
-			return 70.0F * Mth.clamp(state.animProgress, 0.0F, 1.0F);
-		}
-		return 0.0F;
 	}
 
 	private void submitItem(
@@ -162,17 +127,76 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		SubmitNodeCollector collector,
 		PrintingPressRenderState state,
 		ItemStack stack,
-		int light
+		float x, float y, float z,
+		float sx, float sy, float sz,
+		float rotX
 	) {
+		poseStack.pushPose();
+		poseStack.translate(x, y, z);
+		if (rotX != 0.0F) {
+			poseStack.mulPose(Axis.XP.rotationDegrees(rotX));
+		}
+		poseStack.scale(sx, sy, sz);
+		draw(poseStack, collector, state, stack);
+		poseStack.popPose();
+	}
+
+	private void draw(
+		PoseStack poseStack,
+		SubmitNodeCollector collector,
+		PrintingPressRenderState state,
+		ItemStack stack
+	) {
+		if (stack.isEmpty()) {
+			return;
+		}
 		itemState.clear();
+		Level level = Minecraft.getInstance().level;
 		Minecraft.getInstance().getItemModelResolver().updateForTopItem(
 			itemState,
 			stack,
 			ItemDisplayContext.FIXED,
+			level,
 			null,
-			null,
-			0
+			42
 		);
-		itemState.submit(poseStack, collector, light, 0, 0);
+		if (!itemState.isEmpty()) {
+			itemState.submit(poseStack, collector, state.lightCoords, 0, 0);
+		}
+	}
+
+	private static float carriageOffset(PrintingPressRenderState state) {
+		return switch (state.phase) {
+			case CARRIAGE_IN, PRESSING, RESETTING, IMPRESSION_DONE -> 0.05F;
+			case OUTPUT_READY -> 0.32F;
+			default -> 0.42F;
+		};
+	}
+
+	private static float platenOffset(PrintingPressRenderState state) {
+		if (state.phase == PressPhase.PRESSING) {
+			return -0.22F * state.animProgress;
+		}
+		if (state.phase == PressPhase.RESETTING) {
+			return -0.22F * state.animProgress;
+		}
+		return 0.0F;
+	}
+
+	private static float handleAngle(PrintingPressRenderState state) {
+		if (state.phase == PressPhase.PRESSING || state.phase == PressPhase.RESETTING) {
+			return 75.0F * state.animProgress;
+		}
+		return 0.0F;
+	}
+
+	@Override
+	public boolean shouldRenderOffScreen() {
+		return true;
+	}
+
+	@Override
+	public int getViewDistance() {
+		return 64;
 	}
 }

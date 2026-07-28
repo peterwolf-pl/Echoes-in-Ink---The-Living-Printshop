@@ -81,20 +81,20 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 	// ── Assembly ───────────────────────────────────────────────────────────
 
 	public boolean tryInstallPart(Player player, ItemStack stack) {
-		if (level == null || level.isClientSide()) {
+		if (level == null || level.isClientSide() || stack.isEmpty()) {
 			return false;
 		}
 		boolean changed = false;
-		if (stack.is(ModItems.PRESS_SCREW) && !hasScrew) {
+		if (stack.getItem() == ModItems.PRESS_SCREW && !hasScrew) {
 			hasScrew = true;
 			changed = true;
-		} else if (stack.is(ModItems.PRESS_HANDLE) && !hasHandle) {
+		} else if (stack.getItem() == ModItems.PRESS_HANDLE && !hasHandle) {
 			hasHandle = true;
 			changed = true;
-		} else if (stack.is(ModItems.PRESS_PLATEN) && !hasPlaten) {
+		} else if (stack.getItem() == ModItems.PRESS_PLATEN && !hasPlaten) {
 			hasPlaten = true;
 			changed = true;
-		} else if (stack.is(ModItems.PRESS_CARRIAGE) && !hasCarriage) {
+		} else if (stack.getItem() == ModItems.PRESS_CARRIAGE && !hasCarriage) {
 			hasCarriage = true;
 			changed = true;
 		}
@@ -110,6 +110,50 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		play(SoundEvents.ANVIL_PLACE, 0.6F, 1.2F);
 		sync();
 		return true;
+	}
+
+	/** Dev/helper: instantly complete assembly without consuming items. */
+	public void forceAssemble() {
+		hasScrew = hasHandle = hasPlaten = hasCarriage = true;
+		if (phase == PressPhase.INCOMPLETE || phase == PressPhase.JAMMED) {
+			phase = PressPhase.IDLE;
+		}
+		progress = 0;
+		animProgress = 0.0F;
+		sync();
+	}
+
+	/** Human-readable next action for the action bar. */
+	public Component nextStepMessage() {
+		if (!isFullyAssembled()) {
+			StringBuilder missing = new StringBuilder();
+			if (!hasScrew) missing.append("screw ");
+			if (!hasPlaten) missing.append("platen ");
+			if (!hasHandle) missing.append("handle ");
+			if (!hasCarriage) missing.append("carriage ");
+			return Component.translatable("press.echoes_in_ink.next.install", missing.toString().trim());
+		}
+		return switch (phase) {
+			case IDLE -> {
+				if (items.get(SLOT_MATRIX).isEmpty()) {
+					yield Component.translatable("press.echoes_in_ink.next.matrix");
+				}
+				if (items.get(SLOT_INK).isEmpty()) {
+					yield Component.translatable("press.echoes_in_ink.next.ink");
+				}
+				if (items.get(SLOT_PAPER).isEmpty()) {
+					yield Component.translatable("press.echoes_in_ink.next.paper");
+				}
+				yield Component.translatable("press.echoes_in_ink.next.carriage");
+			}
+			case CARRIAGE_IN -> Component.translatable("press.echoes_in_ink.next.handle");
+			case PRESSING -> Component.translatable("press.echoes_in_ink.next.wait");
+			case RESETTING -> Component.translatable("press.echoes_in_ink.next.wait");
+			case IMPRESSION_DONE -> Component.translatable("press.echoes_in_ink.next.pull_carriage");
+			case OUTPUT_READY -> Component.translatable("press.echoes_in_ink.next.collect");
+			case JAMMED -> Component.translatable("press.echoes_in_ink.next.clear_jam");
+			default -> Component.translatable("press.echoes_in_ink.next.install", "parts");
+		};
 	}
 
 	// ── Input insertion ────────────────────────────────────────────────────
@@ -148,17 +192,20 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 	}
 
 	private static boolean isMatrixItem(ItemStack stack) {
-		return stack.is(ModItems.WOODEN_PRINTING_MATRIX)
-			|| stack.is(ModItems.METAL_TYPE_PIECE)
-			|| stack.is(ModItems.CHARCOAL_RUBBING);
+		var item = stack.getItem();
+		return item == ModItems.WOODEN_PRINTING_MATRIX
+			|| item == ModItems.METAL_TYPE_PIECE
+			|| item == ModItems.CHARCOAL_RUBBING;
 	}
 
 	private static boolean isInkItem(ItemStack stack) {
-		return stack.is(ModItems.INK_BALL) || stack.is(ModItems.INK_PAD);
+		var item = stack.getItem();
+		return item == ModItems.INK_BALL || item == ModItems.INK_PAD;
 	}
 
 	private static boolean isPaperItem(ItemStack stack) {
-		return stack.is(ModItems.BLANK_ARCHIVE_PAGE) || stack.is(ModItems.DAMAGED_ARCHIVE_PAGE);
+		var item = stack.getItem();
+		return item == ModItems.BLANK_ARCHIVE_PAGE || item == ModItems.DAMAGED_ARCHIVE_PAGE;
 	}
 
 	// ── Empty-hand machine actions ─────────────────────────────────────────
@@ -276,25 +323,23 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		if (be.phase == PressPhase.PRESSING) {
 			be.progress++;
 			be.animProgress = Math.min(1.0F, be.progress / (float) Math.max(1, be.maxProgress));
-			if (be.progress % 10 == 0) {
-				be.setChanged();
-				level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
-			}
+			// Sync every tick so clients animate the platen/handle smoothly.
+			be.setChanged();
+			level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
 			if (be.progress >= be.maxProgress) {
 				be.finishImpression();
 			}
 		} else if (be.phase == PressPhase.RESETTING) {
 			be.progress++;
 			be.animProgress = Math.max(0.0F, 1.0F - be.progress / 20.0F);
+			be.setChanged();
+			level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
 			if (be.progress >= 20) {
 				be.phase = PressPhase.IMPRESSION_DONE;
 				be.progress = 0;
 				be.animProgress = 1.0F;
 				be.play(SoundEvents.UI_STONECUTTER_TAKE_RESULT, 0.5F, 1.3F);
 				be.sync();
-			} else if (be.progress % 5 == 0) {
-				be.setChanged();
-				level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
 			}
 		}
 	}
