@@ -1,0 +1,17 @@
+{
+  "parent": "echoes_in_ink:pull_the_handle",
+  "display": {
+    "icon": { "id": "echoes_in_ink:restored_chronicle_page" },
+    "title": { "translate": "advancement.echoes_in_ink.a_page_restored.title" },
+    "description": { "translate": "advancement.echoes_in_ink.a_page_restored.desc" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "unlocked": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

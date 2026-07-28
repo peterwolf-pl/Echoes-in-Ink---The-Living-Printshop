@@ -22,6 +22,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.server.level.ServerPlayer;
+import pl.peterwolf.echoesinink.archive.ArchiveEntries;
+import pl.peterwolf.echoesinink.archive.ArchiveService;
 import pl.peterwolf.echoesinink.block.PressPhase;
 import pl.peterwolf.echoesinink.block.PrintingPressBlock;
 import pl.peterwolf.echoesinink.config.ModConfig;
@@ -107,6 +110,15 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		if (isFullyAssembled() && phase == PressPhase.INCOMPLETE) {
 			phase = PressPhase.IDLE;
 		}
+		if (player instanceof ServerPlayer serverPlayer) {
+			if (hasScrew) ArchiveService.unlock(serverPlayer, ArchiveEntries.PART_SCREW);
+			if (hasHandle) ArchiveService.unlock(serverPlayer, ArchiveEntries.PART_HANDLE);
+			if (hasPlaten) ArchiveService.unlock(serverPlayer, ArchiveEntries.PART_PLATEN);
+			if (hasCarriage) ArchiveService.unlock(serverPlayer, ArchiveEntries.PART_CARRIAGE);
+			if (isFullyAssembled()) {
+				ArchiveService.unlock(serverPlayer, ArchiveEntries.WORKSHOP_ASHEN);
+			}
+		}
 		play(SoundEvents.ANVIL_PLACE, 0.6F, 1.2F);
 		sync();
 		return true;
@@ -185,6 +197,18 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		items.set(slot, insert);
 		if (!player.getAbilities().instabuild) {
 			stack.shrink(1);
+		}
+		if (player instanceof ServerPlayer serverPlayer) {
+			if (slot == SLOT_MATRIX) {
+				var item = insert.getItem();
+				if (item == ModItems.WOODEN_PRINTING_MATRIX) {
+					ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_WOODEN);
+				} else if (item == ModItems.METAL_TYPE_PIECE) {
+					ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_TYPE);
+				} else if (item == ModItems.CHARCOAL_RUBBING) {
+					ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_RUBBING);
+				}
+			}
 		}
 		play(SoundEvents.ITEM_FRAME_ADD_ITEM, 0.7F, 1.0F);
 		sync();
@@ -272,6 +296,9 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		progress = 0;
 		animProgress = 0.0F;
 		phase = PressPhase.PRESSING;
+		if (player instanceof ServerPlayer serverPlayer) {
+			ArchiveService.grantAdvancement(serverPlayer, pl.peterwolf.echoesinink.EchoesInInk.id("pull_the_handle"));
+		}
 		play(SoundEvents.UI_STONECUTTER_TAKE_RESULT, 0.7F, 0.7F);
 		sync();
 		return "press.echoes_in_ink.handle_pulled";
@@ -297,6 +324,9 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		if (!player.getInventory().add(give)) {
 			player.drop(give, false);
 		}
+		if (player instanceof ServerPlayer serverPlayer) {
+			unlockPrintResult(serverPlayer, give);
+		}
 		// Matrix stays for re-use; ink and paper already consumed when print finished.
 		phase = PressPhase.IDLE;
 		animProgress = 0.0F;
@@ -304,6 +334,21 @@ public class PrintingPressBlockEntity extends BlockEntity implements Container {
 		play(SoundEvents.BOOK_PAGE_TURN, 0.8F, 1.0F);
 		sync();
 		return "press.echoes_in_ink.collected";
+	}
+
+	private static void unlockPrintResult(ServerPlayer player, ItemStack printed) {
+		var item = printed.getItem();
+		if (item == ModItems.PRINTERS_INSTRUCTION_SHEET) {
+			ArchiveService.unlock(player, ArchiveEntries.WORK_INSTRUCTION);
+		} else if (item == ModItems.RESTORED_CHRONICLE_PAGE) {
+			ArchiveService.unlock(player, ArchiveEntries.WORK_CHRONICLE);
+		} else if (item == ModItems.DECORATIVE_WOODCUT) {
+			ArchiveService.unlock(player, ArchiveEntries.WORK_WOODCUT);
+		} else if (item == ModItems.PRINTED_WARNING_POSTER) {
+			ArchiveService.unlock(player, ArchiveEntries.WORK_POSTER);
+		} else if (item == ModItems.WORKSHOP_MAP_FRAGMENT) {
+			ArchiveService.unlock(player, ArchiveEntries.WORK_MAP);
+		}
 	}
 
 	private String clearJam(Player player) {

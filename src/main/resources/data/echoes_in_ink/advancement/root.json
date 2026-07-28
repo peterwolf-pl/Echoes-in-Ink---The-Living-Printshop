@@ -1,0 +1,17 @@
+{
+  "display": {
+    "icon": { "id": "echoes_in_ink:printers_brush" },
+    "title": { "translate": "advancement.echoes_in_ink.root.title" },
+    "description": { "translate": "advancement.echoes_in_ink.root.desc" },
+    "background": "minecraft:gui/advancements/backgrounds/stone",
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "tick": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

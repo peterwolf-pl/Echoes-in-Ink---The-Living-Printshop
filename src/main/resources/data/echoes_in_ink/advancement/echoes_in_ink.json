@@ -1,0 +1,17 @@
+{
+  "parent": "echoes_in_ink:a_page_restored",
+  "display": {
+    "icon": { "id": "echoes_in_ink:printers_archive" },
+    "title": { "translate": "advancement.echoes_in_ink.echoes_in_ink.title" },
+    "description": { "translate": "advancement.echoes_in_ink.echoes_in_ink.desc" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "unlocked": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

@@ -75,6 +75,9 @@ public final class ModItems {
 	public static final Item PRINTED_WARNING_POSTER = register("printed_warning_poster",
 		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.printed_warning_poster.desc"));
 
+	public static final Item PRINTERS_ARCHIVE = register("printers_archive",
+		props -> new PrintersArchiveItem(props.stacksTo(1)));
+
 	private ModItems() {}
 
 	public static void init() {

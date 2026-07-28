@@ -1,0 +1,17 @@
+{
+  "parent": "echoes_in_ink:root",
+  "display": {
+    "icon": { "id": "echoes_in_ink:printers_brush" },
+    "title": { "translate": "advancement.echoes_in_ink.dust_and_ink.title" },
+    "description": { "translate": "advancement.echoes_in_ink.dust_and_ink.desc" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "unlocked": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

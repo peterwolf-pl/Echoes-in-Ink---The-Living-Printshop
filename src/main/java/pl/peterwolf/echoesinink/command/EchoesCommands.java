@@ -96,6 +96,7 @@ public final class EchoesCommands {
 		give(player, new ItemStack(ModBlocks.DAMAGED_ARCHIVE_SHELF));
 		give(player, new ItemStack(ModBlocks.BROKEN_PRESS_FRAME));
 		give(player, new ItemStack(ModBlocks.PRINTING_PRESS));
+		give(player, new ItemStack(ModItems.PRINTERS_ARCHIVE));
 
 		ctx.getSource().sendSuccess(
 			() -> Component.translatable("command.echoes_in_ink.give_test_items.success"),
@@ -200,8 +201,9 @@ public final class EchoesCommands {
 			ctx.getSource().sendFailure(Component.translatable("command.echoes_in_ink.player_only"));
 			return 0;
 		}
+		pl.peterwolf.echoesinink.archive.ArchiveService.reset(player);
 		ctx.getSource().sendSuccess(
-			() -> Component.translatable("command.echoes_in_ink.reset_archive.pending", player.getName()),
+			() -> Component.translatable("command.echoes_in_ink.reset_archive.success", player.getName()),
 			true
 		);
 		return 1;

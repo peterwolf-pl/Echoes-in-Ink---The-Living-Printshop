@@ -1,0 +1,17 @@
+{
+  "parent": "echoes_in_ink:letters_from_the_rubble",
+  "display": {
+    "icon": { "id": "echoes_in_ink:press_screw" },
+    "title": { "translate": "advancement.echoes_in_ink.the_forgotten_machine.title" },
+    "description": { "translate": "advancement.echoes_in_ink.the_forgotten_machine.desc" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "unlocked": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

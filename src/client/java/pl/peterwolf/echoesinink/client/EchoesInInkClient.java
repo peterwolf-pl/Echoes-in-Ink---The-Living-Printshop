@@ -7,7 +7,7 @@ import pl.peterwolf.echoesinink.block.entity.ModBlockEntities;
 import pl.peterwolf.echoesinink.client.render.PrintingPressRenderer;
 
 /**
- * Client-only entry point. Rendering, animations, and client screens only.
+ * Client-only entry point. Rendering and animations only.
  * Never put server gameplay authority here.
  */
 public final class EchoesInInkClient implements ClientModInitializer {

@@ -1,0 +1,17 @@
+{
+  "parent": "echoes_in_ink:dust_and_ink",
+  "display": {
+    "icon": { "id": "echoes_in_ink:metal_type_piece" },
+    "title": { "translate": "advancement.echoes_in_ink.letters_from_the_rubble.title" },
+    "description": { "translate": "advancement.echoes_in_ink.letters_from_the_rubble.desc" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "unlocked": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

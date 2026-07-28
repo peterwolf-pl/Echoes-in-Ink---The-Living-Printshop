@@ -47,6 +47,14 @@ All notable changes to **Echoes in Ink** are documented here.
 - Client block-entity animation driven by server phase.
 - Safe drops on break; multiplayer-safe state machine.
 
+#### Phase 5 — Printer's Archive
+- Per-player persistent archive (Fabric data attachment).
+- Categories for workshops, parts, matrices, works, echoes, clues.
+- Unlocks from investigation and printing only.
+- Printer's Archive item lists unlocked knowledge.
+- Advancements: Dust and Ink, Letters from the Rubble, The Forgotten Machine, Pull the Handle, A Page Restored, Echoes in Ink.
+- `/echoesinink reset_archive` for testing.
+
 ### Notes
 
-- Archive UI and echoes are planned for later phases.
+- Historical echo events are planned for Phase 6.

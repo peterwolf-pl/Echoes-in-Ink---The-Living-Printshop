@@ -1,0 +1,17 @@
+{
+  "parent": "echoes_in_ink:the_forgotten_machine",
+  "display": {
+    "icon": { "id": "echoes_in_ink:press_handle" },
+    "title": { "translate": "advancement.echoes_in_ink.pull_the_handle.title" },
+    "description": { "translate": "advancement.echoes_in_ink.pull_the_handle.desc" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "unlocked": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

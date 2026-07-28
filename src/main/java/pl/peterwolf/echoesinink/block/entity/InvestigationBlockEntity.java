@@ -9,6 +9,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.server.level.ServerPlayer;
+import pl.peterwolf.echoesinink.archive.ArchiveEntries;
+import pl.peterwolf.echoesinink.archive.ArchiveService;
 import pl.peterwolf.echoesinink.block.InvestigationData;
 import pl.peterwolf.echoesinink.block.InvestigationLoot;
 import pl.peterwolf.echoesinink.block.InvestigationState;
@@ -89,6 +92,21 @@ public class InvestigationBlockEntity extends BlockEntity {
 				}
 			}
 			player.sendSystemMessage(result.message());
+			if (player instanceof ServerPlayer serverPlayer) {
+				ArchiveService.unlock(serverPlayer, ArchiveEntries.CLUE_DUST);
+				ArchiveService.unlock(serverPlayer, ArchiveEntries.WORKSHOP_ASHEN);
+				switch (result.id()) {
+					case "metal_type" -> ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_TYPE);
+					case "matrix_fragment" -> ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_WOODEN);
+					case "press_part", "press_screw", "press_platen", "press_carriage", "press_handle" -> {
+						ArchiveService.unlock(serverPlayer, ArchiveEntries.PART_HANDLE);
+						ArchiveService.unlock(serverPlayer, ArchiveEntries.PART_SCREW);
+					}
+					case "hidden_compartment" -> ArchiveService.unlock(serverPlayer, ArchiveEntries.CLUE_HIDDEN);
+					case "historical_clue", "plaque_clue" -> ArchiveService.unlock(serverPlayer, ArchiveEntries.CLUE_PLAQUE);
+					default -> {}
+				}
+			}
 		} else if (next == InvestigationState.FULLY_INVESTIGATED && lootGenerated) {
 			// Restored investigated block — no second loot.
 			player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(

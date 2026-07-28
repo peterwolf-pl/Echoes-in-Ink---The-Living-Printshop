@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.peterwolf.echoesinink.archive.ModAttachments;
 import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.block.entity.ModBlockEntities;
 import pl.peterwolf.echoesinink.command.EchoesCommands;
@@ -29,6 +30,7 @@ public final class EchoesInInk implements ModInitializer {
 		ModConfig.load();
 
 		ModDataComponents.init();
+		ModAttachments.init();
 		ModBlocks.init();
 		ModBlockEntities.init();
 		ModItems.init();
