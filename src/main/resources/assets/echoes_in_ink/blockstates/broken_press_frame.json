@@ -1,7 +1,7 @@
 {
   "variants": {
-    "investigation=untouched": { "model": "echoes_in_ink:block/broken_press_frame" },
-    "investigation=partially_cleaned": { "model": "echoes_in_ink:block/broken_press_frame" },
-    "investigation=fully_investigated": { "model": "echoes_in_ink:block/broken_press_frame" }
+    "investigation=untouched": { "model": "echoes_in_ink:block/broken_press_frame_untouched" },
+    "investigation=partially_cleaned": { "model": "echoes_in_ink:block/broken_press_frame_partial" },
+    "investigation=fully_investigated": { "model": "echoes_in_ink:block/broken_press_frame_done" }
   }
 }

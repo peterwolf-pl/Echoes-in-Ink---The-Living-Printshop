@@ -69,5 +69,8 @@
 	"investigation.echoes_in_ink.blank_page": "Czysty papier archiwalny, nadal zdatny do użycia.",
 	"investigation.echoes_in_ink.ink": "Stary atrament, wciąż gęsty.",
 	"investigation.echoes_in_ink.hidden": "Ukryta skrytka! Coś starannie schowano.",
-	"investigation.echoes_in_ink.plaque_clue": "Tablica nazywa warsztat: 'Prasa Popielatych Liter'."
+	"investigation.echoes_in_ink.plaque_clue": "Tablica nazywa warsztat: 'Prasa Popielatych Liter'.",
+	"investigation.echoes_in_ink.already_searched": "To miejsce zostało już w pełni przeszukane.",
+	"item.echoes_in_ink.investigation.tooltip": "Śledztwo: %s",
+	"item.echoes_in_ink.investigation.loot_done": "Łup już odzyskany"
 }

@@ -69,5 +69,8 @@
 	"investigation.echoes_in_ink.blank_page": "Blank archive paper, still usable.",
 	"investigation.echoes_in_ink.ink": "Old ink materials, still thick enough to use.",
 	"investigation.echoes_in_ink.hidden": "A hidden compartment! Something was carefully stashed.",
-	"investigation.echoes_in_ink.plaque_clue": "The plaque names a workshop: 'Ashen Letter Press'."
+	"investigation.echoes_in_ink.plaque_clue": "The plaque names a workshop: 'Ashen Letter Press'.",
+	"investigation.echoes_in_ink.already_searched": "This has already been fully searched.",
+	"item.echoes_in_ink.investigation.tooltip": "Investigation: %s",
+	"item.echoes_in_ink.investigation.loot_done": "Loot already recovered"
 }

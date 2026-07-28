@@ -30,7 +30,9 @@ All notable changes to **Echoes in Ink** are documented here.
 - Weighted server-side loot profiles for workshop blocks.
 - Results: nothing, type, matrix, press parts, pages, clues, hidden compartments.
 - Three visual investigation states on all investigatable blocks.
+- Anti-dupe: `investigation` data component on dropped blocks restores state on place.
+- Distinct models per investigation stage; item tooltips; `/echoesinink debug inspect`.
 
 ### Notes
 
-- Structure generation, full loot investigation, printing press, archive UI, and echoes are planned for later phases.
+- Structure generation, printing press, archive UI, and echoes are planned for later phases.

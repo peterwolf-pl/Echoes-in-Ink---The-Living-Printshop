@@ -4,11 +4,17 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import pl.peterwolf.echoesinink.EchoesInInk;
+import pl.peterwolf.echoesinink.block.InvestigatableBlock;
 import pl.peterwolf.echoesinink.block.ModBlocks;
+import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
 import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.item.ModItems;
 
@@ -36,7 +42,8 @@ public final class EchoesCommands {
 					.executes(EchoesCommands::debugStatus)
 					.then(Commands.literal("on").executes(ctx -> setDebug(ctx, true)))
 					.then(Commands.literal("off").executes(ctx -> setDebug(ctx, false)))
-					.then(Commands.literal("reload_config").executes(EchoesCommands::reloadConfig)))
+					.then(Commands.literal("reload_config").executes(EchoesCommands::reloadConfig))
+					.then(Commands.literal("inspect").executes(EchoesCommands::inspectTarget)))
 		);
 	}
 
@@ -154,6 +161,40 @@ public final class EchoesCommands {
 		ctx.getSource().sendSuccess(
 			() -> Component.translatable("command.echoes_in_ink.config_reloaded"),
 			true
+		);
+		return 1;
+	}
+
+	/** Inspect investigation state of the block the player is looking at. */
+	private static int inspectTarget(CommandContext<CommandSourceStack> ctx) {
+		ServerPlayer player;
+		try {
+			player = ctx.getSource().getPlayerOrException();
+		} catch (Exception e) {
+			ctx.getSource().sendFailure(Component.translatable("command.echoes_in_ink.player_only"));
+			return 0;
+		}
+		if (!(player.pick(8.0D, 0.0F, false) instanceof BlockHitResult hit)) {
+			ctx.getSource().sendFailure(Component.literal("Look at a block."));
+			return 0;
+		}
+		BlockPos pos = hit.getBlockPos();
+		BlockState state = player.level().getBlockState(pos);
+		BlockEntity be = player.level().getBlockEntity(pos);
+		String investigation = state.hasProperty(InvestigatableBlock.INVESTIGATION)
+			? state.getValue(InvestigatableBlock.INVESTIGATION).getSerializedName()
+			: "n/a";
+		boolean loot = be instanceof InvestigationBlockEntity inv && inv.isLootGenerated();
+		String result = be instanceof InvestigationBlockEntity inv ? inv.lastResultId() : "";
+		ctx.getSource().sendSuccess(
+			() -> Component.literal(
+				"pos=" + pos.toShortString()
+					+ " block=" + state.getBlock()
+					+ " investigation=" + investigation
+					+ " lootGenerated=" + loot
+					+ " lastResult=" + result
+			),
+			false
 		);
 		return 1;
 	}

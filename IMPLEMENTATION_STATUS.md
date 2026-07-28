@@ -18,61 +18,32 @@
 | 7 | Chronicle and location discovery | Not started |
 | 8 | Polish and release | Not started |
 
-## Phase 0 checklist
+## Phase 2 checklist (acceptance)
 
 | Task | Status |
 |------|--------|
-| Gradle + Loom (MC 26.2, Java 25) | Done |
-| `fabric.mod.json` + package layout | Done |
-| Common + client entrypoints | Done |
-| Logging | Done |
-| Config system (`config/echoes_in_ink.json`) | Done |
-| Data generation entrypoint | Done |
-| EN + PL translations | Done |
-| Dev commands (`/echoesinink …`) | Done |
-| Placeholder icon | Done |
-| `.gitignore` + MPL-2.0 licence | Done |
-| Tracking docs | Done |
-| Clean Gradle build | Done |
-| Dedicated server run | Done (mod loads, Done!) |
-| Client run | Pending manual check |
+| All required workshop blocks | Done |
+| Brush cleaning with progress | Done |
+| Three visual states (untouched / partial / full) | Done |
+| InvestigationBlockEntity NBT persistence | Done |
+| Once-only loot (`LootGenerated`) | Done |
+| Weighted server-side loot (no client roll) | Done |
+| Results: nothing, type, matrix, press, page, clue, hidden | Done |
+| Break/place does not re-roll loot (item data component) | Done |
+| Survives chunk unload / restart | Done |
+| `/echoesinink debug inspect` | Done |
+| EN + PL investigation messages | Done |
+| Clean build + dedicated server | Done |
 
-## Phase 1 checklist
+## How to test Phase 2
 
-| Task | Status |
-|------|--------|
-| All required items registered | Done |
-| Printer's Brush (timed clean, durability, sound, particles, config) | Done |
-| Magnifying Lens (server inspect + cooldown, ≥3 findings) | Done |
-| Charcoal Rubbing Paper (data component pattern id) | Done |
-| Test debris block with investigation states | Done |
-| Carved matrix for rubbings | Done |
-| EN + PL names/tooltips | Done |
-| Creative tab | Done |
-| `/echoesinink give_test_items` gives all items | Done |
-| Temporary vanilla-style textures | Done |
-| Multiplayer-safe item behaviour (server authority) | Done |
-| Clean build after Phase 1 | Done |
-| Dedicated server after Phase 1 | Done |
-
-## Completed this session
-
-- Fabric project for Minecraft **26.2** / Fabric Loader **0.19.3** / Fabric API **0.155.2+26.2** / Java **25**.
-- Phase 0 foundation + Phase 1 items/blocks/tools.
-- Custom data component `echoes_in_ink:rubbing_pattern`.
-- Config-driven brush duration/durability and lens cooldown.
-
-## Phase 2 checklist
-
-| Task | Status |
-|------|--------|
-| Investigation block entity with NBT persistence | Done |
-| Once-only loot flag (`LootGenerated`) | Done |
-| Weighted server-side loot profiles | Done |
-| Results: nothing / type / matrix / press / page / clue / hidden | Done |
-| Three visual states on investigatable blocks | Done |
-| Clean → loot only on fully investigated | Done |
-| Build + dedicated server | Done |
+1. `/echoesinink give_test_items`
+2. Place `printing_debris` (or table/shelf/press/cabinet).
+3. Hold **Printer's Brush**, use on block until state advances twice.
+4. On full investigation: message + possible item loot.
+5. Brush again: no second loot.
+6. Break the block → pick up → place again → `/echoesinink debug inspect` → `lootGenerated=true`.
+7. Leave area / reload world → state and loot flag remain.
 
 ## Remaining (next)
 
@@ -80,17 +51,7 @@
 - Abandoned Printshop structure + `/locate`
 - Structure processors, biome placement, workshop id
 
-### Later phases
-- Press multiblock, archive, echoes, chronicle chain
+## Tech notes
 
-## Notes / pitfalls fixed
-
-- Do **not** `ofFullCopy` axis-dependent log blocks onto plain `Block` (crashes on AXIS property in light/occlusion lambdas). Use planks-like copies instead.
-- `GameProfile` no longer exposes `getName()` in this toolchain — use `ServerPlayer#getScoreboardName()`.
-
-## Tech stack
-
-- Fabric API: `0.155.2+26.2`
-- Loader: `0.19.3`
-- Loom: `1.16-SNAPSHOT` (resolved 1.16.3)
-- Repo: https://github.com/peterwolf-pl/Echoes-in-Ink---The-Living-Printshop
+- Do not `ofFullCopy` axis-dependent log blocks onto plain `Block`.
+- Investigation anti-dupe uses `echoes_in_ink:investigation` data component on dropped block items.

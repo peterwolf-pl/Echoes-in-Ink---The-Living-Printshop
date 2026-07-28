@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import pl.peterwolf.echoesinink.EchoesInInk;
+import pl.peterwolf.echoesinink.item.InvestigatableBlockItem;
 
 /**
  * Historical workshop blocks with investigation support.
@@ -30,7 +31,7 @@ public final class ModBlocks {
 			.setId(key)
 			.strength(1.5F)
 			.sound(SoundType.WOOD)),
-		BlockItem::new
+		InvestigatableBlockItem::new
 	);
 
 	public static final CarvedWoodenMatrixBlock CARVED_WOODEN_MATRIX = register(
@@ -47,7 +48,7 @@ public final class ModBlocks {
 		key -> new InvestigatableBlock(
 			BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE).setId(key),
 			InvestigationLoot.Profile.TABLE),
-		BlockItem::new
+		InvestigatableBlockItem::new
 	);
 
 	public static final InvestigatableBlock DAMAGED_ARCHIVE_SHELF = register(
@@ -55,7 +56,7 @@ public final class ModBlocks {
 		key -> new InvestigatableBlock(
 			BlockBehaviour.Properties.ofFullCopy(Blocks.BOOKSHELF).setId(key),
 			InvestigationLoot.Profile.SHELF),
-		BlockItem::new
+		InvestigatableBlockItem::new
 	);
 
 	public static final InvestigatableBlock BROKEN_PRESS_FRAME = register(
@@ -67,7 +68,7 @@ public final class ModBlocks {
 				.sound(SoundType.WOOD)
 				.noOcclusion(),
 			InvestigationLoot.Profile.PRESS),
-		BlockItem::new
+		InvestigatableBlockItem::new
 	);
 
 	public static final InvestigatableBlock COLLAPSED_TYPE_CABINET = register(
@@ -75,7 +76,7 @@ public final class ModBlocks {
 		key -> new InvestigatableBlock(
 			BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).setId(key),
 			InvestigationLoot.Profile.CABINET),
-		BlockItem::new
+		InvestigatableBlockItem::new
 	);
 
 	public static final InvestigatableBlock INK_STAINED_FLOORBOARDS = register(
@@ -83,7 +84,7 @@ public final class ModBlocks {
 		key -> new InvestigatableBlock(
 			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).setId(key),
 			InvestigationLoot.Profile.FLOOR),
-		BlockItem::new
+		InvestigatableBlockItem::new
 	);
 
 	public static final InvestigatableBlock FADED_WORKSHOP_PLAQUE = register(
@@ -94,7 +95,7 @@ public final class ModBlocks {
 				.strength(1.0F)
 				.sound(SoundType.WOOD),
 			InvestigationLoot.Profile.PLAQUE),
-		BlockItem::new
+		InvestigatableBlockItem::new
 	);
 
 	private ModBlocks() {}

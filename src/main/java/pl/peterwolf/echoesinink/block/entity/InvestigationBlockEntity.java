@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import pl.peterwolf.echoesinink.block.InvestigationData;
 import pl.peterwolf.echoesinink.block.InvestigationLoot;
 import pl.peterwolf.echoesinink.block.InvestigationState;
 import pl.peterwolf.echoesinink.block.InvestigatableBlock;
@@ -33,6 +34,22 @@ public class InvestigationBlockEntity extends BlockEntity {
 		return lastResultId;
 	}
 
+	public void applyFromItemData(InvestigationData data) {
+		if (data == null) {
+			return;
+		}
+		this.lootGenerated = data.lootGenerated();
+		this.lastResultId = data.lastResultId() == null ? "" : data.lastResultId();
+		setChanged();
+	}
+
+	public InvestigationData toItemData(BlockState state) {
+		InvestigationState investigation = state.hasProperty(InvestigatableBlock.INVESTIGATION)
+			? state.getValue(InvestigatableBlock.INVESTIGATION)
+			: InvestigationState.UNTOUCHED;
+		return InvestigationData.of(lootGenerated, lastResultId, investigation);
+	}
+
 	/**
 	 * Server-only: advance cleaning and, when fully investigated, roll loot once.
 	 */
@@ -47,6 +64,7 @@ public class InvestigationBlockEntity extends BlockEntity {
 		}
 
 		InvestigationState next = current.next();
+		// Property-only update keeps this block entity instance.
 		level.setBlock(worldPosition, state.setValue(InvestigatableBlock.INVESTIGATION, next), 3);
 		setChanged();
 
@@ -71,6 +89,11 @@ public class InvestigationBlockEntity extends BlockEntity {
 				}
 			}
 			player.sendSystemMessage(result.message());
+		} else if (next == InvestigationState.FULLY_INVESTIGATED && lootGenerated) {
+			// Restored investigated block — no second loot.
+			player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(
+				"investigation.echoes_in_ink.already_searched"
+			));
 		}
 		return true;
 	}

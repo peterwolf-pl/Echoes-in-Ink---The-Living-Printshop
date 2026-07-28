@@ -1,7 +1,7 @@
 {
   "variants": {
-    "investigation=untouched": { "model": "echoes_in_ink:block/faded_workshop_plaque" },
-    "investigation=partially_cleaned": { "model": "echoes_in_ink:block/faded_workshop_plaque" },
-    "investigation=fully_investigated": { "model": "echoes_in_ink:block/faded_workshop_plaque" }
+    "investigation=untouched": { "model": "echoes_in_ink:block/faded_workshop_plaque_untouched" },
+    "investigation=partially_cleaned": { "model": "echoes_in_ink:block/faded_workshop_plaque_partial" },
+    "investigation=fully_investigated": { "model": "echoes_in_ink:block/faded_workshop_plaque_done" }
   }
 }
