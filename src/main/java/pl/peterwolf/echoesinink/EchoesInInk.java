@@ -6,6 +6,7 @@ import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.peterwolf.echoesinink.block.ModBlocks;
+import pl.peterwolf.echoesinink.block.entity.ModBlockEntities;
 import pl.peterwolf.echoesinink.command.EchoesCommands;
 import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.item.ModCreativeTabs;
@@ -27,6 +28,7 @@ public final class EchoesInInk implements ModInitializer {
 
 		ModDataComponents.init();
 		ModBlocks.init();
+		ModBlockEntities.init();
 		ModItems.init();
 		ModCreativeTabs.init();
 

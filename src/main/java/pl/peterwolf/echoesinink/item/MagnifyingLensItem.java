@@ -82,6 +82,12 @@ public class MagnifyingLensItem extends Item {
 			|| block == ModBlocks.BROKEN_PRESS_FRAME) {
 			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.press");
 		}
+		if (block == ModBlocks.COLLAPSED_TYPE_CABINET) {
+			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.debris");
+		}
+		if (block == ModBlocks.FADED_WORKSHOP_PLAQUE) {
+			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.shelf");
+		}
 		return Component.translatable("item.echoes_in_ink.magnifying_lens.find.nothing");
 	}
 

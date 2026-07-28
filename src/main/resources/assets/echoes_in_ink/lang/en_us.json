@@ -1,9 +1,7 @@
 {
 	"modmenu.nameTranslation.echoes_in_ink": "Echoes in Ink",
 	"modmenu.descriptionTranslation.echoes_in_ink": "Discover abandoned print workshops, restore historical printing technology, and experience echoes of the past.",
-
 	"itemGroup.echoes_in_ink.main": "Echoes in Ink",
-
 	"command.echoes_in_ink.player_only": "This command can only be used by a player.",
 	"command.echoes_in_ink.give_test_items.success": "[Echoes in Ink] Gave test items and sample blocks.",
 	"command.echoes_in_ink.give_test_items.pending": "[Echoes in Ink] Test items will be available after Phase 1.",
@@ -13,11 +11,9 @@
 	"command.echoes_in_ink.debug.on": "[Echoes in Ink] Debug mode: ON",
 	"command.echoes_in_ink.debug.off": "[Echoes in Ink] Debug mode: OFF",
 	"command.echoes_in_ink.config_reloaded": "[Echoes in Ink] Configuration reloaded.",
-
 	"item.echoes_in_ink.printers_brush": "Printer's Brush",
 	"item.echoes_in_ink.printers_brush.desc": "Clean dust from historical debris and furniture.",
 	"item.echoes_in_ink.printers_brush.cleaned": "The dust lifts. Something of the past remains.",
-
 	"item.echoes_in_ink.magnifying_lens": "Magnifying Lens",
 	"item.echoes_in_ink.magnifying_lens.desc": "Inspect recoverable objects for hidden details.",
 	"item.echoes_in_ink.magnifying_lens.find.debris": "Lens: layered ash and broken type shards. Recoverable.",
@@ -26,17 +22,14 @@
 	"item.echoes_in_ink.magnifying_lens.find.table": "Lens: ink stains and tool marks from hurried work.",
 	"item.echoes_in_ink.magnifying_lens.find.press": "Lens: a broken press frame. Parts may still be usable.",
 	"item.echoes_in_ink.magnifying_lens.find.nothing": "Lens: nothing unusual under closer look.",
-
 	"item.echoes_in_ink.charcoal_rubbing_paper": "Charcoal Rubbing Paper",
 	"item.echoes_in_ink.charcoal_rubbing_paper.desc": "Copy symbols from carved matrices.",
 	"item.echoes_in_ink.charcoal_rubbing_paper.no_pattern": "Nothing here can be rubbed clearly.",
 	"item.echoes_in_ink.charcoal_rubbing_paper.success": "Rubbing captured pattern: %s",
-
 	"item.echoes_in_ink.charcoal_rubbing": "Charcoal Rubbing",
 	"item.echoes_in_ink.charcoal_rubbing.desc": "A charcoal copy of a carved pattern.",
 	"item.echoes_in_ink.charcoal_rubbing.pattern": "Pattern: %s",
 	"item.echoes_in_ink.charcoal_rubbing.no_pattern": "No pattern stored.",
-
 	"item.echoes_in_ink.blank_archive_page": "Blank Archive Page",
 	"item.echoes_in_ink.blank_archive_page.desc": "Clean paper ready for the press.",
 	"item.echoes_in_ink.damaged_archive_page": "Damaged Archive Page",
@@ -59,7 +52,6 @@
 	"item.echoes_in_ink.press_carriage.desc": "Sliding bed that carries matrix and paper.",
 	"item.echoes_in_ink.restored_chronicle_page": "Restored Chronicle Page",
 	"item.echoes_in_ink.restored_chronicle_page.desc": "A reconstructed historical page.",
-
 	"block.echoes_in_ink.printing_debris": "Printing Debris",
 	"block.echoes_in_ink.carved_wooden_matrix": "Carved Wooden Matrix",
 	"block.echoes_in_ink.dusty_printing_table": "Dusty Printing Table",
@@ -67,5 +59,15 @@
 	"block.echoes_in_ink.broken_press_frame": "Broken Press Frame",
 	"block.echoes_in_ink.collapsed_type_cabinet": "Collapsed Type Cabinet",
 	"block.echoes_in_ink.ink_stained_floorboards": "Ink-Stained Floorboards",
-	"block.echoes_in_ink.faded_workshop_plaque": "Faded Workshop Plaque"
+	"block.echoes_in_ink.faded_workshop_plaque": "Faded Workshop Plaque",
+	"investigation.echoes_in_ink.nothing": "You find nothing useful this time.",
+	"investigation.echoes_in_ink.clue": "A faint historical clue — ink notes about a forgotten press.",
+	"investigation.echoes_in_ink.metal_type": "You recover a metal type piece.",
+	"investigation.echoes_in_ink.matrix_fragment": "A wooden matrix fragment comes free.",
+	"investigation.echoes_in_ink.press_part": "You salvage a press component.",
+	"investigation.echoes_in_ink.damaged_page": "A damaged archive page is tucked away here.",
+	"investigation.echoes_in_ink.blank_page": "Blank archive paper, still usable.",
+	"investigation.echoes_in_ink.ink": "Old ink materials, still thick enough to use.",
+	"investigation.echoes_in_ink.hidden": "A hidden compartment! Something was carefully stashed.",
+	"investigation.echoes_in_ink.plaque_clue": "The plaque names a workshop: 'Ashen Letter Press'."
 }

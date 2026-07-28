@@ -1,9 +1,7 @@
 {
 	"modmenu.nameTranslation.echoes_in_ink": "Echa w Atramencie",
 	"modmenu.descriptionTranslation.echoes_in_ink": "Odkrywaj opuszczone drukarnie, przywracaj historyczną technologię druku i doświadczaj echa przeszłości.",
-
 	"itemGroup.echoes_in_ink.main": "Echa w Atramencie",
-
 	"command.echoes_in_ink.player_only": "Ta komenda może być użyta tylko przez gracza.",
 	"command.echoes_in_ink.give_test_items.success": "[Echa w Atramencie] Wręczono przedmioty i bloki testowe.",
 	"command.echoes_in_ink.give_test_items.pending": "[Echa w Atramencie] Przedmioty testowe będą dostępne po Fazie 1.",
@@ -13,11 +11,9 @@
 	"command.echoes_in_ink.debug.on": "[Echa w Atramencie] Tryb debug: WŁĄCZONY",
 	"command.echoes_in_ink.debug.off": "[Echa w Atramencie] Tryb debug: WYŁĄCZONY",
 	"command.echoes_in_ink.config_reloaded": "[Echa w Atramencie] Konfiguracja przeładowana.",
-
 	"item.echoes_in_ink.printers_brush": "Pędzel drukarza",
 	"item.echoes_in_ink.printers_brush.desc": "Oczyszcza kurz z historycznych pozostałości i mebli.",
 	"item.echoes_in_ink.printers_brush.cleaned": "Kurz opada. Coś z przeszłości zostaje.",
-
 	"item.echoes_in_ink.magnifying_lens": "Szkło powiększające",
 	"item.echoes_in_ink.magnifying_lens.desc": "Służy do oglądania odzyskiwalnych obiektów.",
 	"item.echoes_in_ink.magnifying_lens.find.debris": "Soczewka: warstwy popiołu i odłamki czcionek. Do odzyskania.",
@@ -26,17 +22,14 @@
 	"item.echoes_in_ink.magnifying_lens.find.table": "Soczewka: plamy atramentu i ślady pospiesznej pracy.",
 	"item.echoes_in_ink.magnifying_lens.find.press": "Soczewka: uszkodzona rama prasy. Części mogą być użyteczne.",
 	"item.echoes_in_ink.magnifying_lens.find.nothing": "Soczewka: nic szczególnego pod bliższym okiem.",
-
 	"item.echoes_in_ink.charcoal_rubbing_paper": "Papier do odcisku węglowego",
 	"item.echoes_in_ink.charcoal_rubbing_paper.desc": "Kopiuje znaki z rzeźbionych matryc.",
 	"item.echoes_in_ink.charcoal_rubbing_paper.no_pattern": "Tu nie da się wyraźnie zrobić odcisku.",
 	"item.echoes_in_ink.charcoal_rubbing_paper.success": "Odcisk zapisał wzór: %s",
-
 	"item.echoes_in_ink.charcoal_rubbing": "Odcisk węglowy",
 	"item.echoes_in_ink.charcoal_rubbing.desc": "Węglowa kopia rzeźbionego wzoru.",
 	"item.echoes_in_ink.charcoal_rubbing.pattern": "Wzór: %s",
 	"item.echoes_in_ink.charcoal_rubbing.no_pattern": "Brak zapisanego wzoru.",
-
 	"item.echoes_in_ink.blank_archive_page": "Pusta karta archiwum",
 	"item.echoes_in_ink.blank_archive_page.desc": "Czysty papier gotowy do prasy.",
 	"item.echoes_in_ink.damaged_archive_page": "Uszkodzona karta archiwum",
@@ -59,7 +52,6 @@
 	"item.echoes_in_ink.press_carriage.desc": "Przesuwne łoże z matrycą i papierem.",
 	"item.echoes_in_ink.restored_chronicle_page": "Odtworzona karta kroniki",
 	"item.echoes_in_ink.restored_chronicle_page.desc": "Zrekonstruowana historyczna strona.",
-
 	"block.echoes_in_ink.printing_debris": "Odpady drukarskie",
 	"block.echoes_in_ink.carved_wooden_matrix": "Rzeźbiona drewniana matryca",
 	"block.echoes_in_ink.dusty_printing_table": "Zakurzony stół drukarski",
@@ -67,5 +59,15 @@
 	"block.echoes_in_ink.broken_press_frame": "Uszkodzona rama prasy",
 	"block.echoes_in_ink.collapsed_type_cabinet": "Zawalona szafa na czcionki",
 	"block.echoes_in_ink.ink_stained_floorboards": "Podłoga poplamiona atramentem",
-	"block.echoes_in_ink.faded_workshop_plaque": "Wyblakła tablica warsztatu"
+	"block.echoes_in_ink.faded_workshop_plaque": "Wyblakła tablica warsztatu",
+	"investigation.echoes_in_ink.nothing": "Tym razem nic użytecznego.",
+	"investigation.echoes_in_ink.clue": "Słaba historyczna wskazówka — notatki o zapomnianej prasie.",
+	"investigation.echoes_in_ink.metal_type": "Odzyskujesz metalową czcionkę.",
+	"investigation.echoes_in_ink.matrix_fragment": "Wypada fragment drewnianej matrycy.",
+	"investigation.echoes_in_ink.press_part": "Odzyskujesz element prasy.",
+	"investigation.echoes_in_ink.damaged_page": "Schowana jest uszkodzona karta archiwum.",
+	"investigation.echoes_in_ink.blank_page": "Czysty papier archiwalny, nadal zdatny do użycia.",
+	"investigation.echoes_in_ink.ink": "Stary atrament, wciąż gęsty.",
+	"investigation.echoes_in_ink.hidden": "Ukryta skrytka! Coś starannie schowano.",
+	"investigation.echoes_in_ink.plaque_clue": "Tablica nazywa warsztat: 'Prasa Popielatych Liter'."
 }

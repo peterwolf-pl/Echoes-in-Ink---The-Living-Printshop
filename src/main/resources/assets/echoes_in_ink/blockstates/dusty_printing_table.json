@@ -1,1 +1,7 @@
-{"variants":{"":{"model":"echoes_in_ink:block/dusty_printing_table"}}}
+{
+  "variants": {
+    "investigation=untouched": { "model": "echoes_in_ink:block/dusty_printing_table" },
+    "investigation=partially_cleaned": { "model": "echoes_in_ink:block/dusty_printing_table" },
+    "investigation=fully_investigated": { "model": "echoes_in_ink:block/dusty_printing_table" }
+  }
+}

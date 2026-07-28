@@ -25,6 +25,12 @@ All notable changes to **Echoes in Ink** are documented here.
 - Creative tab **Echoes in Ink**.
 - Temporary vanilla-style item/block models.
 
+#### Phase 2 — Investigation
+- `InvestigationBlockEntity` with persistent once-only loot flag.
+- Weighted server-side loot profiles for workshop blocks.
+- Results: nothing, type, matrix, press parts, pages, clues, hidden compartments.
+- Three visual investigation states on all investigatable blocks.
+
 ### Notes
 
 - Structure generation, full loot investigation, printing press, archive UI, and echoes are planned for later phases.

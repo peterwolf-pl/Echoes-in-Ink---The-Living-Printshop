@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-07-28  
 **Version:** 0.1.0  
-**Current phase:** Phase 1 complete → Phase 2 next
+**Current phase:** Phase 2 complete → Phase 3 next
 
 ## Summary
 
@@ -10,7 +10,7 @@
 |------:|------|--------|
 | 0 | Project foundation | **Complete** |
 | 1 | Basic items and materials | **Complete** |
-| 2 | Historical debris and investigation | Not started |
+| 2 | Historical debris and investigation | **Complete** |
 | 3 | Abandoned printshop structure | Not started |
 | 4 | Functional printing press | Not started |
 | 5 | Archive book and progression | Not started |
@@ -62,16 +62,26 @@
 - Custom data component `echoes_in_ink:rubbing_pattern`.
 - Config-driven brush duration/durability and lens cooldown.
 
+## Phase 2 checklist
+
+| Task | Status |
+|------|--------|
+| Investigation block entity with NBT persistence | Done |
+| Once-only loot flag (`LootGenerated`) | Done |
+| Weighted server-side loot profiles | Done |
+| Results: nothing / type / matrix / press / page / clue / hidden | Done |
+| Three visual states on investigatable blocks | Done |
+| Clean → loot only on fully investigated | Done |
+| Build + dedicated server | Done |
+
 ## Remaining (next)
 
-### Phase 2
-- Full investigation loot tables (once-only, persistent)
-- Block entity or saved state for investigated blocks
-- Remaining investigation results (hidden compartment, clues)
-- Expand block behaviour beyond visual clean states
+### Phase 3
+- Abandoned Printshop structure + `/locate`
+- Structure processors, biome placement, workshop id
 
 ### Later phases
-- Structure generation, press multiblock, archive, echoes, chronicle chain
+- Press multiblock, archive, echoes, chronicle chain
 
 ## Notes / pitfalls fixed
 

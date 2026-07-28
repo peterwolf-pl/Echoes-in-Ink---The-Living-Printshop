@@ -1,1 +1,7 @@
-{"variants":{"":{"model":"echoes_in_ink:block/ink_stained_floorboards"}}}
+{
+  "variants": {
+    "investigation=untouched": { "model": "echoes_in_ink:block/ink_stained_floorboards" },
+    "investigation=partially_cleaned": { "model": "echoes_in_ink:block/ink_stained_floorboards" },
+    "investigation=fully_investigated": { "model": "echoes_in_ink:block/ink_stained_floorboards" }
+  }
+}

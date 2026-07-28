@@ -17,11 +17,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import pl.peterwolf.echoesinink.EchoesInInk;
 
 /**
- * Historical workshop blocks. Phase 1 ships test debris + matrix + placeholders for the lens.
- * Phase 2 expands investigation behaviour.
- *
- * Note: avoid ofFullCopy on axis-dependent log blocks — their light/occlusion lambdas
- * reference the AXIS property and crash on plain Blocks.
+ * Historical workshop blocks with investigation support.
+ * Avoid ofFullCopy on axis-dependent log blocks.
  */
 public final class ModBlocks {
 	private static final List<Block> ALL = new ArrayList<>();
@@ -45,46 +42,58 @@ public final class ModBlocks {
 		BlockItem::new
 	);
 
-	public static final Block DUSTY_PRINTING_TABLE = register(
+	public static final InvestigatableBlock DUSTY_PRINTING_TABLE = register(
 		"dusty_printing_table",
-		key -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE).setId(key)),
+		key -> new InvestigatableBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE).setId(key),
+			InvestigationLoot.Profile.TABLE),
 		BlockItem::new
 	);
 
-	public static final Block DAMAGED_ARCHIVE_SHELF = register(
+	public static final InvestigatableBlock DAMAGED_ARCHIVE_SHELF = register(
 		"damaged_archive_shelf",
-		key -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.BOOKSHELF).setId(key)),
+		key -> new InvestigatableBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.BOOKSHELF).setId(key),
+			InvestigationLoot.Profile.SHELF),
 		BlockItem::new
 	);
 
-	public static final Block BROKEN_PRESS_FRAME = register(
+	public static final InvestigatableBlock BROKEN_PRESS_FRAME = register(
 		"broken_press_frame",
-		key -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
-			.setId(key)
-			.strength(2.5F)
-			.sound(SoundType.WOOD)
-			.noOcclusion()),
+		key -> new InvestigatableBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
+				.setId(key)
+				.strength(2.5F)
+				.sound(SoundType.WOOD)
+				.noOcclusion(),
+			InvestigationLoot.Profile.PRESS),
 		BlockItem::new
 	);
 
-	public static final Block COLLAPSED_TYPE_CABINET = register(
+	public static final InvestigatableBlock COLLAPSED_TYPE_CABINET = register(
 		"collapsed_type_cabinet",
-		key -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).setId(key)),
+		key -> new InvestigatableBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).setId(key),
+			InvestigationLoot.Profile.CABINET),
 		BlockItem::new
 	);
 
-	public static final Block INK_STAINED_FLOORBOARDS = register(
+	public static final InvestigatableBlock INK_STAINED_FLOORBOARDS = register(
 		"ink_stained_floorboards",
-		key -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).setId(key)),
+		key -> new InvestigatableBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).setId(key),
+			InvestigationLoot.Profile.FLOOR),
 		BlockItem::new
 	);
 
-	public static final Block FADED_WORKSHOP_PLAQUE = register(
+	public static final InvestigatableBlock FADED_WORKSHOP_PLAQUE = register(
 		"faded_workshop_plaque",
-		key -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
-			.setId(key)
-			.strength(1.0F)
-			.sound(SoundType.WOOD)),
+		key -> new InvestigatableBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
+				.setId(key)
+				.strength(1.0F)
+				.sound(SoundType.WOOD),
+			InvestigationLoot.Profile.PLAQUE),
 		BlockItem::new
 	);
 
