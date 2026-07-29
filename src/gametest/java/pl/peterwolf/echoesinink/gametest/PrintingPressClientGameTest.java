@@ -34,7 +34,7 @@ import pl.peterwolf.echoesinink.item.ModItems;
  */
 public final class PrintingPressClientGameTest implements FabricClientGameTest {
 	private static final BlockPos PRESS_POS = new BlockPos(0, 4, 0);
-	private static final String SCREENSHOT_NAME = "printing_press_output_ready";
+	private static final String OUTPUT_SCREENSHOT_NAME = "printing_press_output_ready";
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -120,29 +120,63 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 					new ItemStack(ModItems.PRINTERS_INSTRUCTION_SHEET));
 				logFixedModelBounds(client, "press_carriage",
 					new ItemStack(ModItems.PRESS_CARRIAGE));
+				AABB handleBounds = logFixedModelBounds(client, "press_handle",
+					new ItemStack(ModItems.PRESS_HANDLE));
+				if (handleBounds.maxX - handleBounds.minX < 1.99D) {
+					throw new AssertionError("Press handle is not two blocks long: " + handleBounds);
+				}
 			});
 
 			serverContext.runCommand("time set noon");
 			serverContext.runCommand("weather clear");
 			serverContext.runCommand("gamemode spectator @a");
-			serverContext.runCommand("tp @a 1.6 5.0 -1.8 42 32");
+			serverContext.runCommand("tp @a 0.5 4.3 -1.5 0 25");
 			context.waitTicks(10);
 			singleplayer.getClientLevel().waitForChunksRender();
 			context.getInput().pressKey(GLFW.GLFW_KEY_F1);
 			context.waitTicks(2);
 
-			Path screenshotDirectory = screenshotDirectory();
-			Path screenshot = context.takeScreenshot(
-				TestScreenshotOptions.of(SCREENSHOT_NAME)
-					.disableCounterPrefix()
-					.withSize(1920, 1080)
-					.withDestinationDir(screenshotDirectory)
+			takeScreenshot(context, OUTPUT_SCREENSHOT_NAME);
+
+			serverContext.runOnServer(server -> {
+				ServerPlayer player = requirePlayer(server.getPlayerList().getPlayers());
+				var blockEntity = server.overworld().getBlockEntity(PRESS_POS);
+				if (!(blockEntity instanceof PrintingPressBlockEntity press)) {
+					throw new AssertionError("Printing press disappeared before output collection");
+				}
+				press.interactEmptyHand(player);
+				assertPhase(press, PressPhase.IDLE);
+				if (!press.getItem(PrintingPressBlockEntity.SLOT_OUTPUT).isEmpty()) {
+					throw new AssertionError("Output remained in the press after collection");
+				}
+			});
+			context.waitFor(client ->
+				client.level != null
+					&& client.level.getBlockEntity(PRESS_POS) instanceof PrintingPressBlockEntity press
+					&& press.phase() == PressPhase.IDLE
+					&& press.getItem(PrintingPressBlockEntity.SLOT_OUTPUT).isEmpty(),
+				200
 			);
-			if (!Files.isRegularFile(screenshot)) {
-				throw new AssertionError("Client game test did not create screenshot: " + screenshot);
-			}
+
+			// The reported clipping only appeared after collection and changed while
+			// panning, so preserve close screenshots of the empty carriage from three
+			// camera angles instead of validating only the paper-covered output state.
+			serverContext.runCommand("tp @a -0.8 4.3 -1.5 -30 25");
+			context.waitTicks(8);
+			singleplayer.getClientLevel().waitForChunksRender();
+			takeScreenshot(context, "printing_press_empty_carriage_left");
+
+			serverContext.runCommand("tp @a 0.5 4.3 -1.5 0 25");
+			context.waitTicks(8);
+			singleplayer.getClientLevel().waitForChunksRender();
+			takeScreenshot(context, "printing_press_empty_carriage_center");
+
+			serverContext.runCommand("tp @a 1.8 4.3 -1.5 30 25");
+			context.waitTicks(8);
+			singleplayer.getClientLevel().waitForChunksRender();
+			takeScreenshot(context, "printing_press_empty_carriage_right");
+
 			context.getInput().pressKey(GLFW.GLFW_KEY_F1);
-			EchoesInInk.LOGGER.info("Printing press ClientGameTest screenshot: {}", screenshot.toAbsolutePath());
 		}
 	}
 
@@ -191,7 +225,7 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 		}
 	}
 
-	private static void logFixedModelBounds(Minecraft client, String modelName, ItemStack stack) {
+	private static AABB logFixedModelBounds(Minecraft client, String modelName, ItemStack stack) {
 		ItemStackRenderState renderState = new ItemStackRenderState();
 		client.getItemModelResolver().updateForTopItem(
 			renderState,
@@ -216,6 +250,7 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 			bounds.maxY,
 			bounds.maxZ
 		);
+		return bounds;
 	}
 
 	private static Path screenshotDirectory() {
@@ -228,5 +263,19 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 		} catch (IOException exception) {
 			throw new AssertionError("Could not create screenshot directory " + directory, exception);
 		}
+	}
+
+	private static Path takeScreenshot(ClientGameTestContext context, String name) {
+		Path screenshot = context.takeScreenshot(
+			TestScreenshotOptions.of(name)
+				.disableCounterPrefix()
+				.withSize(1920, 1080)
+				.withDestinationDir(screenshotDirectory())
+		);
+		if (!Files.isRegularFile(screenshot)) {
+			throw new AssertionError("Client game test did not create screenshot: " + screenshot);
+		}
+		EchoesInInk.LOGGER.info("Printing press ClientGameTest screenshot: {}", screenshot.toAbsolutePath());
+		return screenshot;
 	}
 }

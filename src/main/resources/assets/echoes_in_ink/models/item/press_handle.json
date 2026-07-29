@@ -15,8 +15,8 @@
   "elements": [
     {
       "name": "long_bar",
-      "from": [0, 7, 7],
-      "to": [16, 9, 9],
+      "from": [-8, 7, 7],
+      "to": [24, 9, 9],
       "faces": {
         "north": {"texture": "#wood"},
         "south": {"texture": "#wood"},
@@ -41,8 +41,8 @@
     },
     {
       "name": "left_wooden_grip",
-      "from": [0, 5.75, 5.75],
-      "to": [3, 10.25, 10.25],
+      "from": [-8, 5.75, 5.75],
+      "to": [-5, 10.25, 10.25],
       "faces": {
         "north": {"texture": "#wood"},
         "south": {"texture": "#wood"},
@@ -54,8 +54,8 @@
     },
     {
       "name": "right_wooden_grip",
-      "from": [13, 5.75, 5.75],
-      "to": [16, 10.25, 10.25],
+      "from": [21, 5.75, 5.75],
+      "to": [24, 10.25, 10.25],
       "faces": {
         "north": {"texture": "#wood"},
         "south": {"texture": "#wood"},

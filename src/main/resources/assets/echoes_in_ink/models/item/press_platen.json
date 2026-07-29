@@ -23,7 +23,7 @@
         "west": {"texture": "#wood"},
         "east": {"texture": "#wood"},
         "up": {"texture": "#wood"},
-        "down": {"texture": "#metal"}
+        "down": {"texture": "#wood"}
       }
     },
     {

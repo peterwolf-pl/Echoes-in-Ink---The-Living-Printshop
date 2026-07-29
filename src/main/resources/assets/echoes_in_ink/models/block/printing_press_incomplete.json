@@ -114,7 +114,7 @@
     {
       "name": "left_long_sill",
       "from": [0.5, 12, 0],
-      "to": [4, 14, 16],
+      "to": [4, 13.5, 16],
       "faces": {
         "north": {"texture": "#wood"},
         "south": {"texture": "#wood"},
@@ -127,7 +127,7 @@
     {
       "name": "right_long_sill",
       "from": [12, 12, 0],
-      "to": [15.5, 14, 16],
+      "to": [15.5, 13.5, 16],
       "faces": {
         "north": {"texture": "#wood"},
         "south": {"texture": "#wood"},
@@ -139,8 +139,8 @@
     },
     {
       "name": "lower_cross_tie",
-      "from": [1, 13.5, 5],
-      "to": [15, 15.5, 11],
+      "from": [1, 12.25, 5],
+      "to": [15, 13.25, 11],
       "faces": {
         "north": {"texture": "#wood"},
         "south": {"texture": "#wood"},
@@ -230,21 +230,21 @@
     },
     {
       "name": "bed_support",
-      "from": [3, 14.5, 1],
-      "to": [13, 15.5, 15],
+      "from": [3, 12.5, 1],
+      "to": [13, 13.25, 15],
       "faces": {
         "north": {"texture": "#wood"},
         "south": {"texture": "#wood"},
         "west": {"texture": "#wood"},
         "east": {"texture": "#wood"},
-        "up": {"texture": "#stone"},
+        "up": {"texture": "#wood"},
         "down": {"texture": "#wood"}
       }
     },
     {
       "name": "left_bed_rail",
-      "from": [3.5, 15.5, 1],
-      "to": [5, 16, 15],
+      "from": [4, 13.25, 1],
+      "to": [5, 13.5, 15],
       "faces": {
         "north": {"texture": "#metal"},
         "south": {"texture": "#metal"},
@@ -256,8 +256,8 @@
     },
     {
       "name": "right_bed_rail",
-      "from": [11, 15.5, 1],
-      "to": [12.5, 16, 15],
+      "from": [11, 13.25, 1],
+      "to": [12, 13.5, 15],
       "faces": {
         "north": {"texture": "#metal"},
         "south": {"texture": "#metal"},

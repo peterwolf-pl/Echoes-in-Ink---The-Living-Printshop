@@ -2,6 +2,22 @@
 
 All notable changes to **Echoes in Ink** are documented here.
 
+## [1.0.3] — 2026-07-29
+
+### Changed
+
+- Extended the press pull bar from one block to two blocks so both wooden grips project beyond the press frame.
+- Centered the iron handle socket directly above the spindle.
+
+### Fixed
+
+- Removed the intermittent stone-texture clipping behind the carriage by lowering the fixed bed, rails, and cross tie below the moving carriage.
+- Replaced the exposed fixed-bed stone face with timber so it remains visually distinct from the moving metal type chase.
+- Replaced the platen's exposed metal underside with solid timber so camera-angle occlusion no longer resembles a flickering transparent panel.
+- Lowered the finished sheet onto the moving type chase, removing the parallax gap that exposed a partial grey panel from shallow camera angles.
+- Moved the carriage's iron pull completely in front of its timber body, eliminating the coplanar metal/wood faces that flickered after output collection.
+- Separated the fixed iron rails from the coplanar timber sill tops and kept the empty carriage fully beyond them, so the side strips no longer shimmer while the camera pans.
+
 ## [1.0.2] — 2026-07-29
 
 ### Changed

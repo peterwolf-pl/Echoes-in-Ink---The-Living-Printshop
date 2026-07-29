@@ -33,8 +33,9 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 	private static final float WORKTABLE_RISE = 0.75F;
 	private static final float CARRIAGE_CENTER_Y = WORKTABLE_RISE + 0.22F;
 	private static final float MATRIX_CENTER_Y = WORKTABLE_RISE + 0.321F;
-	private static final float SHEET_CENTER_Y = WORKTABLE_RISE + 0.366F;
-	private static final float IMPRESSION_TEXT_Y = WORKTABLE_RISE + 0.405F;
+	private static final float INPUT_SHEET_CENTER_Y = WORKTABLE_RISE + 0.366F;
+	private static final float OUTPUT_SHEET_CENTER_Y = WORKTABLE_RISE + 0.3225F;
+	private static final float IMPRESSION_TEXT_Y = WORKTABLE_RISE + 0.348F;
 	private static final float IMPRESSION_TEXT_Z_OFFSET = 0.0F;
 	private static final float MAX_IMPRESSION_TEXT_SCALE = 0.0042F;
 	private static final float IMPRESSION_TEXT_WIDTH = 0.4F;
@@ -132,8 +133,9 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		}
 
 		if (state.sheetRenderState != null) {
+			float sheetY = state.output.isEmpty() ? INPUT_SHEET_CENTER_Y : OUTPUT_SHEET_CENTER_Y;
 			submitFlatItem(poseStack, collector, state, state.sheetRenderState,
-				SHEET_CENTER_Y, carriageZ, 0.72F);
+				sheetY, carriageZ, 0.72F);
 		}
 
 		if (state.inkRenderState != null
@@ -166,9 +168,9 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 			poseStack.pushPose();
 			poseStack.translate(0.0F, WORKTABLE_RISE + 1.02F + platenY, 0.0F);
 			poseStack.mulPose(Axis.YP.rotationDegrees(handleAngle));
-			// The historical pull bar pivots around the iron socket at one end.
-			poseStack.translate(0.382F, 0.0F, 0.0F);
-			poseStack.scale(0.94F, 0.3F, 0.3F);
+			// Keep the iron socket over the spindle while the two-block pull bar
+			// projects beyond both sides of the one-block press frame.
+			poseStack.scale(1.0F, 0.3F, 0.3F);
 			draw(poseStack, collector, state, state.handleRenderState);
 			poseStack.popPose();
 		}
@@ -307,8 +309,10 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 	private static float carriageOffset(PrintingPressRenderState state) {
 		return switch (state.phase) {
 			case CARRIAGE_IN, PRESSING, RESETTING, IMPRESSION_DONE -> 0.05F;
-			case OUTPUT_READY -> 0.85F;
-			default -> 0.72F;
+			// Keep every outward/resting state just beyond the fixed bed rails.
+			// A shallower idle offset made the carriage runners overlap the rails
+			// after the finished sheet was collected and shimmer while the camera moved.
+			case INCOMPLETE, IDLE, OUTPUT_READY, JAMMED -> 0.85F;
 		};
 	}
 
