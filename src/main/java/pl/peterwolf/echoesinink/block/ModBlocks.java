@@ -122,6 +122,16 @@ public final class ModBlocks {
 			.noOcclusion())
 	);
 
+	/** Single archive page laid on a table / floor (placed by blank/damaged page items). */
+	public static final LaidPaperBlock LAID_PAPER = registerBlockOnly(
+		"laid_paper",
+		key -> new LaidPaperBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.MOSS_CARPET)
+			.setId(key)
+			.strength(0.1F)
+			.sound(SoundType.WOOL)
+			.noOcclusion())
+	);
+
 	private ModBlocks() {}
 
 	public static void init() {

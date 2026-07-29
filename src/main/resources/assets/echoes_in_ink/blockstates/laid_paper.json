@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,kind=blank": { "model": "echoes_in_ink:block/laid_paper_blank" },
+    "facing=south,kind=blank": { "model": "echoes_in_ink:block/laid_paper_blank", "y": 180 },
+    "facing=west,kind=blank":  { "model": "echoes_in_ink:block/laid_paper_blank", "y": 270 },
+    "facing=east,kind=blank":  { "model": "echoes_in_ink:block/laid_paper_blank", "y": 90 },
+    "facing=north,kind=damaged": { "model": "echoes_in_ink:block/laid_paper_damaged" },
+    "facing=south,kind=damaged": { "model": "echoes_in_ink:block/laid_paper_damaged", "y": 180 },
+    "facing=west,kind=damaged":  { "model": "echoes_in_ink:block/laid_paper_damaged", "y": 270 },
+    "facing=east,kind=damaged":  { "model": "echoes_in_ink:block/laid_paper_damaged", "y": 90 }
+  }
+}

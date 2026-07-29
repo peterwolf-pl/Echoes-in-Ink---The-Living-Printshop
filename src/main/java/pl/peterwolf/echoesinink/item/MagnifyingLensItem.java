@@ -7,10 +7,15 @@ import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
@@ -22,13 +27,43 @@ import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.config.ModConfig;
 
 /**
- * Inspects recoverable objects. Results are computed only on the server.
+ * Magnifying lens: hold right-click to look through (spyglass-style zoom);
+ * right-click a block to inspect recoverable details (server).
  */
 public class MagnifyingLensItem extends Item {
 	private static final Map<UUID, Long> LAST_INSPECT_TICK = new HashMap<>();
 
 	public MagnifyingLensItem(Properties properties) {
 		super(properties);
+	}
+
+	/** Hold to look through the glass (client FOV via isScoping mixin). */
+	@Override
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		player.startUsingItem(hand);
+		if (!level.isClientSide()) {
+			level.playSound(null, player.blockPosition(), SoundEvents.SPYGLASS_USE, SoundSource.PLAYERS, 0.5F, 1.15F);
+		}
+		return InteractionResult.CONSUME;
+	}
+
+	@Override
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.SPYGLASS;
+	}
+
+	@Override
+	public int getUseDuration(ItemStack stack, LivingEntity entity) {
+		// Long hold like spyglass; release stops zoom.
+		return 1200;
+	}
+
+	@Override
+	public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
+		if (!level.isClientSide() && entity instanceof Player player) {
+			level.playSound(null, player.blockPosition(), SoundEvents.SPYGLASS_STOP_USING, SoundSource.PLAYERS, 0.5F, 1.15F);
+		}
+		return super.releaseUsing(stack, level, entity, timeLeft);
 	}
 
 	@Override
@@ -38,6 +73,10 @@ public class MagnifyingLensItem extends Item {
 		if (player == null) {
 			return InteractionResult.PASS;
 		}
+
+		// Sneak + block: inspect. Plain block click still inspects (historical tools).
+		// Looking through is use() when not targeting a usable block inspect path —
+		// we inspect first, then player can use in air to zoom.
 		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
@@ -58,6 +97,7 @@ public class MagnifyingLensItem extends Item {
 		BlockState state = level.getBlockState(pos);
 		Component result = inspect(state);
 		serverPlayer.sendSystemMessage(result, true);
+		level.playSound(null, pos, SoundEvents.SPYGLASS_USE, SoundSource.PLAYERS, 0.35F, 1.4F);
 		return InteractionResult.SUCCESS_SERVER;
 	}
 
@@ -88,6 +128,12 @@ public class MagnifyingLensItem extends Item {
 		if (block == ModBlocks.FADED_WORKSHOP_PLAQUE) {
 			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.shelf");
 		}
+		if (block == ModBlocks.LAID_PAPER) {
+			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.paper");
+		}
+		if (block == ModBlocks.HANGING_POSTER) {
+			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.poster");
+		}
 		return Component.translatable("item.echoes_in_ink.magnifying_lens.find.nothing");
 	}
 
@@ -100,5 +146,7 @@ public class MagnifyingLensItem extends Item {
 		TooltipFlag flag
 	) {
 		tooltip.accept(Component.translatable("item.echoes_in_ink.magnifying_lens.desc").withColor(0xAAAAAA));
+		tooltip.accept(Component.translatable("item.echoes_in_ink.magnifying_lens.look_hint").withColor(0xC0C0FF));
+		tooltip.accept(Component.translatable("item.echoes_in_ink.magnifying_lens.inspect_hint").withColor(0xC0C0FF));
 	}
 }

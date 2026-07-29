@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "echoes_in_ink:damaged_archive_page",
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "echoes_in_ink:laid_paper",
+                  "properties": {
+                    "kind": "damaged"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "echoes_in_ink:blank_archive_page"
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        { "condition": "minecraft:survives_explosion" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "pl.peterwolf.echoesinink.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "PlayerScopingMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

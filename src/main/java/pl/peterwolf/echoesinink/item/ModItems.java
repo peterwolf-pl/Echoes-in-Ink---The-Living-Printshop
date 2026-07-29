@@ -26,10 +26,18 @@ public final class ModItems {
 		props -> new CharcoalRubbingPaperItem(props.stacksTo(16)));
 
 	public static final Item BLANK_ARCHIVE_PAGE = register("blank_archive_page",
-		props -> new TooltipItem(props.stacksTo(64), "item.echoes_in_ink.blank_archive_page.desc"));
+		props -> new PlaceableArchivePageItem(
+			props.stacksTo(64),
+			pl.peterwolf.echoesinink.block.PaperKind.BLANK,
+			"item.echoes_in_ink.blank_archive_page.desc"
+		));
 
 	public static final Item DAMAGED_ARCHIVE_PAGE = register("damaged_archive_page",
-		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.damaged_archive_page.desc"));
+		props -> new PlaceableArchivePageItem(
+			props.stacksTo(16),
+			pl.peterwolf.echoesinink.block.PaperKind.DAMAGED,
+			"item.echoes_in_ink.damaged_archive_page.desc"
+		));
 
 	public static final Item INK_BALL = register("ink_ball",
 		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.ink_ball.desc"));
