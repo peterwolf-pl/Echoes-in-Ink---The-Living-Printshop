@@ -24,6 +24,7 @@ import pl.peterwolf.echoesinink.block.PressPhase;
 import pl.peterwolf.echoesinink.block.PrintingPressBlock;
 import pl.peterwolf.echoesinink.block.entity.PrintingPressBlockEntity;
 import pl.peterwolf.echoesinink.item.ModItems;
+import pl.peterwolf.echoesinink.util.PrintedContent;
 
 /**
  * Client animation of press parts. Server phase/progress is authoritative;
@@ -262,22 +263,7 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 
 	@Nullable
 	private static String printedContentSuffix(ItemStack output) {
-		if (output.is(ModItems.PRINTERS_INSTRUCTION_SHEET)) {
-			return "instruction";
-		}
-		if (output.is(ModItems.RESTORED_CHRONICLE_PAGE)) {
-			return "chronicle";
-		}
-		if (output.is(ModItems.DECORATIVE_WOODCUT)) {
-			return "woodcut";
-		}
-		if (output.is(ModItems.PRINTED_WARNING_POSTER)) {
-			return "warning";
-		}
-		if (output.is(ModItems.WORKSHOP_MAP_FRAGMENT)) {
-			return "map";
-		}
-		return null;
+		return PrintedContent.impressionSuffix(output);
 	}
 
 	@Nullable

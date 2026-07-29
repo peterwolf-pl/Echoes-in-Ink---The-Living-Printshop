@@ -3,48 +3,57 @@ package pl.peterwolf.echoesinink.block;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import pl.peterwolf.echoesinink.block.entity.LaidPaperBlockEntity;
 import pl.peterwolf.echoesinink.item.ModItems;
+import pl.peterwolf.echoesinink.item.ReadablePrintItem;
+import pl.peterwolf.echoesinink.item.RestoredChroniclePageItem;
 
 /**
- * A single archive page laid flat on top of a solid block (floor / table).
+ * Single page/print laid flat. Visuals match the press sheet (item + impression text).
  */
-public class LaidPaperBlock extends HorizontalDirectionalBlock {
+public class LaidPaperBlock extends BaseEntityBlock {
 	public static final MapCodec<LaidPaperBlock> CODEC = simpleCodec(LaidPaperBlock::new);
-	public static final EnumProperty<PaperKind> KIND = EnumProperty.create("kind", PaperKind.class);
+	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
 	private static final VoxelShape SHAPE = Block.box(1, 0, 1, 15, 1, 15);
 
 	public LaidPaperBlock(Properties properties) {
 		super(properties);
-		registerDefaultState(stateDefinition.any()
-			.setValue(FACING, Direction.NORTH)
-			.setValue(KIND, PaperKind.BLANK));
+		registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
 
 	@Override
-	protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+	protected MapCodec<? extends BaseEntityBlock> codec() {
 		return CODEC;
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(FACING, KIND);
+		builder.add(FACING);
 	}
 
 	@Override
@@ -52,16 +61,25 @@ public class LaidPaperBlock extends HorizontalDirectionalBlock {
 		return SHAPE;
 	}
 
+	@Override
+	public RenderShape getRenderShape(BlockState state) {
+		// Model provides a thin sheet; BER draws the same page as on the press.
+		return RenderShape.MODEL;
+	}
+
+	@Nullable
+	@Override
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new LaidPaperBlockEntity(pos, state);
+	}
+
 	@Nullable
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		// Prefer top face of support block.
 		if (context.getClickedFace() != Direction.UP) {
 			return null;
 		}
-		return defaultBlockState()
-			.setValue(FACING, context.getHorizontalDirection().getOpposite())
-			.setValue(KIND, PaperKind.BLANK);
+		return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
 	}
 
 	@Override
@@ -88,10 +106,67 @@ public class LaidPaperBlock extends HorizontalDirectionalBlock {
 	}
 
 	@Override
+	protected InteractionResult useWithoutItem(
+		BlockState state,
+		Level level,
+		BlockPos pos,
+		Player player,
+		BlockHitResult hit
+	) {
+		if (level.isClientSide()) {
+			return InteractionResult.SUCCESS;
+		}
+		if (!(level.getBlockEntity(pos) instanceof LaidPaperBlockEntity be)) {
+			return InteractionResult.PASS;
+		}
+		ItemStack page = be.page();
+		if (player instanceof ServerPlayer serverPlayer) {
+			if (page.getItem() instanceof ReadablePrintItem readable) {
+				readable.showPrint(serverPlayer);
+			} else if (page.getItem() instanceof RestoredChroniclePageItem) {
+				// Chronicle still uses progressive use; show a short note when laid.
+				serverPlayer.sendOverlayMessage(
+					net.minecraft.network.chat.Component.translatable("print.echoes_in_ink.reading")
+				);
+			} else {
+				serverPlayer.sendOverlayMessage(
+					net.minecraft.network.chat.Component.translatable("block.echoes_in_ink.laid_paper.blank_hint")
+				);
+			}
+		}
+		return InteractionResult.SUCCESS_SERVER;
+	}
+
+	@Override
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof LaidPaperBlockEntity be) {
+			ItemStack drop = be.asDrop();
+			if (!player.getAbilities().instabuild) {
+				popResource(level, pos, drop);
+			}
+			be.setPage(ItemStack.EMPTY);
+		}
+		return super.playerWillDestroy(level, pos, state, player);
+	}
+
+	@Override
+	public void destroy(net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockState state) {
+		if (level instanceof Level realLevel
+			&& !realLevel.isClientSide()
+			&& realLevel.getBlockEntity(pos) instanceof LaidPaperBlockEntity be
+			&& !be.page().isEmpty()) {
+			popResource(realLevel, pos, be.asDrop());
+			be.setPage(ItemStack.EMPTY);
+		}
+		super.destroy(level, pos, state);
+	}
+
+	@Override
 	protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
-		return new ItemStack(state.getValue(KIND) == PaperKind.DAMAGED
-			? ModItems.DAMAGED_ARCHIVE_PAGE
-			: ModItems.BLANK_ARCHIVE_PAGE);
+		if (level.getBlockEntity(pos) instanceof LaidPaperBlockEntity be) {
+			return be.asDrop();
+		}
+		return new ItemStack(ModItems.BLANK_ARCHIVE_PAGE);
 	}
 
 	@Override
@@ -102,5 +177,40 @@ public class LaidPaperBlock extends HorizontalDirectionalBlock {
 	@Override
 	protected BlockState mirror(BlockState state, Mirror mirror) {
 		return state.rotate(mirror.getRotation(state.getValue(FACING)));
+	}
+
+	/**
+	 * Place a laid page of the given stack. Consumes one item unless creative.
+	 * @return true if placed
+	 */
+	public static boolean placePage(
+		Level level,
+		BlockPos placePos,
+		Direction facing,
+		ItemStack stack,
+		@Nullable Player player
+	) {
+		if (level.isClientSide() || stack.isEmpty()) {
+			return false;
+		}
+		if (!level.getBlockState(placePos).canBeReplaced()) {
+			return false;
+		}
+		BlockPos below = placePos.below();
+		if (!level.getBlockState(below).isFaceSturdy(level, below, Direction.UP)) {
+			return false;
+		}
+
+		BlockState state = ModBlocks.LAID_PAPER.defaultBlockState().setValue(FACING, facing);
+		if (!level.setBlock(placePos, state, 3)) {
+			return false;
+		}
+		if (level.getBlockEntity(placePos) instanceof LaidPaperBlockEntity be) {
+			be.setPage(stack);
+		}
+		if (player == null || !player.getAbilities().instabuild) {
+			stack.shrink(1);
+		}
+		return true;
 	}
 }

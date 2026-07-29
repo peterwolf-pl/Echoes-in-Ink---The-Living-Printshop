@@ -10,7 +10,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import pl.peterwolf.echoesinink.util.PrintPlacement;
 import pl.peterwolf.echoesinink.world.ChronicleClueService;
 
 /**
@@ -19,6 +21,12 @@ import pl.peterwolf.echoesinink.world.ChronicleClueService;
 public class RestoredChroniclePageItem extends Item {
 	public RestoredChroniclePageItem(Properties properties) {
 		super(properties);
+	}
+
+	/** Lay the chronicle on a table/floor — renders like the press impression. */
+	@Override
+	public InteractionResult useOn(UseOnContext context) {
+		return PrintPlacement.tryLayOnTop(context);
 	}
 
 	@Override
@@ -44,5 +52,6 @@ public class RestoredChroniclePageItem extends Item {
 	) {
 		tooltip.accept(Component.translatable("item.echoes_in_ink.restored_chronicle_page.desc").withColor(0xAAAAAA));
 		tooltip.accept(Component.translatable("item.echoes_in_ink.restored_chronicle_page.use").withColor(0xC0C0FF));
+		tooltip.accept(Component.translatable("item.echoes_in_ink.archive_page.place_hint").withColor(0xC0C0FF));
 	}
 }

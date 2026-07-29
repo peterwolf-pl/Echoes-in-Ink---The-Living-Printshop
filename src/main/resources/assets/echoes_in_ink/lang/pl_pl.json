@@ -29,6 +29,7 @@
 	"item.echoes_in_ink.archive_page.place_hint": "Użyj na górnej powierzchni, by odłożyć kartkę",
 	"block.echoes_in_ink.laid_paper": "Odłożona karta archiwum",
 	"block.echoes_in_ink.laid_paper.placed": "Odłożono kartkę.",
+	"block.echoes_in_ink.laid_paper.blank_hint": "Pusty papier — gotowy do prasy.",
 	"item.echoes_in_ink.charcoal_rubbing_paper": "Papier do odcisku węglowego",
 	"item.echoes_in_ink.charcoal_rubbing_paper.desc": "Kopiuje znaki z rzeźbionych matryc.",
 	"item.echoes_in_ink.charcoal_rubbing_paper.no_pattern": "Tu nie da się wyraźnie zrobić odcisku.",

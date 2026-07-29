@@ -27,8 +27,11 @@ public class PrintedWarningPosterItem extends ReadablePrintItem {
 	public InteractionResult useOn(UseOnContext context) {
 		Level level = context.getLevel();
 		Direction face = context.getClickedFace();
+		// Top of a block → lay the print flat (same look as on the press).
+		if (face == Direction.UP) {
+			return pl.peterwolf.echoesinink.util.PrintPlacement.tryLayOnTop(context);
+		}
 		if (face.getAxis().isVertical()) {
-			// Floor/ceiling — fall through to read / normal use.
 			return InteractionResult.PASS;
 		}
 

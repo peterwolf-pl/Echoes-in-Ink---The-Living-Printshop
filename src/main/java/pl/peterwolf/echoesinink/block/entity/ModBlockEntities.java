@@ -12,6 +12,7 @@ import pl.peterwolf.echoesinink.block.ModBlocks;
 public final class ModBlockEntities {
 	public static final BlockEntityType<InvestigationBlockEntity> INVESTIGATION;
 	public static final BlockEntityType<PrintingPressBlockEntity> PRINTING_PRESS;
+	public static final BlockEntityType<LaidPaperBlockEntity> LAID_PAPER;
 
 	static {
 		ResourceKey<BlockEntityType<?>> invKey = ResourceKey.create(
@@ -41,6 +42,16 @@ public final class ModBlockEntities {
 			Set.of(ModBlocks.PRINTING_PRESS)
 		);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, pressKey, PRINTING_PRESS);
+
+		ResourceKey<BlockEntityType<?>> laidKey = ResourceKey.create(
+			Registries.BLOCK_ENTITY_TYPE,
+			EchoesInInk.id("laid_paper")
+		);
+		LAID_PAPER = new BlockEntityType<>(
+			LaidPaperBlockEntity::new,
+			Set.of(ModBlocks.LAID_PAPER)
+		);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, laidKey, LAID_PAPER);
 	}
 
 	private ModBlockEntities() {}

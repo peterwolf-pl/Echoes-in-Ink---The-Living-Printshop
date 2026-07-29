@@ -12,8 +12,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import pl.peterwolf.echoesinink.sound.ModSounds;
+import pl.peterwolf.echoesinink.util.PrintPlacement;
 
 /**
  * Printed page/print that can be read (server chat) when used.
@@ -31,6 +33,12 @@ public class ReadablePrintItem extends Item {
 		this.descKey = "item.echoes_in_ink." + id + ".desc";
 		this.bodyPrefix = "print.echoes_in_ink." + id;
 		this.lineCount = Math.max(1, lineCount);
+	}
+
+	/** Lay the print on a top surface (same look as on the press). */
+	@Override
+	public InteractionResult useOn(UseOnContext context) {
+		return PrintPlacement.tryLayOnTop(context);
 	}
 
 	@Override
@@ -66,5 +74,6 @@ public class ReadablePrintItem extends Item {
 	) {
 		tooltip.accept(Component.translatable(descKey).withColor(0xAAAAAA));
 		tooltip.accept(Component.translatable("print.echoes_in_ink.use_hint").withColor(0xC0C0FF));
+		tooltip.accept(Component.translatable("item.echoes_in_ink.archive_page.place_hint").withColor(0xC0C0FF));
 	}
 }
