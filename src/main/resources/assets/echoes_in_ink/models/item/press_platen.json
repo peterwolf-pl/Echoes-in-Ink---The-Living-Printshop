@@ -1,6 +1,43 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:block/block",
   "textures": {
-    "layer0": "echoes_in_ink:item/press_platen"
-  }
+    "particle": "echoes_in_ink:block/press_wood",
+    "wood": "echoes_in_ink:block/press_wood",
+    "metal": "echoes_in_ink:block/press_metal"
+  },
+  "display": {
+    "fixed": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    }
+  },
+  "elements": [
+    {
+      "name": "heavy_wooden_platen",
+      "from": [1, 4, 1],
+      "to": [15, 9, 15],
+      "faces": {
+        "north": {"texture": "#wood"},
+        "south": {"texture": "#wood"},
+        "west": {"texture": "#wood"},
+        "east": {"texture": "#wood"},
+        "up": {"texture": "#wood"},
+        "down": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "central_boss",
+      "from": [5, 9, 5],
+      "to": [11, 12, 11],
+      "faces": {
+        "north": {"texture": "#wood"},
+        "south": {"texture": "#wood"},
+        "west": {"texture": "#wood"},
+        "east": {"texture": "#wood"},
+        "up": {"texture": "#metal"},
+        "down": {"texture": "#wood"}
+      }
+    }
+  ]
 }

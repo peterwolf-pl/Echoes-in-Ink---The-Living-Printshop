@@ -2,14 +2,18 @@ package pl.peterwolf.echoesinink.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -26,9 +30,22 @@ import pl.peterwolf.echoesinink.item.ModItems;
  * this only presents motion. Always draws something visible once parts exist.
  */
 public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressBlockEntity, PrintingPressRenderState> {
-	private final ItemStackRenderState itemState = new ItemStackRenderState();
+	private static final float WORKTABLE_RISE = 0.75F;
+	private static final float CARRIAGE_CENTER_Y = WORKTABLE_RISE + 0.22F;
+	private static final float MATRIX_CENTER_Y = WORKTABLE_RISE + 0.321F;
+	private static final float SHEET_CENTER_Y = WORKTABLE_RISE + 0.366F;
+	private static final float IMPRESSION_TEXT_Y = WORKTABLE_RISE + 0.405F;
+	private static final float IMPRESSION_TEXT_Z_OFFSET = 0.0F;
+	private static final float MAX_IMPRESSION_TEXT_SCALE = 0.0042F;
+	private static final float IMPRESSION_TEXT_WIDTH = 0.4F;
+	private static final float MAX_PLATEN_TRAVEL = 0.142F;
+
+	private final ItemModelResolver itemModelResolver;
+	private final Font font;
 
 	public PrintingPressRenderer(BlockEntityRendererProvider.Context context) {
+		this.itemModelResolver = context.itemModelResolver();
+		this.font = context.font();
 	}
 
 	@Override
@@ -59,9 +76,34 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		state.hasHandle = be.hasHandle();
 		state.hasPlaten = be.hasPlaten();
 		state.hasCarriage = be.hasCarriage();
-		state.matrix = be.getItem(PrintingPressBlockEntity.SLOT_MATRIX).copy();
-		state.paper = be.getItem(PrintingPressBlockEntity.SLOT_PAPER).copy();
 		state.output = be.getItem(PrintingPressBlockEntity.SLOT_OUTPUT).copy();
+
+		Level level = be.getLevel();
+		int seed = be.getBlockPos().hashCode();
+		state.matrixRenderState = resolveItem(
+			be.getItem(PrintingPressBlockEntity.SLOT_MATRIX), level, seed + 1
+		);
+		state.inkRenderState = resolveItem(
+			be.getItem(PrintingPressBlockEntity.SLOT_INK), level, seed + 2
+		);
+		ItemStack sheet = !state.output.isEmpty()
+			? state.output
+			: be.getItem(PrintingPressBlockEntity.SLOT_PAPER);
+		state.sheetRenderState = resolveItem(sheet, level, seed + 3);
+
+		boolean renderAssembly = state.phase != PressPhase.INCOMPLETE;
+		state.screwRenderState = state.hasScrew || renderAssembly
+			? resolveItem(new ItemStack(ModItems.PRESS_SCREW), level, seed + 4)
+			: null;
+		state.handleRenderState = state.hasHandle || renderAssembly
+			? resolveItem(new ItemStack(ModItems.PRESS_HANDLE), level, seed + 5)
+			: null;
+		state.platenRenderState = state.hasPlaten || renderAssembly
+			? resolveItem(new ItemStack(ModItems.PRESS_PLATEN), level, seed + 6)
+			: null;
+		state.carriageRenderState = state.hasCarriage || renderAssembly
+			? resolveItem(new ItemStack(ModItems.PRESS_CARRIAGE), level, seed + 7)
+			: null;
 	}
 
 	@Override
@@ -79,43 +121,55 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		float platenY = platenOffset(state);
 		float handleAngle = handleAngle(state);
 
-		// Always draw a visible iron frame so the press never looks like bare wood alone.
-		submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_SCREW),
-			0.0F, 0.95F, 0.0F, 0.35F, 0.9F, 0.35F, 0.0F);
-
-		if (state.hasCarriage || state.phase != PressPhase.INCOMPLETE) {
-			submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_CARRIAGE),
-				0.0F, 0.22F, carriageZ, 0.85F, 0.18F, 0.7F, 0.0F);
+		if (state.carriageRenderState != null) {
+			submitItem(poseStack, collector, state, state.carriageRenderState,
+				0.0F, CARRIAGE_CENTER_Y, carriageZ, 0.9F, 0.28F, 0.82F);
 		}
 
-		ItemStack bed = !state.output.isEmpty() ? state.output
-			: (!state.paper.isEmpty() ? state.paper
-			: (!state.matrix.isEmpty() ? state.matrix : ItemStack.EMPTY));
-		if (!bed.isEmpty()) {
+		if (state.matrixRenderState != null && state.output.isEmpty()) {
+			submitFlatItem(poseStack, collector, state, state.matrixRenderState,
+				MATRIX_CENTER_Y, carriageZ, 0.64F);
+		}
+
+		if (state.sheetRenderState != null) {
+			submitFlatItem(poseStack, collector, state, state.sheetRenderState,
+				SHEET_CENTER_Y, carriageZ, 0.72F);
+		}
+
+		if (state.inkRenderState != null
+			&& state.phase != PressPhase.PRESSING
+			&& state.phase != PressPhase.RESETTING
+			&& state.output.isEmpty()) {
+			submitItem(poseStack, collector, state, state.inkRenderState,
+				-0.36F, WORKTABLE_RISE + 0.37F, carriageZ + 0.16F, 0.22F, 0.22F, 0.22F);
+		}
+
+		if (!state.output.isEmpty()) {
+			submitPrintedContent(poseStack, collector, state, carriageZ);
+		}
+
+		if (state.platenRenderState != null) {
+			submitItem(poseStack, collector, state, state.platenRenderState,
+				0.0F, WORKTABLE_RISE + 0.61F + platenY, 0.0F, 0.82F, 0.32F, 0.68F);
+		}
+
+		if (state.screwRenderState != null) {
 			poseStack.pushPose();
-			poseStack.translate(0.0F, 0.32F, carriageZ);
-			poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-			poseStack.scale(0.55F, 0.55F, 0.55F);
-			draw(poseStack, collector, state, bed);
+			poseStack.translate(0.0F, WORKTABLE_RISE + 0.88F + platenY, 0.0F);
+			poseStack.mulPose(Axis.YP.rotationDegrees(handleAngle * 1.8F));
+			poseStack.scale(0.3F, 0.72F, 0.3F);
+			draw(poseStack, collector, state, state.screwRenderState);
 			poseStack.popPose();
 		}
 
-		if (state.hasPlaten || state.phase != PressPhase.INCOMPLETE) {
-			submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_PLATEN),
-				0.0F, 0.58F + platenY, 0.0F, 0.8F, 0.14F, 0.65F, 0.0F);
-		}
-
-		if (state.hasScrew || state.phase != PressPhase.INCOMPLETE) {
-			submitItem(poseStack, collector, state, new ItemStack(ModItems.PRESS_SCREW),
-				0.0F, 0.78F + platenY * 0.4F, 0.0F, 0.25F, 0.7F, 0.25F, handleAngle * 0.3F);
-		}
-
-		if (state.hasHandle || state.phase != PressPhase.INCOMPLETE) {
+		if (state.handleRenderState != null) {
 			poseStack.pushPose();
-			poseStack.translate(0.42F, 0.88F + platenY * 0.25F, 0.0F);
-			poseStack.mulPose(Axis.ZP.rotationDegrees(-handleAngle));
-			poseStack.scale(0.75F, 0.18F, 0.18F);
-			draw(poseStack, collector, state, new ItemStack(ModItems.PRESS_HANDLE));
+			poseStack.translate(0.0F, WORKTABLE_RISE + 1.02F + platenY, 0.0F);
+			poseStack.mulPose(Axis.YP.rotationDegrees(handleAngle));
+			// The historical pull bar pivots around the iron socket at one end.
+			poseStack.translate(0.382F, 0.0F, 0.0F);
+			poseStack.scale(0.94F, 0.3F, 0.3F);
+			draw(poseStack, collector, state, state.handleRenderState);
 			poseStack.popPose();
 		}
 
@@ -126,66 +180,151 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		PoseStack poseStack,
 		SubmitNodeCollector collector,
 		PrintingPressRenderState state,
-		ItemStack stack,
+		ItemStackRenderState itemRenderState,
 		float x, float y, float z,
-		float sx, float sy, float sz,
-		float rotX
+		float sx, float sy, float sz
 	) {
 		poseStack.pushPose();
 		poseStack.translate(x, y, z);
-		if (rotX != 0.0F) {
-			poseStack.mulPose(Axis.XP.rotationDegrees(rotX));
-		}
 		poseStack.scale(sx, sy, sz);
-		draw(poseStack, collector, state, stack);
+		draw(poseStack, collector, state, itemRenderState);
 		poseStack.popPose();
+	}
+
+	private void submitFlatItem(
+		PoseStack poseStack,
+		SubmitNodeCollector collector,
+		PrintingPressRenderState state,
+		ItemStackRenderState itemRenderState,
+		float y,
+		float z,
+		float scale
+	) {
+		poseStack.pushPose();
+		poseStack.translate(0.0F, y, z);
+		poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		poseStack.scale(scale, scale, scale);
+		draw(poseStack, collector, state, itemRenderState);
+		poseStack.popPose();
+	}
+
+	/**
+	 * The 16px item icon still identifies the output in inventory, while these
+	 * localized lines make the fresh impression readable on the carriage.
+	 */
+	private void submitPrintedContent(
+		PoseStack poseStack,
+		SubmitNodeCollector collector,
+		PrintingPressRenderState state,
+		float carriageZ
+	) {
+		String suffix = printedContentSuffix(state.output);
+		if (suffix == null) {
+			return;
+		}
+
+		FormattedCharSequence[] lines = new FormattedCharSequence[3];
+		int widestLine = 1;
+		for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+			lines[lineIndex] = Component.translatable(
+				"press.echoes_in_ink.impression." + suffix + "." + (lineIndex + 1)
+			).getVisualOrderText();
+			widestLine = Math.max(widestLine, font.width(lines[lineIndex]));
+		}
+		float textScale = Math.min(MAX_IMPRESSION_TEXT_SCALE, IMPRESSION_TEXT_WIDTH / widestLine);
+
+		poseStack.pushPose();
+		poseStack.translate(0.0F, IMPRESSION_TEXT_Y, carriageZ + IMPRESSION_TEXT_Z_OFFSET);
+		poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		poseStack.scale(textScale, textScale, textScale);
+
+		for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+			FormattedCharSequence line = lines[lineIndex];
+			float x = -font.width(line) / 2.0F;
+			float y = -10.0F + lineIndex * 10.0F;
+			collector.submitText(
+				poseStack,
+				x,
+				y,
+				line,
+				false,
+				Font.DisplayMode.POLYGON_OFFSET,
+				state.lightCoords,
+				0xFF18130F,
+				0,
+				0
+			);
+		}
+		poseStack.popPose();
+	}
+
+	@Nullable
+	private static String printedContentSuffix(ItemStack output) {
+		if (output.is(ModItems.PRINTERS_INSTRUCTION_SHEET)) {
+			return "instruction";
+		}
+		if (output.is(ModItems.RESTORED_CHRONICLE_PAGE)) {
+			return "chronicle";
+		}
+		if (output.is(ModItems.DECORATIVE_WOODCUT)) {
+			return "woodcut";
+		}
+		if (output.is(ModItems.PRINTED_WARNING_POSTER)) {
+			return "warning";
+		}
+		if (output.is(ModItems.WORKSHOP_MAP_FRAGMENT)) {
+			return "map";
+		}
+		return null;
+	}
+
+	@Nullable
+	private ItemStackRenderState resolveItem(ItemStack stack, @Nullable Level level, int seed) {
+		if (stack.isEmpty()) {
+			return null;
+		}
+		ItemStackRenderState itemRenderState = new ItemStackRenderState();
+		itemModelResolver.updateForTopItem(
+			itemRenderState,
+			stack,
+			ItemDisplayContext.FIXED,
+			level,
+			null,
+			seed
+		);
+		return itemRenderState.isEmpty() ? null : itemRenderState;
 	}
 
 	private void draw(
 		PoseStack poseStack,
 		SubmitNodeCollector collector,
 		PrintingPressRenderState state,
-		ItemStack stack
+		ItemStackRenderState itemRenderState
 	) {
-		if (stack.isEmpty()) {
-			return;
-		}
-		itemState.clear();
-		Level level = Minecraft.getInstance().level;
-		Minecraft.getInstance().getItemModelResolver().updateForTopItem(
-			itemState,
-			stack,
-			ItemDisplayContext.FIXED,
-			level,
-			null,
-			42
-		);
-		if (!itemState.isEmpty()) {
-			itemState.submit(poseStack, collector, state.lightCoords, 0, 0);
-		}
+		itemRenderState.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 	}
 
 	private static float carriageOffset(PrintingPressRenderState state) {
 		return switch (state.phase) {
 			case CARRIAGE_IN, PRESSING, RESETTING, IMPRESSION_DONE -> 0.05F;
-			case OUTPUT_READY -> 0.32F;
-			default -> 0.42F;
+			case OUTPUT_READY -> 0.85F;
+			default -> 0.72F;
 		};
 	}
 
 	private static float platenOffset(PrintingPressRenderState state) {
 		if (state.phase == PressPhase.PRESSING) {
-			return -0.22F * state.animProgress;
+			return -MAX_PLATEN_TRAVEL * state.animProgress;
 		}
 		if (state.phase == PressPhase.RESETTING) {
-			return -0.22F * state.animProgress;
+			return -MAX_PLATEN_TRAVEL * state.animProgress;
 		}
 		return 0.0F;
 	}
 
 	private static float handleAngle(PrintingPressRenderState state) {
 		if (state.phase == PressPhase.PRESSING || state.phase == PressPhase.RESETTING) {
-			return 75.0F * state.animProgress;
+			return 100.0F * state.animProgress;
 		}
 		return 0.0F;
 	}

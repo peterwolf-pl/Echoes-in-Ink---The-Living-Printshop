@@ -42,11 +42,22 @@ public class PrintingPressBlock extends BaseEntityBlock {
 		PressPhase.INCOMPLETE, PressPhase.IDLE, PressPhase.CARRIAGE_IN, PressPhase.PRESSING,
 		PressPhase.OUTPUT_READY, PressPhase.JAMMED);
 
-	/** Frame-like hitbox so it does not look like a solid cube. */
+	/** Standing hand-press silhouette: four legs, stretchers, raised bed, cheeks, and crosshead. */
 	private static final VoxelShape SHAPE = Shapes.or(
-		Block.box(0, 0, 0, 16, 4, 16),
-		Block.box(1, 4, 1, 15, 12, 15),
-		Block.box(0, 12, 0, 16, 14, 16)
+		Block.box(1, 0, 1, 4, 14, 4),
+		Block.box(12, 0, 1, 15, 14, 4),
+		Block.box(1, 0, 12, 4, 14, 15),
+		Block.box(12, 0, 12, 15, 14, 15),
+		Block.box(1.5, 5, 3.5, 3.5, 7, 12.5),
+		Block.box(12.5, 5, 3.5, 14.5, 7, 12.5),
+		Block.box(3.5, 5, 1.5, 12.5, 7, 3.5),
+		Block.box(3.5, 5, 12.5, 12.5, 7, 14.5),
+		Block.box(0, 12, 0, 4, 16, 16),
+		Block.box(12, 12, 0, 16, 16, 16),
+		Block.box(1, 14, 4, 4, 28, 12),
+		Block.box(12, 14, 4, 15, 28, 12),
+		Block.box(0, 25, 3, 16, 28, 13),
+		Block.box(3, 14, 0, 13, 18, 16)
 	);
 
 	public PrintingPressBlock(Properties properties) {

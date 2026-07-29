@@ -25,6 +25,16 @@ loom {
 	}
 }
 
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "echoes_in_ink_gametest"
+		enableGameTests = false
+		enableClientGameTests = true
+		clearRunDirectory = true
+	}
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"

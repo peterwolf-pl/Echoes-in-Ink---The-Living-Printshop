@@ -1,6 +1,83 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:block/block",
   "textures": {
-    "layer0": "echoes_in_ink:item/press_carriage"
-  }
+    "particle": "echoes_in_ink:block/press_wood",
+    "wood": "echoes_in_ink:block/press_wood",
+    "metal": "echoes_in_ink:block/press_metal",
+    "stone": "echoes_in_ink:block/press_stone"
+  },
+  "display": {
+    "fixed": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    }
+  },
+  "elements": [
+    {
+      "name": "left_runner",
+      "from": [1, 1, 0],
+      "to": [4, 4, 16],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"},
+        "down": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "right_runner",
+      "from": [12, 1, 0],
+      "to": [15, 4, 16],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"},
+        "down": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "wooden_coffin",
+      "from": [0.5, 4, 0],
+      "to": [15.5, 11, 16],
+      "faces": {
+        "north": {"texture": "#wood"},
+        "south": {"texture": "#wood"},
+        "west": {"texture": "#wood"},
+        "east": {"texture": "#wood"},
+        "up": {"texture": "#wood"},
+        "down": {"texture": "#wood"}
+      }
+    },
+    {
+      "name": "type_chase",
+      "from": [2, 11, 2],
+      "to": [14, 12.5, 14],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#stone"},
+        "down": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "front_pull",
+      "from": [6, 6, 0],
+      "to": [10, 11, 2],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"},
+        "down": {"texture": "#metal"}
+      }
+    }
+  ]
 }

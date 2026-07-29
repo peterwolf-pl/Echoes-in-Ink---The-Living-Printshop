@@ -236,6 +236,21 @@
 	"echo.echoes_in_ink.last_print.clue": "Trop osiada w twoim archiwum…",
 	"echo.echoes_in_ink.last_print.complete": "Ostatni nakład dobiega końca. Szukaj tego, co ukryli.",
 	"command.echoes_in_ink.trigger_echo.success": "[Echa w Atramencie] Wyzwolono Ostatni nakład.",
+	"press.echoes_in_ink.impression.instruction.1": "UŁÓŻ CZCIONKI",
+	"press.echoes_in_ink.impression.instruction.2": "NAŁÓŻ FARBĘ I PAPIER",
+	"press.echoes_in_ink.impression.instruction.3": "OBRÓĆ DRĄG",
+	"press.echoes_in_ink.impression.chronicle.1": "KRONIKA DRUKARZA",
+	"press.echoes_in_ink.impression.chronicle.2": "ATRAMENT PAMIĘTA",
+	"press.echoes_in_ink.impression.chronicle.3": "ARCHIWUM POD MCHEM",
+	"press.echoes_in_ink.impression.woodcut.1": "ARS IN ATRAMENTO",
+	"press.echoes_in_ink.impression.woodcut.2": "ŻYJĄCA PRASA",
+	"press.echoes_in_ink.impression.woodcut.3": "ANNO 1450",
+	"press.echoes_in_ink.impression.warning.1": "UWAGA",
+	"press.echoes_in_ink.impression.warning.2": "TRZYMAJ DŁONIE Z DALA",
+	"press.echoes_in_ink.impression.warning.3": "OD PŁYTY DOCISKOWEJ",
+	"press.echoes_in_ink.impression.map.1": "PÓŁNOC",
+	"press.echoes_in_ink.impression.map.2": "ARCHIWUM ATRAMENTU",
+	"press.echoes_in_ink.impression.map.3": "X OZNACZA SCHOWEK",
 	"subtitles.echoes_in_ink.printing_press.assemble": "Zainstalowano część prasy",
 	"subtitles.echoes_in_ink.printing_press.load": "Załadowano prasę",
 	"subtitles.echoes_in_ink.printing_press.carriage": "Wózek prasy się przesuwa",
@@ -248,4 +263,3 @@
 	"subtitles.echoes_in_ink.echo.impact": "Uderzenie echa",
 	"subtitles.echoes_in_ink.echo.clue": "Echo zostawia trop"
 }
-

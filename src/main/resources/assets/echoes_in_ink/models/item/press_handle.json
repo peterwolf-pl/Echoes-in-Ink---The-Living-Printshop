@@ -1,6 +1,69 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:block/block",
   "textures": {
-    "layer0": "echoes_in_ink:item/press_handle"
-  }
+    "particle": "echoes_in_ink:block/press_wood",
+    "wood": "echoes_in_ink:block/press_wood",
+    "metal": "echoes_in_ink:block/press_metal"
+  },
+  "display": {
+    "fixed": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    }
+  },
+  "elements": [
+    {
+      "name": "long_bar",
+      "from": [0, 7, 7],
+      "to": [16, 9, 9],
+      "faces": {
+        "north": {"texture": "#wood"},
+        "south": {"texture": "#wood"},
+        "west": {"texture": "#wood"},
+        "east": {"texture": "#wood"},
+        "up": {"texture": "#wood"},
+        "down": {"texture": "#wood"}
+      }
+    },
+    {
+      "name": "iron_socket",
+      "from": [6, 5.5, 5.5],
+      "to": [10, 10.5, 10.5],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"},
+        "down": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "left_wooden_grip",
+      "from": [0, 5.75, 5.75],
+      "to": [3, 10.25, 10.25],
+      "faces": {
+        "north": {"texture": "#wood"},
+        "south": {"texture": "#wood"},
+        "west": {"texture": "#wood"},
+        "east": {"texture": "#wood"},
+        "up": {"texture": "#wood"},
+        "down": {"texture": "#wood"}
+      }
+    },
+    {
+      "name": "right_wooden_grip",
+      "from": [13, 5.75, 5.75],
+      "to": [16, 10.25, 10.25],
+      "faces": {
+        "north": {"texture": "#wood"},
+        "south": {"texture": "#wood"},
+        "west": {"texture": "#wood"},
+        "east": {"texture": "#wood"},
+        "up": {"texture": "#wood"},
+        "down": {"texture": "#wood"}
+      }
+    }
+  ]
 }

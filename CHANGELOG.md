@@ -2,6 +2,30 @@
 
 All notable changes to **Echoes in Ink** are documented here.
 
+## [1.0.2] — 2026-07-29
+
+### Changed
+
+- Raised the sliding press table to approximately one block above the floor for a more believable working height.
+- Added four substantial timber legs and four lower stretchers beneath the press bed.
+- Raised every animated press component, loaded material, finished sheet, and collision section with the new standing frame.
+
+## [1.0.1] — 2026-07-29
+
+### Changed
+
+- Rebuilt the printing press as a compact, historically grounded wooden screw press with massive cheeks, a timber crosshead, bed rails, iron straps, and an open-frame collision shape.
+- Replaced the four flat animated part sprites with full 3D models: threaded wooden spindle, socketed pull bar, heavy platen, and sliding carriage/type chase.
+- The pull bar now turns around the vertical spindle, the screw and platen descend together, and the carriage travels farther out for loading and collection.
+- Loaded matrix, ink, paper, and finished output are now presented separately on the press bed.
+
+### Fixed
+
+- Finished prints no longer resemble the blank input sheet: the blank page is visibly clean while every output has a stronger, high-contrast printed texture.
+- A completed impression now renders three localized lines of actual content directly on the sheet for all five printing recipes.
+- Removed the duplicate unconditional screw layer that made an incomplete press look assembled.
+- Removed the red damage overlay that incorrectly tinted the press's animated wooden and metal parts.
+
 ## [1.0.0] — 2026-07-28
 
 ### Added

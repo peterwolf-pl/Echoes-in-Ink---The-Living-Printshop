@@ -236,6 +236,21 @@
 	"echo.echoes_in_ink.last_print.clue": "A clue settles into your archive…",
 	"echo.echoes_in_ink.last_print.complete": "The Last Print Run ends. Search for what they hid.",
 	"command.echoes_in_ink.trigger_echo.success": "[Echoes in Ink] Triggered The Last Print Run.",
+	"press.echoes_in_ink.impression.instruction.1": "SET THE TYPE",
+	"press.echoes_in_ink.impression.instruction.2": "INK AND LAY PAPER",
+	"press.echoes_in_ink.impression.instruction.3": "TURN THE BAR",
+	"press.echoes_in_ink.impression.chronicle.1": "PRINTER'S CHRONICLE",
+	"press.echoes_in_ink.impression.chronicle.2": "INK REMEMBERS",
+	"press.echoes_in_ink.impression.chronicle.3": "ARCHIVE UNDER MOSS",
+	"press.echoes_in_ink.impression.woodcut.1": "ARS IN ATRAMENTO",
+	"press.echoes_in_ink.impression.woodcut.2": "THE LIVING PRESS",
+	"press.echoes_in_ink.impression.woodcut.3": "ANNO 1450",
+	"press.echoes_in_ink.impression.warning.1": "WARNING",
+	"press.echoes_in_ink.impression.warning.2": "KEEP HANDS CLEAR",
+	"press.echoes_in_ink.impression.warning.3": "OF THE PLATEN",
+	"press.echoes_in_ink.impression.map.1": "NORTH",
+	"press.echoes_in_ink.impression.map.2": "INK ARCHIVE",
+	"press.echoes_in_ink.impression.map.3": "X MARKS THE CACHE",
 	"subtitles.echoes_in_ink.printing_press.assemble": "Press part installed",
 	"subtitles.echoes_in_ink.printing_press.load": "Press loaded",
 	"subtitles.echoes_in_ink.printing_press.carriage": "Press carriage moves",
@@ -248,4 +263,3 @@
 	"subtitles.echoes_in_ink.echo.impact": "Echo impact",
 	"subtitles.echoes_in_ink.echo.clue": "Echo leaves a clue"
 }
-

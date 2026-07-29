@@ -143,9 +143,9 @@ def item_blank_archive_page() -> Image.Image:
     vline(img, 3, 1, 14, PAPER_E)
     vline(img, 12, 1, 14, PAPER_S)
     hline(img, 3, 12, 14, PAPER_S)
-    # clean lines
-    for y in (4, 6, 8, 10, 12):
-        hline(img, 5, 10, y, PAPER_STAIN)
+    # Truly blank paper: just a few fibres, never faux printed lines.
+    for x, y in ((5, 4), (10, 7), (6, 12)):
+        px(img, x, y, PAPER_STAIN)
     return img
 
 
@@ -290,14 +290,16 @@ def item_restored_chronicle_page() -> Image.Image:
     vline(img, 3, 1, 14, PAPER_E)
     vline(img, 12, 1, 14, PAPER_S)
     hline(img, 3, 12, 14, PAPER_S)
-    # filled ink lines
-    for y in (4, 6, 8, 10, 12):
-        hline(img, 5, 10, y, INK_M)
-    hline(img, 5, 8, 5, INK)
-    # gold corner mark
-    px(img, 4, 2, GOLD)
-    px(img, 5, 2, GOLD)
-    px(img, 4, 3, GOLD)
+    # Bold drop cap and dense type make this unmistakably printed at distance.
+    vline(img, 4, 4, 8, INK)
+    hline(img, 4, 6, 4, INK)
+    hline(img, 4, 6, 8, INK)
+    px(img, 6, 5, INK_M)
+    px(img, 6, 7, INK_M)
+    for y, x1 in ((4, 10), (6, 11), (8, 10), (10, 11), (12, 9)):
+        hline(img, 8 if y < 9 else 5, x1, y, INK_M)
+    # Gold archive corner mark.
+    fill_rect(img, 4, 2, 5, 3, GOLD)
     return img
 
 
@@ -320,14 +322,9 @@ def item_printers_instruction_sheet() -> Image.Image:
     fill_rect(img, 3, 1, 12, 14, PAPER)
     hline(img, 3, 12, 1, PAPER_E)
     vline(img, 3, 1, 14, PAPER_E)
-    # header bar
-    fill_rect(img, 4, 3, 11, 4, INK_M)
-    for y in (6, 8, 10, 12):
-        hline(img, 5, 10, y, INK_L)
-    # check marks as dots
-    px(img, 4, 6, INK)
-    px(img, 4, 8, INK)
-    px(img, 4, 10, INK)
+    # A heavy title survives mip filtering while the clean body remains
+    # available for the localized text rendered on the press.
+    fill_rect(img, 4, 3, 11, 4, INK)
     return img
 
 
@@ -337,44 +334,45 @@ def item_workshop_map_fragment() -> Image.Image:
     # torn edges
     for x, y in [(2, 2), (3, 2), (2, 3), (13, 12), (12, 13), (13, 13)]:
         px(img, x, y, T)
-    # map lines
-    hline(img, 4, 11, 5, INK_L)
-    vline(img, 7, 4, 11, INK_L)
-    hline(img, 5, 10, 9, INK_M)
-    # red X
-    px(img, 9, 7, RED)
-    px(img, 10, 8, RED)
-    px(img, 10, 7, RED_D)
-    px(img, 9, 8, RED_D)
+    # Strong route, north arrow and a large red X.
+    hline(img, 4, 10, 5, INK_M)
+    vline(img, 7, 4, 11, INK_M)
+    hline(img, 5, 10, 10, INK)
+    vline(img, 4, 4, 7, INK)
+    px(img, 3, 5, INK)
+    px(img, 5, 5, INK)
+    for x, y in ((9, 7), (10, 8), (11, 9), (11, 7), (10, 8), (9, 9)):
+        px(img, x, y, RED if (x + y) % 2 == 0 else RED_D)
     return img
 
 
 def item_decorative_woodcut() -> Image.Image:
     img = new_img()
     fill_rect(img, 3, 2, 12, 13, PAPER)
-    # printed woodcut ornament
-    fill_rect(img, 5, 4, 10, 11, INK)
-    fill_rect(img, 6, 5, 9, 10, PAPER)
-    fill_rect(img, 7, 6, 8, 9, INK_M)
-    # border print
-    hline(img, 4, 11, 3, INK_L)
-    hline(img, 4, 11, 12, INK_L)
-    vline(img, 4, 3, 12, INK_L)
-    vline(img, 11, 3, 12, INK_L)
+    # Dense mirrored woodcut with a double printed border.
+    hline(img, 4, 11, 3, INK)
+    hline(img, 4, 11, 12, INK)
+    vline(img, 4, 3, 12, INK)
+    vline(img, 11, 3, 12, INK)
+    for x, y in (
+        (6, 5), (9, 5), (5, 6), (7, 6), (8, 6), (10, 6),
+        (6, 7), (9, 7), (7, 8), (8, 8),
+        (6, 9), (9, 9), (5, 10), (7, 10), (8, 10), (10, 10),
+    ):
+        px(img, x, y, INK if (x + y) % 2 else INK_M)
     return img
 
 
 def item_printed_warning_poster() -> Image.Image:
     img = new_img()
     fill_rect(img, 3, 1, 12, 14, PAPER)
-    # bold poster header block (no letters)
-    fill_rect(img, 4, 3, 11, 6, INK)
-    fill_rect(img, 5, 4, 10, 5, PAPER)
-    # body bars
-    for y in (8, 10, 12):
-        hline(img, 5, 10, y, INK_M)
-    # red stamp corner
-    fill_rect(img, 9, 11, 11, 13, RED)
+    # A bold, readable exclamation and heavy type bars.
+    fill_rect(img, 4, 3, 11, 4, RED_D)
+    fill_rect(img, 7, 5, 8, 9, INK)
+    fill_rect(img, 7, 11, 8, 12, INK)
+    hline(img, 4, 11, 13, RED)
+    px(img, 4, 6, RED)
+    px(img, 11, 6, RED)
     return img
 
 
