@@ -109,6 +109,19 @@ public final class ModBlocks {
 		BlockItem::new
 	);
 
+	/**
+	 * Hung warning poster (placed by {@link pl.peterwolf.echoesinink.item.PrintedWarningPosterItem}).
+	 * No separate BlockItem — drops the print item.
+	 */
+	public static final HangingPosterBlock HANGING_POSTER = registerBlockOnly(
+		"hanging_poster",
+		key -> new HangingPosterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
+			.setId(key)
+			.strength(0.2F)
+			.sound(SoundType.WOOL)
+			.noOcclusion())
+	);
+
 	private ModBlocks() {}
 
 	public static void init() {
@@ -137,6 +150,17 @@ public final class ModBlocks {
 		item.registerBlocks(Item.BY_BLOCK, item);
 		Registry.register(BuiltInRegistries.ITEM, itemKey, item);
 		BLOCK_ITEMS.add(item);
+		return block;
+	}
+
+	/** Block without a dedicated BlockItem (item lives in ModItems). */
+	private static <T extends Block> T registerBlockOnly(
+		String path,
+		Function<ResourceKey<Block>, T> blockFactory
+	) {
+		ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, EchoesInInk.id(path));
+		T block = Registry.register(BuiltInRegistries.BLOCK, blockKey, blockFactory.apply(blockKey));
+		ALL.add(block);
 		return block;
 	}
 }

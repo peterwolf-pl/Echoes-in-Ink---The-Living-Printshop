@@ -1,0 +1,21 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "echoes_in_ink:item/printed_warning_poster",
+    "poster": "echoes_in_ink:item/printed_warning_poster"
+  },
+  "elements": [
+    {
+      "from": [1, 1, 15],
+      "to": [15, 15, 16],
+      "faces": {
+        "north": { "uv": [1, 1, 15, 15], "texture": "#poster" },
+        "south": { "uv": [1, 1, 15, 15], "texture": "#poster" },
+        "west":  { "uv": [0, 1, 1, 15], "texture": "#poster" },
+        "east":  { "uv": [15, 1, 16, 15], "texture": "#poster" },
+        "up":    { "uv": [1, 0, 15, 1], "texture": "#poster" },
+        "down":  { "uv": [1, 15, 15, 16], "texture": "#poster" }
+      }
+    }
+  ]
+}

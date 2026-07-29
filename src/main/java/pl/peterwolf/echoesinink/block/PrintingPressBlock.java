@@ -143,19 +143,18 @@ public class PrintingPressBlock extends BaseEntityBlock {
 			return InteractionResult.SUCCESS;
 		}
 
-		// 3) Item not usable here — still advance machine / show help
-		if (player.isSecondaryUseActive()) {
-			hint(player, press.statusMessage());
-			hint(player, press.nextStepMessage());
+		// 3) Held item not used as input — empty-hand sequence only when stack empty.
+		if (!stack.isEmpty()) {
+			if (player.isSecondaryUseActive()) {
+				hint(player, press.statusMessage());
+				hint(player, press.nextStepMessage());
+			} else {
+				hint(player, press.nextStepMessage());
+			}
 			return InteractionResult.SUCCESS;
 		}
 
-		String key = press.interactEmptyHand(player);
-		if (key != null && !key.isEmpty()) {
-			hint(player, Component.translatable(key));
-		}
-		hint(player, press.nextStepMessage());
-		return InteractionResult.SUCCESS;
+		return emptyHandInteract(press, player);
 	}
 
 	@Override
@@ -175,7 +174,16 @@ public class PrintingPressBlock extends BaseEntityBlock {
 		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
-		if (player.isSecondaryUseActive()) {
+		return emptyHandInteract(press, player);
+	}
+
+	/**
+	 * Empty hand: run press sequence / drawer eject.
+	 * Sneak while idle opens the drawer (remove matrix/ink/paper).
+	 * Sneak during other phases only shows status.
+	 */
+	private static InteractionResult emptyHandInteract(PrintingPressBlockEntity press, Player player) {
+		if (player.isSecondaryUseActive() && press.phase() != PressPhase.IDLE && press.phase() != PressPhase.JAMMED) {
 			hint(player, press.statusMessage());
 			hint(player, press.nextStepMessage());
 			return InteractionResult.SUCCESS;

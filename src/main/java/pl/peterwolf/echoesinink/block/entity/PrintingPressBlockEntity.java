@@ -158,10 +158,10 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 					yield Component.translatable("press.echoes_in_ink.next.matrix");
 				}
 				if (items.get(SLOT_INK).isEmpty()) {
-					yield Component.translatable("press.echoes_in_ink.next.ink");
+					yield Component.translatable("press.echoes_in_ink.next.ink_or_swap");
 				}
 				if (items.get(SLOT_PAPER).isEmpty()) {
-					yield Component.translatable("press.echoes_in_ink.next.paper");
+					yield Component.translatable("press.echoes_in_ink.next.paper_or_swap");
 				}
 				yield Component.translatable("press.echoes_in_ink.next.carriage");
 			}
@@ -189,6 +189,20 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 			return false;
 		}
 
+		// Matrix swap: hold a new matrix against a loaded drawer to replace it.
+		if (isMatrixItem(stack) && !items.get(SLOT_MATRIX).isEmpty()) {
+			ItemStack old = items.get(SLOT_MATRIX);
+			items.set(SLOT_MATRIX, stack.copyWithCount(1));
+			if (!player.getAbilities().instabuild) {
+				stack.shrink(1);
+			}
+			giveOrDrop(player, old);
+			unlockMatrix(player, items.get(SLOT_MATRIX));
+			play(ModSounds.PRESS_LOAD, 0.7F, 0.85F);
+			sync();
+			return true;
+		}
+
 		int slot = -1;
 		if (isMatrixItem(stack) && items.get(SLOT_MATRIX).isEmpty()) {
 			slot = SLOT_MATRIX;
@@ -205,21 +219,35 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		if (!player.getAbilities().instabuild) {
 			stack.shrink(1);
 		}
-		if (player instanceof ServerPlayer serverPlayer) {
-			if (slot == SLOT_MATRIX) {
-				var item = insert.getItem();
-				if (item == ModItems.WOODEN_PRINTING_MATRIX) {
-					ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_WOODEN);
-				} else if (item == ModItems.METAL_TYPE_PIECE) {
-					ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_TYPE);
-				} else if (item == ModItems.CHARCOAL_RUBBING) {
-					ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_RUBBING);
-				}
-			}
+		if (slot == SLOT_MATRIX) {
+			unlockMatrix(player, insert);
 		}
 		play(ModSounds.PRESS_LOAD, 0.7F, 1.0F);
 		sync();
 		return true;
+	}
+
+	private static void unlockMatrix(Player player, ItemStack matrix) {
+		if (!(player instanceof ServerPlayer serverPlayer)) {
+			return;
+		}
+		var item = matrix.getItem();
+		if (item == ModItems.WOODEN_PRINTING_MATRIX) {
+			ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_WOODEN);
+		} else if (item == ModItems.METAL_TYPE_PIECE) {
+			ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_TYPE);
+		} else if (item == ModItems.CHARCOAL_RUBBING) {
+			ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_RUBBING);
+		}
+	}
+
+	private static void giveOrDrop(Player player, ItemStack stack) {
+		if (stack.isEmpty()) {
+			return;
+		}
+		if (!player.getInventory().add(stack)) {
+			player.drop(stack, false);
+		}
 	}
 
 	private static boolean isMatrixItem(ItemStack stack) {
@@ -254,7 +282,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 
 		return switch (phase) {
 			case INCOMPLETE -> "press.echoes_in_ink.incomplete";
-			case IDLE -> tryPushCarriage(player);
+			case IDLE -> tryIdleEmptyHand(player);
 			case CARRIAGE_IN -> tryPullHandle(player);
 			case PRESSING -> "press.echoes_in_ink.pressing";
 			case RESETTING -> "press.echoes_in_ink.resetting";
@@ -262,6 +290,61 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 			case OUTPUT_READY -> tryCollectOutput(player);
 			case JAMMED -> clearJam(player);
 		};
+	}
+
+	/**
+	 * Idle empty-hand:
+	 * <ul>
+	 *   <li>Sneak → open drawer (eject matrix, then ink, then paper)</li>
+	 *   <li>Full load → push carriage</li>
+	 *   <li>Partial load with matrix → eject matrix (change form)</li>
+	 *   <li>Otherwise → missing-input feedback</li>
+	 * </ul>
+	 */
+	private String tryIdleEmptyHand(Player player) {
+		if (player.isShiftKeyDown()) {
+			return tryEjectDrawer(player);
+		}
+		boolean hasMatrix = !items.get(SLOT_MATRIX).isEmpty();
+		boolean hasInk = !items.get(SLOT_INK).isEmpty();
+		boolean hasPaper = !items.get(SLOT_PAPER).isEmpty();
+		if (hasMatrix && hasInk && hasPaper) {
+			return tryPushCarriage(player);
+		}
+		// Drawer metaphor: incomplete load + empty hand removes the matrix so it can be swapped.
+		if (hasMatrix) {
+			return ejectSlot(player, SLOT_MATRIX, "press.echoes_in_ink.matrix_removed");
+		}
+		if (!hasInk && !hasPaper) {
+			return "press.echoes_in_ink.missing_matrix";
+		}
+		if (!hasInk) {
+			return "press.echoes_in_ink.missing_ink";
+		}
+		return "press.echoes_in_ink.missing_paper";
+	}
+
+	/** Sneak + empty hand: pull items out of the press drawer (matrix first). */
+	private String tryEjectDrawer(Player player) {
+		if (!items.get(SLOT_MATRIX).isEmpty()) {
+			return ejectSlot(player, SLOT_MATRIX, "press.echoes_in_ink.matrix_removed");
+		}
+		if (!items.get(SLOT_INK).isEmpty()) {
+			return ejectSlot(player, SLOT_INK, "press.echoes_in_ink.ink_removed");
+		}
+		if (!items.get(SLOT_PAPER).isEmpty()) {
+			return ejectSlot(player, SLOT_PAPER, "press.echoes_in_ink.paper_removed");
+		}
+		return "press.echoes_in_ink.drawer_empty";
+	}
+
+	private String ejectSlot(Player player, int slot, String messageKey) {
+		ItemStack taken = items.get(slot).copy();
+		items.set(slot, ItemStack.EMPTY);
+		giveOrDrop(player, taken);
+		play(ModSounds.PRESS_CARRIAGE, 0.45F, 1.15F);
+		sync();
+		return messageKey;
 	}
 
 	private String tryPushCarriage(Player player) {

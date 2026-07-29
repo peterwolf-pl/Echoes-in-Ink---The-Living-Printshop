@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "echoes_in_ink:block/hanging_poster" },
+    "facing=south": { "model": "echoes_in_ink:block/hanging_poster", "y": 180 },
+    "facing=west":  { "model": "echoes_in_ink:block/hanging_poster", "y": 270 },
+    "facing=east":  { "model": "echoes_in_ink:block/hanging_poster", "y": 90 }
+  }
+}
