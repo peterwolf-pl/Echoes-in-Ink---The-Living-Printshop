@@ -10,6 +10,8 @@ public enum PressPhase implements StringRepresentable {
 	INCOMPLETE("incomplete"),
 	/** Assembled, carriage out, waiting for inputs / load. */
 	IDLE("idle"),
+	/** Ink ball or pad is moving across the exposed printing form. */
+	INKING("inking"),
 	/** Carriage slid under the platen. */
 	CARRIAGE_IN("carriage_in"),
 	/** Handle pulled — platen descending. */

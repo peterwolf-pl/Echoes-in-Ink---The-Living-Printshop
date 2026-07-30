@@ -18,6 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import pl.peterwolf.echoesinink.block.PressPhase;
@@ -34,6 +35,10 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 	private static final float WORKTABLE_RISE = 0.75F;
 	private static final float CARRIAGE_CENTER_Y = WORKTABLE_RISE + 0.22F;
 	private static final float MATRIX_CENTER_Y = WORKTABLE_RISE + 0.321F;
+	private static final float METAL_TYPE_MATRIX_Y = WORKTABLE_RISE + 0.335F;
+	private static final float METAL_TYPE_MATRIX_X_SCALE = 0.70F;
+	private static final float METAL_TYPE_MATRIX_Y_SCALE = 0.18F;
+	private static final float METAL_TYPE_MATRIX_Z_SCALE = 0.62F;
 	private static final float INPUT_SHEET_CENTER_Y = WORKTABLE_RISE + 0.366F;
 	private static final float OUTPUT_SHEET_CENTER_Y = WORKTABLE_RISE + 0.3225F;
 	private static final float IMPRESSION_TEXT_Y = WORKTABLE_RISE + 0.348F;
@@ -41,6 +46,31 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 	private static final float MAX_IMPRESSION_TEXT_SCALE = 0.0042F;
 	private static final float IMPRESSION_TEXT_WIDTH = 0.4F;
 	private static final float MAX_PLATEN_TRAVEL = 0.142F;
+	private static final float[][] METAL_TYPE_CAPS = {
+		{2.5F, 5.75F, 2.5F, 4.75F},
+		{6.25F, 9.75F, 2.5F, 4.75F},
+		{10.25F, 13.5F, 2.5F, 4.75F},
+		{2.5F, 5.75F, 5.25F, 7.5F},
+		{6.25F, 9.75F, 5.25F, 7.5F},
+		{10.25F, 13.5F, 5.25F, 7.5F},
+		{2.5F, 5.75F, 8.0F, 10.25F},
+		{6.25F, 9.75F, 8.0F, 10.25F},
+		{10.25F, 13.5F, 8.0F, 10.25F},
+		{2.5F, 5.75F, 10.75F, 13.5F},
+		{6.25F, 9.75F, 10.75F, 13.5F},
+		{10.25F, 13.5F, 10.75F, 13.5F}
+	};
+	private static final float[][] FLAT_MATRIX_INK_MARKS = {
+		{-0.18F, -0.16F, 0.12F, 0.035F},
+		{0.0F, -0.16F, 0.12F, 0.035F},
+		{0.18F, -0.16F, 0.12F, 0.035F},
+		{-0.18F, -0.05F, 0.035F, 0.13F},
+		{0.0F, -0.05F, 0.14F, 0.06F},
+		{0.18F, -0.05F, 0.035F, 0.13F},
+		{-0.18F, 0.16F, 0.12F, 0.035F},
+		{0.0F, 0.16F, 0.12F, 0.035F},
+		{0.18F, 0.16F, 0.12F, 0.035F}
+	};
 
 	private final ItemModelResolver itemModelResolver;
 	private final Font font;
@@ -72,8 +102,14 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 			base = (be.progress() + partialTick) / (float) be.maxProgress();
 		} else if (be.phase() == PressPhase.RESETTING) {
 			base = 1.0F - (be.progress() + partialTick) / 20.0F;
+		} else if (be.phase() == PressPhase.INKING && be.maxProgress() > 0) {
+			base = (be.progress() + partialTick) / (float) be.maxProgress();
 		}
 		state.animProgress = Mth.clamp(base, 0.0F, 1.0F);
+		state.matrixInked = be.matrixInked();
+		state.inkingProgress = state.phase == PressPhase.INKING
+			? state.animProgress
+			: state.matrixInked ? 1.0F : 0.0F;
 		state.hasScrew = be.hasScrew();
 		state.hasHandle = be.hasHandle();
 		state.hasPlaten = be.hasPlaten();
@@ -82,12 +118,15 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 
 		Level level = be.getLevel();
 		int seed = be.getBlockPos().hashCode();
-		state.matrixRenderState = resolveItem(
-			be.getItem(PrintingPressBlockEntity.SLOT_MATRIX), level, seed + 1
-		);
+		ItemStack matrix = be.getItem(PrintingPressBlockEntity.SLOT_MATRIX);
+		state.metalTypeMatrix = matrix.is(ModItems.METAL_TYPE_PIECE);
+		state.matrixRenderState = resolveItem(matrix, level, seed + 1);
 		state.inkRenderState = resolveItem(
 			be.getItem(PrintingPressBlockEntity.SLOT_INK), level, seed + 2
 		);
+		state.inkLayerRenderState = state.matrixRenderState == null
+			? null
+			: resolveItem(new ItemStack(Blocks.CONCRETE.black()), level, seed + 8);
 		ItemStack sheet = !state.output.isEmpty()
 			? state.output
 			: be.getItem(PrintingPressBlockEntity.SLOT_PAPER);
@@ -129,22 +168,39 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		}
 
 		if (state.matrixRenderState != null && state.output.isEmpty()) {
-			submitFlatItem(poseStack, collector, state, state.matrixRenderState,
-				MATRIX_CENTER_Y, carriageZ, 0.64F);
+			float inkCoverage = inkCoverage(state);
+			if (state.metalTypeMatrix) {
+				submitMetalTypeMatrix(
+					poseStack, collector, state, state.matrixRenderState,
+					state.inkLayerRenderState, carriageZ, inkCoverage
+				);
+			} else {
+				submitFlatItem(poseStack, collector, state, state.matrixRenderState,
+					0.0F, MATRIX_CENTER_Y, carriageZ, 0.64F);
+				submitFlatMatrixInk(
+					poseStack, collector, state, state.inkLayerRenderState,
+					carriageZ, inkCoverage
+				);
+			}
 		}
 
 		if (state.sheetRenderState != null) {
 			float sheetY = state.output.isEmpty() ? INPUT_SHEET_CENTER_Y : OUTPUT_SHEET_CENTER_Y;
+			float sheetX = state.phase == PressPhase.INKING ? 0.43F : 0.0F;
+			if (state.phase == PressPhase.INKING) {
+				sheetY += 0.04F;
+			}
 			submitFlatItem(poseStack, collector, state, state.sheetRenderState,
-				sheetY, carriageZ, 0.72F);
+				sheetX, sheetY, carriageZ, 0.72F);
 		}
 
-		if (state.inkRenderState != null
-			&& state.phase != PressPhase.PRESSING
-			&& state.phase != PressPhase.RESETTING
-			&& state.output.isEmpty()) {
-			submitItem(poseStack, collector, state, state.inkRenderState,
-				-0.36F, WORKTABLE_RISE + 0.37F, carriageZ + 0.16F, 0.22F, 0.22F, 0.22F);
+		if (state.inkRenderState != null && state.output.isEmpty()) {
+			if (state.phase == PressPhase.INKING) {
+				submitInkingTool(poseStack, collector, state, state.inkRenderState, carriageZ);
+			} else if (state.phase != PressPhase.PRESSING && state.phase != PressPhase.RESETTING) {
+				submitItem(poseStack, collector, state, state.inkRenderState,
+					-0.36F, WORKTABLE_RISE + 0.37F, carriageZ + 0.16F, 0.22F, 0.22F, 0.22F);
+			}
 		}
 
 		if (!state.output.isEmpty()) {
@@ -199,16 +255,112 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		SubmitNodeCollector collector,
 		PrintingPressRenderState state,
 		ItemStackRenderState itemRenderState,
+		float x,
 		float y,
 		float z,
 		float scale
 	) {
 		poseStack.pushPose();
-		poseStack.translate(0.0F, y, z);
+		poseStack.translate(x, y, z);
 		poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
 		poseStack.scale(scale, scale, scale);
 		draw(poseStack, collector, state, itemRenderState);
 		poseStack.popPose();
+	}
+
+	private void submitMetalTypeMatrix(
+		PoseStack poseStack,
+		SubmitNodeCollector collector,
+		PrintingPressRenderState state,
+		ItemStackRenderState matrix,
+		@Nullable ItemStackRenderState inkLayer,
+		float carriageZ,
+		float inkCoverage
+	) {
+		poseStack.pushPose();
+		poseStack.translate(0.0F, METAL_TYPE_MATRIX_Y, carriageZ);
+		poseStack.scale(
+			METAL_TYPE_MATRIX_X_SCALE,
+			METAL_TYPE_MATRIX_Y_SCALE,
+			METAL_TYPE_MATRIX_Z_SCALE
+		);
+		draw(poseStack, collector, state, matrix);
+
+		if (inkLayer != null && inkCoverage > 0.0F) {
+			int capCount = Mth.clamp(Mth.ceil(inkCoverage * METAL_TYPE_CAPS.length), 0, METAL_TYPE_CAPS.length);
+			for (int index = 0; index < capCount; index++) {
+				float[] cap = METAL_TYPE_CAPS[index];
+				float centerX = (cap[0] + cap[1]) / 32.0F - 0.5F;
+				float centerZ = (cap[2] + cap[3]) / 32.0F - 0.5F;
+				float width = (cap[1] - cap[0]) / 16.0F;
+				float depth = (cap[3] - cap[2]) / 16.0F;
+				poseStack.pushPose();
+				poseStack.translate(centerX, 0.0125F, centerZ);
+				poseStack.scale(width, 0.025F, depth);
+				draw(poseStack, collector, state, inkLayer);
+				poseStack.popPose();
+			}
+		}
+		poseStack.popPose();
+	}
+
+	private void submitFlatMatrixInk(
+		PoseStack poseStack,
+		SubmitNodeCollector collector,
+		PrintingPressRenderState state,
+		@Nullable ItemStackRenderState inkLayer,
+		float carriageZ,
+		float inkCoverage
+	) {
+		if (inkLayer == null || inkCoverage <= 0.0F) {
+			return;
+		}
+		int markCount = Mth.clamp(Mth.ceil(inkCoverage * FLAT_MATRIX_INK_MARKS.length), 0,
+			FLAT_MATRIX_INK_MARKS.length);
+		for (int index = 0; index < markCount; index++) {
+			float[] mark = FLAT_MATRIX_INK_MARKS[index];
+			submitItem(
+				poseStack, collector, state, inkLayer,
+				mark[0], MATRIX_CENTER_Y + 0.012F, carriageZ + mark[1],
+				mark[2], 0.006F, mark[3]
+			);
+		}
+	}
+
+	private void submitInkingTool(
+		PoseStack poseStack,
+		SubmitNodeCollector collector,
+		PrintingPressRenderState state,
+		ItemStackRenderState inkTool,
+		float carriageZ
+	) {
+		float strokes = Mth.clamp(state.inkingProgress, 0.0F, 0.9999F) * 4.0F;
+		int pass = Math.min(3, Mth.floor(strokes));
+		float passProgress = strokes - pass;
+		float smoothPass = passProgress * passProgress * (3.0F - 2.0F * passProgress);
+		float sweep = (pass & 1) == 0 ? smoothPass : 1.0F - smoothPass;
+		float x = Mth.lerp(sweep, -0.27F, 0.27F);
+		float z = carriageZ + Mth.lerp(pass / 3.0F, -0.17F, 0.17F);
+		float lift = 0.025F + Mth.sin(passProgress * Mth.PI) * 0.035F;
+
+		poseStack.pushPose();
+		poseStack.translate(x, METAL_TYPE_MATRIX_Y + 0.115F + lift, z);
+		poseStack.mulPose(Axis.YP.rotationDegrees(18.0F * Mth.sin(state.inkingProgress * Mth.TWO_PI)));
+		poseStack.mulPose(Axis.ZP.rotationDegrees(-10.0F + 20.0F * sweep));
+		poseStack.scale(0.22F, 0.22F, 0.22F);
+		draw(poseStack, collector, state, inkTool);
+		poseStack.popPose();
+	}
+
+	private static float inkCoverage(PrintingPressRenderState state) {
+		if (state.matrixInked) {
+			return 1.0F;
+		}
+		if (state.phase != PressPhase.INKING) {
+			return 0.0F;
+		}
+		float progress = Mth.clamp(state.inkingProgress, 0.0F, 1.0F);
+		return progress * progress * (3.0F - 2.0F * progress);
 	}
 
 	/**
@@ -298,7 +450,7 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 			// Keep every outward/resting state just beyond the fixed bed rails.
 			// A shallower idle offset made the carriage runners overlap the rails
 			// after the finished sheet was collected and shimmer while the camera moved.
-			case INCOMPLETE, IDLE, OUTPUT_READY, JAMMED -> 0.85F;
+			case INCOMPLETE, IDLE, INKING, OUTPUT_READY, JAMMED -> 0.85F;
 		};
 	}
 

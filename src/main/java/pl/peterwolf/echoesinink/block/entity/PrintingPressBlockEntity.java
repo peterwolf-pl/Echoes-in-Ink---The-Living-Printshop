@@ -47,6 +47,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 	public static final int SLOT_PAPER = 2;
 	public static final int SLOT_OUTPUT = 3;
 	public static final int SLOT_COUNT = 4;
+	public static final int INKING_DURATION_TICKS = 32;
 	private static final int[] NO_SLOTS = new int[0];
 
 	private final NonNullList<ItemStack> items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
@@ -61,6 +62,8 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 	private int maxProgress = 60;
 	/** 0..1 visual blend; advanced on server during PRESSING/RESETTING. */
 	private float animProgress;
+	/** True only after the current matrix has received ink and before impression. */
+	private boolean matrixInked;
 
 	public PrintingPressBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.PRINTING_PRESS, pos, state);
@@ -87,6 +90,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 
 	public int progress() { return progress; }
 	public int maxProgress() { return maxProgress; }
+	public boolean matrixInked() { return matrixInked; }
 
 	// ── Assembly ───────────────────────────────────────────────────────────
 
@@ -165,6 +169,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 				}
 				yield Component.translatable("press.echoes_in_ink.next.carriage");
 			}
+			case INKING -> Component.translatable("press.echoes_in_ink.next.inking");
 			case CARRIAGE_IN -> Component.translatable("press.echoes_in_ink.next.handle");
 			case PRESSING -> Component.translatable("press.echoes_in_ink.next.wait");
 			case RESETTING -> Component.translatable("press.echoes_in_ink.next.wait");
@@ -193,13 +198,18 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		if (isMatrixItem(stack) && !items.get(SLOT_MATRIX).isEmpty()) {
 			ItemStack old = items.get(SLOT_MATRIX);
 			items.set(SLOT_MATRIX, stack.copyWithCount(1));
+			matrixInked = false;
 			if (!player.getAbilities().instabuild) {
 				stack.shrink(1);
 			}
 			giveOrDrop(player, old);
 			unlockMatrix(player, items.get(SLOT_MATRIX));
-			play(ModSounds.PRESS_LOAD, 0.7F, 0.85F);
-			sync();
+			if (canStartInking()) {
+				startInking();
+			} else {
+				play(ModSounds.PRESS_LOAD, 0.7F, 0.85F);
+				sync();
+			}
 			return true;
 		}
 
@@ -216,15 +226,36 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		}
 		ItemStack insert = stack.copyWithCount(1);
 		items.set(slot, insert);
+		if (slot == SLOT_MATRIX || slot == SLOT_INK) {
+			matrixInked = false;
+		}
 		if (!player.getAbilities().instabuild) {
 			stack.shrink(1);
 		}
 		if (slot == SLOT_MATRIX) {
 			unlockMatrix(player, insert);
 		}
-		play(ModSounds.PRESS_LOAD, 0.7F, 1.0F);
-		sync();
+		if ((slot == SLOT_MATRIX || slot == SLOT_INK) && canStartInking()) {
+			startInking();
+		} else {
+			play(ModSounds.PRESS_LOAD, 0.7F, 1.0F);
+			sync();
+		}
 		return true;
+	}
+
+	private boolean canStartInking() {
+		return !items.get(SLOT_MATRIX).isEmpty() && !items.get(SLOT_INK).isEmpty();
+	}
+
+	private void startInking() {
+		phase = PressPhase.INKING;
+		progress = 0;
+		maxProgress = INKING_DURATION_TICKS;
+		animProgress = 0.0F;
+		matrixInked = false;
+		play(ModSounds.PRESS_INK, 0.55F, 0.8F);
+		sync();
 	}
 
 	private static void unlockMatrix(Player player, ItemStack matrix) {
@@ -283,6 +314,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		return switch (phase) {
 			case INCOMPLETE -> "press.echoes_in_ink.incomplete";
 			case IDLE -> tryIdleEmptyHand(player);
+			case INKING -> "press.echoes_in_ink.inking";
 			case CARRIAGE_IN -> tryPullHandle(player);
 			case PRESSING -> "press.echoes_in_ink.pressing";
 			case RESETTING -> "press.echoes_in_ink.resetting";
@@ -341,6 +373,9 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 	private String ejectSlot(Player player, int slot, String messageKey) {
 		ItemStack taken = items.get(slot).copy();
 		items.set(slot, ItemStack.EMPTY);
+		if (slot == SLOT_MATRIX || slot == SLOT_INK) {
+			matrixInked = false;
+		}
 		giveOrDrop(player, taken);
 		play(ModSounds.PRESS_CARRIAGE, 0.45F, 1.15F);
 		sync();
@@ -359,6 +394,10 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		}
 		if (!items.get(SLOT_OUTPUT).isEmpty()) {
 			return "press.echoes_in_ink.output_blocked";
+		}
+		if (!matrixInked) {
+			startInking();
+			return "press.echoes_in_ink.inking_started";
 		}
 		if (PrintingRecipes.findMatch(items.get(SLOT_MATRIX), items.get(SLOT_PAPER), items.get(SLOT_INK)).isEmpty()) {
 			phase = PressPhase.JAMMED;
@@ -464,7 +503,20 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		if (!(level instanceof ServerLevel)) {
 			return;
 		}
-		if (be.phase == PressPhase.PRESSING) {
+		if (be.phase == PressPhase.INKING) {
+			be.progress++;
+			be.animProgress = Math.min(1.0F, be.progress / (float) INKING_DURATION_TICKS);
+			be.setChanged();
+			level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+			if (be.progress >= INKING_DURATION_TICKS) {
+				be.phase = PressPhase.IDLE;
+				be.progress = 0;
+				be.animProgress = 1.0F;
+				be.matrixInked = true;
+				be.play(ModSounds.PRESS_INK, 0.45F, 1.15F);
+				be.sync();
+			}
+		} else if (be.phase == PressPhase.PRESSING) {
 			be.progress++;
 			be.animProgress = Math.min(1.0F, be.progress / (float) Math.max(1, be.maxProgress));
 			// Sync every tick so clients animate the platen/handle smoothly.
@@ -505,6 +557,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 			items.set(SLOT_PAPER, ItemStack.EMPTY);
 		}
 		items.set(SLOT_OUTPUT, recipeOpt.get().createOutput());
+		matrixInked = false;
 		phase = PressPhase.RESETTING;
 		progress = 0;
 		animProgress = 1.0F;
@@ -535,6 +588,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 			Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(ModItems.PRESS_CARRIAGE));
 		}
 		hasScrew = hasHandle = hasPlaten = hasCarriage = false;
+		matrixInked = false;
 		clearContent();
 	}
 
@@ -568,6 +622,9 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 	public ItemStack removeItem(int slot, int amount) {
 		ItemStack result = ContainerHelper.removeItem(items, slot, amount);
 		if (!result.isEmpty()) {
+			if (slot == SLOT_MATRIX || slot == SLOT_INK) {
+				matrixInked = false;
+			}
 			setChanged();
 		}
 		return result;
@@ -575,13 +632,20 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 
 	@Override
 	public ItemStack removeItemNoUpdate(int slot) {
-		return ContainerHelper.takeItem(items, slot);
+		ItemStack result = ContainerHelper.takeItem(items, slot);
+		if (!result.isEmpty() && (slot == SLOT_MATRIX || slot == SLOT_INK)) {
+			matrixInked = false;
+		}
+		return result;
 	}
 
 	@Override
 	public void setItem(int slot, ItemStack stack) {
 		items.set(slot, stack);
 		stack.limitSize(getMaxStackSize(stack));
+		if (slot == SLOT_MATRIX || slot == SLOT_INK) {
+			matrixInked = false;
+		}
 		setChanged();
 	}
 
@@ -593,6 +657,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 	@Override
 	public void clearContent() {
 		items.clear();
+		matrixInked = false;
 	}
 
 	/** Players insert via tryInsertInput; hoppers/droppers must not automate the press. */
@@ -660,6 +725,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		tag.putInt("Progress", progress);
 		tag.putInt("MaxProgress", maxProgress);
 		tag.putFloat("AnimProgress", animProgress);
+		tag.putBoolean("MatrixInked", matrixInked);
 	}
 
 	@Override
@@ -675,6 +741,12 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		progress = tag.getIntOr("Progress", 0);
 		maxProgress = tag.getIntOr("MaxProgress", 60);
 		animProgress = tag.getFloatOr("AnimProgress", 0.0F);
+		matrixInked = tag.getBooleanOr(
+			"MatrixInked",
+			phase != PressPhase.INKING
+				&& !items.get(SLOT_MATRIX).isEmpty()
+				&& !items.get(SLOT_INK).isEmpty()
+		);
 	}
 
 	@Override

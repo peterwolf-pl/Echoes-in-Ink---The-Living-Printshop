@@ -1,6 +1,232 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:block/block",
   "textures": {
-    "layer0": "echoes_in_ink:item/metal_type_piece"
-  }
+    "particle": "echoes_in_ink:block/press_metal",
+    "metal": "echoes_in_ink:block/press_metal",
+    "bed": "echoes_in_ink:block/press_stone"
+  },
+  "display": {
+    "gui": {
+      "rotation": [35, 225, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.9, 0.9, 0.9]
+    },
+    "ground": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 3, 0],
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "fixed": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    }
+  },
+  "elements": [
+    {
+      "name": "chase_bed",
+      "from": [1, 4, 1],
+      "to": [15, 5, 15],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#bed"},
+        "down": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "chase_left",
+      "from": [1, 5, 1],
+      "to": [2, 8, 15],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "chase_right",
+      "from": [14, 5, 1],
+      "to": [15, 8, 15],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "chase_front",
+      "from": [2, 5, 1],
+      "to": [14, 8, 2],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "chase_back",
+      "from": [2, 5, 14],
+      "to": [14, 8, 15],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_01",
+      "from": [2.5, 5, 2.5],
+      "to": [5.75, 8, 4.75],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_02",
+      "from": [6.25, 5, 2.5],
+      "to": [9.75, 8, 4.75],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_03",
+      "from": [10.25, 5, 2.5],
+      "to": [13.5, 8, 4.75],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_04",
+      "from": [2.5, 5, 5.25],
+      "to": [5.75, 8, 7.5],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_05",
+      "from": [6.25, 5, 5.25],
+      "to": [9.75, 8, 7.5],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_06",
+      "from": [10.25, 5, 5.25],
+      "to": [13.5, 8, 7.5],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_07",
+      "from": [2.5, 5, 8],
+      "to": [5.75, 8, 10.25],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_08",
+      "from": [6.25, 5, 8],
+      "to": [9.75, 8, 10.25],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_09",
+      "from": [10.25, 5, 8],
+      "to": [13.5, 8, 10.25],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_10",
+      "from": [2.5, 5, 10.75],
+      "to": [5.75, 8, 13.5],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_11",
+      "from": [6.25, 5, 10.75],
+      "to": [9.75, 8, 13.5],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    },
+    {
+      "name": "type_12",
+      "from": [10.25, 5, 10.75],
+      "to": [13.5, 8, 13.5],
+      "faces": {
+        "north": {"texture": "#metal"},
+        "south": {"texture": "#metal"},
+        "west": {"texture": "#metal"},
+        "east": {"texture": "#metal"},
+        "up": {"texture": "#metal"}
+      }
+    }
+  ]
 }

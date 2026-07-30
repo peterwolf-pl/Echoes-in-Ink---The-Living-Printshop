@@ -208,17 +208,19 @@ def item_wooden_printing_matrix() -> Image.Image:
 
 def item_metal_type_piece() -> Image.Image:
     img = new_img()
-    # type body
-    fill_rect(img, 5, 3, 10, 12, METAL)
-    hline(img, 5, 10, 3, METAL_L)
-    vline(img, 5, 3, 12, METAL_D)
-    vline(img, 10, 3, 12, METAL_VD)
-    # face with abstract glyph (not a real letter — block shape)
-    fill_rect(img, 6, 5, 9, 9, METAL_VD)
-    fill_rect(img, 7, 6, 8, 8, METAL_L)
-    hline(img, 6, 9, 10, METAL_D)
-    # base
-    fill_rect(img, 4, 12, 11, 13, METAL_D)
+    # Locked chase: this item represents a complete reusable forme, not one loose sort.
+    fill_rect(img, 1, 1, 14, 14, METAL_D)
+    fill_rect(img, 2, 2, 13, 13, METAL)
+    fill_rect(img, 3, 3, 12, 12, INK_M)
+    # Twelve composed type areas with narrow furniture/gutters between them.
+    for y0, y1 in ((3, 4), (6, 7), (9, 10), (12, 12)):
+        for x0, x1 in ((3, 5), (7, 9), (11, 12)):
+            fill_rect(img, x0, y0, x1, y1, METAL_L)
+            px(img, x0, y1, METAL_D)
+    hline(img, 1, 14, 1, METAL_L)
+    vline(img, 1, 1, 14, METAL_L)
+    hline(img, 1, 14, 14, METAL_VD)
+    vline(img, 14, 1, 14, METAL_VD)
     return img
 
 

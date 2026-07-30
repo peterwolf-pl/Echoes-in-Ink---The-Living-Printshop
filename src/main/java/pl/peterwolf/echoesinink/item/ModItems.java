@@ -41,7 +41,7 @@ public final class ModItems {
 		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.wooden_printing_matrix.desc"));
 
 	public static final Item METAL_TYPE_PIECE = register("metal_type_piece",
-		props -> new TooltipItem(props.stacksTo(64), "item.echoes_in_ink.metal_type_piece.desc"));
+		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.metal_type_piece.desc"));
 
 	public static final Item PRESS_SCREW = register("press_screw",
 		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.press_screw.desc"));

@@ -2,6 +2,23 @@
 
 All notable changes to **Echoes in Ink** are documented here.
 
+## [1.0.4] — 2026-07-30
+
+### Changed
+
+- Rebuilt metal type as a complete 3D printing forme: a locked iron chase with twelve separate, level type areas instead of one flat cast letter.
+- Renamed the metal-type item and archive entry to describe a composed, reusable printing matrix.
+- Reduced composed metal formes to a stack size of eight.
+
+### Added
+
+- Added a server-authoritative 32-tick inking phase before the carriage can enter the press.
+- Animated the ink ball or pad through four sweeps across the exposed form.
+- Progressively blackened only the raised printing surfaces, preserving the clean metal chase around them.
+- Persisted and synchronized the inked state, clearing it after an impression or when the form/ink is removed.
+- Added EN/PL action-bar guidance and accessibility subtitles for inking.
+- Added ClientGameTest coverage and screenshots for mid-inking and fully inked metal type.
+
 ## [1.0.3] — 2026-07-29
 
 ### Changed

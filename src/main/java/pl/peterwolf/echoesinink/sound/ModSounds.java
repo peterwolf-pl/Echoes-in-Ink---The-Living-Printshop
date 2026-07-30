@@ -13,6 +13,7 @@ import pl.peterwolf.echoesinink.EchoesInInk;
 public final class ModSounds {
 	public static final SoundEvent PRESS_ASSEMBLE = register("block.printing_press.assemble");
 	public static final SoundEvent PRESS_LOAD = register("block.printing_press.load");
+	public static final SoundEvent PRESS_INK = register("block.printing_press.ink");
 	public static final SoundEvent PRESS_CARRIAGE = register("block.printing_press.carriage");
 	public static final SoundEvent PRESS_WORK = register("block.printing_press.work");
 	public static final SoundEvent PRESS_IMPRESSION = register("block.printing_press.impression");

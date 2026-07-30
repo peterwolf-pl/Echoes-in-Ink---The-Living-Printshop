@@ -58,18 +58,72 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 
 				press.forceAssemble();
 				assertPhase(press, PressPhase.IDLE);
-				insert(press, player, new ItemStack(ModItems.WOODEN_PRINTING_MATRIX), "wooden matrix");
-				insert(press, player, new ItemStack(ModItems.INK_BALL), "ink ball");
-				insert(press, player, new ItemStack(ModItems.BLANK_ARCHIVE_PAGE), "blank page");
+				insert(press, player, new ItemStack(ModItems.METAL_TYPE_PIECE), "composed metal type forme");
+				if (press.matrixInked()) {
+					throw new AssertionError("Fresh metal type was already marked as inked");
+				}
+			});
 
+			serverContext.runCommand("time set noon");
+			serverContext.runCommand("weather clear");
+			serverContext.runCommand("gamemode spectator @a");
+			serverContext.runCommand("tp @a 0.5 4.3 -1.5 0 25");
+			context.waitTicks(10);
+			singleplayer.getClientLevel().waitForChunksRender();
+			context.getInput().pressKey(GLFW.GLFW_KEY_F1);
+			context.waitTicks(2);
+
+			serverContext.runOnServer(server -> {
+				ServerPlayer player = requirePlayer(server.getPlayerList().getPlayers());
+				var blockEntity = server.overworld().getBlockEntity(PRESS_POS);
+				if (!(blockEntity instanceof PrintingPressBlockEntity press)) {
+					throw new AssertionError("Printing press disappeared before inking");
+				}
+				insert(press, player, new ItemStack(ModItems.INK_BALL), "ink ball");
+				assertPhase(press, PressPhase.INKING);
+				if (press.matrixInked()) {
+					throw new AssertionError("Metal type became fully inked before the animation");
+				}
+			});
+			context.waitFor(client ->
+				client.level != null
+					&& client.level.getBlockEntity(PRESS_POS) instanceof PrintingPressBlockEntity press
+					&& press.phase() == PressPhase.INKING
+					&& !press.matrixInked(),
+				100
+			);
+			context.waitTicks(10);
+			takeScreenshot(context, "printing_press_metal_type_inking");
+
+			context.waitFor(client ->
+				client.level != null
+					&& client.level.getBlockEntity(PRESS_POS) instanceof PrintingPressBlockEntity press
+					&& press.phase() == PressPhase.IDLE
+					&& press.matrixInked(),
+				100
+			);
+			context.waitTicks(2);
+			takeScreenshot(context, "printing_press_metal_type_inked");
+
+			serverContext.runOnServer(server -> {
+				ServerPlayer player = requirePlayer(server.getPlayerList().getPlayers());
+				var blockEntity = server.overworld().getBlockEntity(PRESS_POS);
+				if (!(blockEntity instanceof PrintingPressBlockEntity press)) {
+					throw new AssertionError("Printing press disappeared after inking");
+				}
+				assertPhase(press, PressPhase.IDLE);
+				if (!press.matrixInked()) {
+					throw new AssertionError("Printing surface was not inked before paper loading");
+				}
+				insert(press, player, new ItemStack(ModItems.BLANK_ARCHIVE_PAGE), "blank page");
 				press.interactEmptyHand(player);
 				assertPhase(press, PressPhase.CARRIAGE_IN);
 				press.interactEmptyHand(player);
 				assertPhase(press, PressPhase.PRESSING);
 			});
 
-			// 60 recipe ticks + 20 resetting ticks, with a buffer for sync/render.
-			context.waitTicks(100);
+			// 40 metal-type recipe ticks + 20 resetting ticks, with a buffer for sync/render.
+			context.waitTicks(80);
 
 			serverContext.runOnServer(server -> {
 				ServerPlayer player = requirePlayer(server.getPlayerList().getPlayers());
@@ -83,8 +137,8 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 				assertPhase(press, PressPhase.OUTPUT_READY);
 
 				if (press.getItem(PrintingPressBlockEntity.SLOT_OUTPUT).getItem()
-					!= ModItems.PRINTERS_INSTRUCTION_SHEET) {
-					throw new AssertionError("Expected printer's instruction sheet in output slot");
+					!= ModItems.PRINTED_WARNING_POSTER) {
+					throw new AssertionError("Expected printed warning poster in output slot");
 				}
 				if (!press.getItem(PrintingPressBlockEntity.SLOT_INK).isEmpty()) {
 					throw new AssertionError("Ink was not consumed");
@@ -93,8 +147,11 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 					throw new AssertionError("Blank page was not consumed");
 				}
 				if (press.getItem(PrintingPressBlockEntity.SLOT_MATRIX).getItem()
-					!= ModItems.WOODEN_PRINTING_MATRIX) {
-					throw new AssertionError("Reusable wooden matrix was not retained");
+					!= ModItems.METAL_TYPE_PIECE) {
+					throw new AssertionError("Reusable composed type forme was not retained");
+				}
+				if (press.matrixInked()) {
+					throw new AssertionError("Printing surface remained charged after the impression");
 				}
 			});
 
@@ -102,7 +159,7 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 				client.level != null
 					&& client.level.getBlockEntity(PRESS_POS) instanceof PrintingPressBlockEntity press
 					&& press.phase() == PressPhase.OUTPUT_READY
-					&& press.getItem(PrintingPressBlockEntity.SLOT_OUTPUT).is(ModItems.PRINTERS_INSTRUCTION_SHEET),
+					&& press.getItem(PrintingPressBlockEntity.SLOT_OUTPUT).is(ModItems.PRINTED_WARNING_POSTER),
 				200
 			);
 			context.runOnClient(client -> {
@@ -112,14 +169,21 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 				}
 				assertPhase(press, PressPhase.OUTPUT_READY);
 				if (!press.getItem(PrintingPressBlockEntity.SLOT_OUTPUT)
-					.is(ModItems.PRINTERS_INSTRUCTION_SHEET)) {
-					throw new AssertionError("Client did not synchronize the printed instruction sheet");
+					.is(ModItems.PRINTED_WARNING_POSTER)) {
+					throw new AssertionError("Client did not synchronize the printed warning poster");
 				}
 
-				logFixedModelBounds(client, "printers_instruction_sheet",
-					new ItemStack(ModItems.PRINTERS_INSTRUCTION_SHEET));
+				logFixedModelBounds(client, "printed_warning_poster",
+					new ItemStack(ModItems.PRINTED_WARNING_POSTER));
 				logFixedModelBounds(client, "press_carriage",
 					new ItemStack(ModItems.PRESS_CARRIAGE));
+				AABB typeBounds = logFixedModelBounds(client, "composed_metal_type_forme",
+					new ItemStack(ModItems.METAL_TYPE_PIECE));
+				if (typeBounds.maxX - typeBounds.minX < 0.8D
+					|| typeBounds.maxY - typeBounds.minY < 0.2D
+					|| typeBounds.maxZ - typeBounds.minZ < 0.8D) {
+					throw new AssertionError("Metal type is not a full 3D printing form: " + typeBounds);
+				}
 				AABB handleBounds = logFixedModelBounds(client, "press_handle",
 					new ItemStack(ModItems.PRESS_HANDLE));
 				if (handleBounds.maxX - handleBounds.minX < 1.99D) {
@@ -127,14 +191,9 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 				}
 			});
 
-			serverContext.runCommand("time set noon");
-			serverContext.runCommand("weather clear");
-			serverContext.runCommand("gamemode spectator @a");
 			serverContext.runCommand("tp @a 0.5 4.3 -1.5 0 25");
 			context.waitTicks(10);
 			singleplayer.getClientLevel().waitForChunksRender();
-			context.getInput().pressKey(GLFW.GLFW_KEY_F1);
-			context.waitTicks(2);
 
 			takeScreenshot(context, OUTPUT_SCREENSHOT_NAME);
 
