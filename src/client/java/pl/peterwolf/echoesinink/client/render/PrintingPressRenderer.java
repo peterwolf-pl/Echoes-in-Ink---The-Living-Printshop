@@ -46,6 +46,8 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 	private static final float MAX_IMPRESSION_TEXT_SCALE = 0.0042F;
 	private static final float IMPRESSION_TEXT_WIDTH = 0.4F;
 	private static final float MAX_PLATEN_TRAVEL = 0.142F;
+	/** Above the 28/16-block wooden cap even at maximum screw travel. */
+	private static final float HANDLE_MOUNT_Y = WORKTABLE_RISE + 1.35F;
 	private static final float[][] METAL_TYPE_CAPS = {
 		{2.5F, 5.75F, 2.5F, 4.75F},
 		{6.25F, 9.75F, 2.5F, 4.75F},
@@ -223,10 +225,10 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 
 		if (state.handleRenderState != null) {
 			poseStack.pushPose();
-			poseStack.translate(0.0F, WORKTABLE_RISE + 1.02F + platenY, 0.0F);
+			poseStack.translate(0.0F, HANDLE_MOUNT_Y + platenY, 0.0F);
 			poseStack.mulPose(Axis.YP.rotationDegrees(handleAngle));
-			// Keep the iron socket over the spindle while the two-block pull bar
-			// projects beyond both sides of the one-block press frame.
+			// The extended spindle and iron socket stay above the upper timber even
+			// at full pressure, while the two-block bar projects beyond both sides.
 			poseStack.scale(1.0F, 0.3F, 0.3F);
 			draw(poseStack, collector, state, state.handleRenderState);
 			poseStack.popPose();

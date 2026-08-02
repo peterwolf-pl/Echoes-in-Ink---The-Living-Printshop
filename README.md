@@ -6,7 +6,7 @@ Discover abandoned historical print workshops, restore lost printing technology,
 
 **Author:** Peter Wolf  
 **Mod ID:** `echoes_in_ink`  
-**Version:** 1.0.4
+**Version:** 1.0.5
 
 **Licence:** MPL-2.0  
 **Repository:** https://github.com/peterwolf-pl/Echoes-in-Ink---The-Living-Printshop
@@ -87,7 +87,7 @@ Identifiers are centralized in:
 
 ```bash
 ./gradlew clean build
-# → build/libs/echoes-in-ink-1.0.4.jar
+# → build/libs/echoes-in-ink-1.0.5.jar
 ```
 
 ## Multiplayer

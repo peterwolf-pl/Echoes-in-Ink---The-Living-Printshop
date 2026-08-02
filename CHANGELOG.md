@@ -2,6 +2,24 @@
 
 All notable changes to **Echoes in Ink** are documented here.
 
+## [1.0.5] — 2026-08-02
+
+### Changed
+
+- Extended the press screw and added a visible upper handle mounting collar.
+- Raised the handle assembly above the top timber so it remains clear throughout the full pressure stroke.
+- Allowed composed metal type to print the warning poster with either an Ink Ball or an Ink Pad.
+
+### Fixed
+
+- Prevented an accepted Ink Pad with metal type from producing a false recipe jam.
+- Kept incompatible material combinations in the recoverable idle state and added clear drawer guidance instead of trapping the player in a jam-clearing loop.
+
+### Tests
+
+- Updated ClientGameTest to exercise the formerly failing metal-type and Ink Pad sequence.
+- Added an under-pressure handle-clearance screenshot and a minimum one-block screw-height assertion.
+
 ## [1.0.4] — 2026-07-30
 
 ### Changed

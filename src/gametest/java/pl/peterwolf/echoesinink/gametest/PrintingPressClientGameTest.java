@@ -79,7 +79,9 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 				if (!(blockEntity instanceof PrintingPressBlockEntity press)) {
 					throw new AssertionError("Printing press disappeared before inking");
 				}
-				insert(press, player, new ItemStack(ModItems.INK_BALL), "ink ball");
+				// Regression: metal type previously accepted an ink pad, then falsely
+				// entered JAMMED because only the ink-ball recipe was registered.
+				insert(press, player, new ItemStack(ModItems.INK_PAD), "ink pad");
 				assertPhase(press, PressPhase.INKING);
 				if (press.matrixInked()) {
 					throw new AssertionError("Metal type became fully inked before the animation");
@@ -122,8 +124,13 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 				assertPhase(press, PressPhase.PRESSING);
 			});
 
-			// 40 metal-type recipe ticks + 20 resetting ticks, with a buffer for sync/render.
-			context.waitTicks(80);
+			// Capture near maximum pressure: the raised handle must still clear the
+			// 28/16-block upper timber while the screw follows the descending platen.
+			serverContext.runCommand("tp @a -0.8 4.3 -1.5 -30 25");
+			context.waitTicks(36);
+			takeScreenshot(context, "printing_press_handle_clearance_under_pressure");
+			// Finish 40 recipe ticks + 20 resetting ticks, with a sync/render buffer.
+			context.waitTicks(44);
 
 			serverContext.runOnServer(server -> {
 				ServerPlayer player = requirePlayer(server.getPlayerList().getPlayers());
@@ -188,6 +195,11 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 					new ItemStack(ModItems.PRESS_HANDLE));
 				if (handleBounds.maxX - handleBounds.minX < 1.99D) {
 					throw new AssertionError("Press handle is not two blocks long: " + handleBounds);
+				}
+				AABB screwBounds = logFixedModelBounds(client, "extended_press_screw",
+					new ItemStack(ModItems.PRESS_SCREW));
+				if (screwBounds.maxY - screwBounds.minY < 1.0D) {
+					throw new AssertionError("Press screw does not extend above the upper frame: " + screwBounds);
 				}
 			});
 

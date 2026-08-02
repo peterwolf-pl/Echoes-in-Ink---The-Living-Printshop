@@ -1,8 +1,8 @@
 # Implementation Status
 
-**Last updated:** 2026-07-30
+**Last updated:** 2026-08-02
 
-**Version:** 1.0.4
+**Version:** 1.0.5
 
 **Current phase:** Phase 8 complete — ModJam release candidate
 
@@ -35,6 +35,6 @@
 
 ## Release artifact
 
-`build/libs/echoes-in-ink-1.0.4.jar`
+`build/libs/echoes-in-ink-1.0.5.jar`
 
 See [MODJAM_CHECKLIST.md](MODJAM_CHECKLIST.md).

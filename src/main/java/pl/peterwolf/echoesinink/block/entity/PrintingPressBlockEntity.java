@@ -167,6 +167,13 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 				if (items.get(SLOT_PAPER).isEmpty()) {
 					yield Component.translatable("press.echoes_in_ink.next.paper_or_swap");
 				}
+				if (PrintingRecipes.findMatch(
+					items.get(SLOT_MATRIX),
+					items.get(SLOT_PAPER),
+					items.get(SLOT_INK)
+				).isEmpty()) {
+					yield Component.translatable("press.echoes_in_ink.next.incompatible");
+				}
 				yield Component.translatable("press.echoes_in_ink.next.carriage");
 			}
 			case INKING -> Component.translatable("press.echoes_in_ink.next.inking");
@@ -400,8 +407,9 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 			return "press.echoes_in_ink.inking_started";
 		}
 		if (PrintingRecipes.findMatch(items.get(SLOT_MATRIX), items.get(SLOT_PAPER), items.get(SLOT_INK)).isEmpty()) {
-			phase = PressPhase.JAMMED;
-			sync();
+			// A wrong recipe is a recoverable loading choice, not a mechanical jam.
+			// Keep the carriage out and the form inked so the player can open the
+			// drawer and replace only the incompatible paper or ink.
 			return "press.echoes_in_ink.no_recipe";
 		}
 		phase = PressPhase.CARRIAGE_IN;

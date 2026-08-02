@@ -59,6 +59,17 @@ public final class PrintingRecipes {
 				40,
 				1
 			));
+			// Composed metal type is charged with either historical ink tool.
+			// The press accepts both, so both must produce the same impression.
+			list.add(new PrintingRecipe(
+				EchoesInInk.id("printed_warning_poster_ink_pad"),
+				ModItems.METAL_TYPE_PIECE,
+				ModItems.BLANK_ARCHIVE_PAGE,
+				ModItems.INK_PAD,
+				new ItemStack(ModItems.PRINTED_WARNING_POSTER),
+				40,
+				1
+			));
 			list.add(new PrintingRecipe(
 				EchoesInInk.id("workshop_map_fragment"),
 				ModItems.CHARCOAL_RUBBING,
