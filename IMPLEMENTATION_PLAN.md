@@ -56,7 +56,7 @@ Client rendering never owns gameplay authority.
 - [x] Data generation entrypoint
 - [x] Dev commands scaffold
 - [x] Git ignore, licence (MPL-2.0), tracking docs
-- [ ] Clean compile + client/server run verification
+- [x] Clean compile + client/server run verification
 
 **Acceptance:** Compiles; client and dedicated server start; mod listed; no client classes on dedicated server.
 
@@ -120,6 +120,20 @@ Follow-up: second printshop / cache / library basement / buried crate.
 ## Phase 8 — Polish, security, release
 
 Sounds, tooltips, balance, exploit hardening, screenshots, trailer shots, production JAR, ModJam checklist.
+
+## Progression rebalance — version 1.1.0
+
+- [x] Stage 1: deterministic world-bound starter allocation, complete press set,
+  starter ink/paper/matrix/documents, generic Chronicle skip removal, JVM tests.
+- [x] Stage 2: decorative versus suspicious floorboards and Magnifying Lens cues.
+- [x] Stage 3: four persistent structure variants with two layouts each and
+  specialist later-workshop profiles.
+- [x] Stage 4: reusable matrix-fragment assembly, expanded archive tracking,
+  renewable ink, multiplayer replacement recipes, and final acceptance audit.
+
+The first completed structure-bound investigation atomically claims the starter
+workshop for the whole server. This avoids fragile per-player world-generation
+rewrites while giving a multiplayer group one physical, deterministic starter set.
 
 ---
 

@@ -79,11 +79,29 @@ public final class ModBlocks {
 		InvestigatableBlockItem::new
 	);
 
-	public static final InvestigatableBlock INK_STAINED_FLOORBOARDS = register(
+	public static final DecorativeFloorboardsBlock INK_STAINED_FLOORBOARDS = register(
 		"ink_stained_floorboards",
+		key -> new DecorativeFloorboardsBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).setId(key)),
+		BlockItem::new
+	);
+
+	public static final InvestigatableBlock LOOSE_INK_STAINED_FLOORBOARDS = register(
+		"loose_ink_stained_floorboards",
 		key -> new InvestigatableBlock(
 			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).setId(key),
 			InvestigationLoot.Profile.FLOOR),
+		InvestigatableBlockItem::new
+	);
+
+	public static final InvestigatableBlock HIDDEN_FLOOR_COMPARTMENT = register(
+		"hidden_floor_compartment",
+		key -> new InvestigatableBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
+				.setId(key)
+				.strength(2.0F)
+				.sound(SoundType.WOOD),
+			InvestigationLoot.Profile.FLOOR_HIDDEN),
 		InvestigatableBlockItem::new
 	);
 

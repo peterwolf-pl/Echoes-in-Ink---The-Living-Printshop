@@ -6,6 +6,8 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -97,7 +99,23 @@ public class MagnifyingLensItem extends Item {
 		BlockState state = level.getBlockState(pos);
 		Component result = inspect(state);
 		serverPlayer.sendSystemMessage(result, true);
-		level.playSound(null, pos, SoundEvents.SPYGLASS_USE, SoundSource.PLAYERS, 0.35F, 1.4F);
+		if (state.is(ModBlocks.LOOSE_INK_STAINED_FLOORBOARDS)
+			|| state.is(ModBlocks.HIDDEN_FLOOR_COMPARTMENT)) {
+			((ServerLevel) level).sendParticles(
+				ParticleTypes.ENCHANT,
+				pos.getX() + 0.5,
+				pos.getY() + 1.03,
+				pos.getZ() + 0.5,
+				4,
+				0.18,
+				0.02,
+				0.18,
+				0.01
+			);
+			level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.28F, 1.65F);
+		} else {
+			level.playSound(null, pos, SoundEvents.SPYGLASS_USE, SoundSource.PLAYERS, 0.35F, 1.4F);
+		}
 		return InteractionResult.SUCCESS_SERVER;
 	}
 
@@ -106,6 +124,15 @@ public class MagnifyingLensItem extends Item {
 	 */
 	static Component inspect(BlockState state) {
 		Block block = state.getBlock();
+		if (block == ModBlocks.HIDDEN_FLOOR_COMPARTMENT) {
+			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.hidden_floor");
+		}
+		if (block == ModBlocks.LOOSE_INK_STAINED_FLOORBOARDS) {
+			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.loose_floor");
+		}
+		if (block == ModBlocks.INK_STAINED_FLOORBOARDS) {
+			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.decorative_floor");
+		}
 		if (block == ModBlocks.PRINTING_DEBRIS) {
 			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.debris");
 		}

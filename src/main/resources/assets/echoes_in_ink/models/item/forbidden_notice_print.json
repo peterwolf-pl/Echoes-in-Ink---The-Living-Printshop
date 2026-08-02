@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": { "layer0": "echoes_in_ink:item/printed_warning_poster" }
+}

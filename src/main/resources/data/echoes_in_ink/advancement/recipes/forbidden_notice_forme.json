@@ -1,0 +1,20 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fragment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [{ "items": [
+        "echoes_in_ink:lead_type_set",
+        "echoes_in_ink:iron_chase",
+        "echoes_in_ink:missing_headline_type",
+        "echoes_in_ink:printers_notes"
+      ] }] }
+    },
+    "has_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": { "recipe": "echoes_in_ink:forbidden_notice_forme" }
+    }
+  },
+  "requirements": [["has_fragment", "has_recipe"]],
+  "rewards": { "recipes": ["echoes_in_ink:forbidden_notice_forme"] }
+}

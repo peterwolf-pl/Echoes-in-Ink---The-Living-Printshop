@@ -2,6 +2,49 @@
 
 All notable changes to **Echoes in Ink** are documented here.
 
+## [1.1.0] — 2026-08-02
+
+### Progression rebalance — Stage 1
+
+- Added a world-persistent starter printshop claim shared by multiplayer groups.
+- Bound the screw, platen, carriage, and handle to four distinct investigation locations.
+- Guaranteed a basic matrix, damaged page, at least five blank pages, configurable ink for five impressions, a readable instruction sheet, and a follow-up clue.
+- Added stable later-workshop specialist reward allocation keyed by workshop ID, variant, and investigation role.
+- Removed Restored Chronicle Pages and mandatory press parts from generic chest loot.
+- Reduced generic press-part rewards to rare optional spares controlled by configuration.
+- Added migration-safe workshop identity/role fields to investigation block entities and carried block data.
+- Connected the existing Fabric datagen entrypoint to a strict `runDatagen` Loom run configuration.
+- Added JUnit coverage for complete unique starter sets, starter operating supplies,
+  later reward priorities, deterministic allocation, floor-count contracts, and generic loot skips.
+
+### Progression rebalance — Stage 2
+
+- Converted ordinary ink-stained floorboards to non-investigatable decoration while retaining their legacy state property for existing-world loading.
+- Added uncommon Loose Ink-Stained Floorboards and one high-value Hidden Floor Compartment role.
+- Connected `suspiciousFloorboardsPerWorkshop` to generation with a sanitized range of three through five total targets.
+- Added distinct localized Magnifying Lens messages, enchant particles, and a subtle chime for suspicious floors.
+- Added block models, item definitions, loot tables, EN/PL names, and automated configured-count coverage.
+
+### Progression rebalance — Stage 3
+
+- Added stable Rural Woodcut, Town Type Foundry, Scholarly Archive, and Burned Clandestine structure selection.
+- Added two deterministic layout subvariants per major type and persisted variant/layout fields in structure NBT with rural migration defaults.
+- Differentiated footprints, entrances, room divisions, roof-collapse shapes, cellar/crawlspace arrangements, machine remains, storytelling props, and construction palettes.
+- Added four specialist optional chest tables; required starter items remain on deterministic semantic nodes.
+- Connected `enablePrintshopVariants` to generation, with a rural compatibility fallback.
+- Added tests for stable selection/distribution, stored-identity round trips, migration defaults, and exact required-role placement in every procedural builder.
+
+### Progression rebalance — Stage 4
+
+- Added data-pack assembly recipes for the Village Chronicle Matrix and Forbidden Notice Metal Forme.
+- Added two reusable-form press recipes with readable Village Chronicle and Forbidden Notice outputs, Archive entries, and story leads.
+- Added a renewable four-Ink-Ball recipe from charcoal and clay while preserving one-item-per-impression consumption.
+- Added Press Screw, Handle, Platen, and Carriage replacement recipes revealed after the first handle pull for multiplayer recovery.
+- Expanded the migration-safe, owner-only Printer's Archive attachment with a press checklist, workshop IDs/variants, recovered material, available recipe, printed-work, and unresolved-clue tracking.
+- Fixed collected prints losing their Archive identity after inventory insertion reduced the transfer stack to zero.
+- Added JVM contracts for matrix definitions/recipes, Archive copy/tracking, and carried investigation state.
+- Added integrated ClientGameTest coverage for the complete starter-only assembly and Restored Chronicle print loop, specialist recipes, replacement tracking, and break/place reroll protection.
+
 ## [1.0.5] — 2026-08-02
 
 ### Changed

@@ -79,6 +79,24 @@ public final class PrintingRecipes {
 				70,
 				1
 			));
+			list.add(new PrintingRecipe(
+				EchoesInInk.id("village_chronicle_print"),
+				ModItems.VILLAGE_CHRONICLE_MATRIX,
+				ModItems.BLANK_ARCHIVE_PAGE,
+				ModItems.INK_BALL,
+				new ItemStack(ModItems.VILLAGE_CHRONICLE_PRINT),
+				70,
+				1
+			));
+			list.add(new PrintingRecipe(
+				EchoesInInk.id("forbidden_notice_print"),
+				ModItems.FORBIDDEN_NOTICE_FORME,
+				ModItems.BLANK_ARCHIVE_PAGE,
+				ModItems.INK_PAD,
+				new ItemStack(ModItems.FORBIDDEN_NOTICE_PRINT),
+				70,
+				1
+			));
 			recipes = List.copyOf(list);
 		}
 		return recipes;
@@ -95,5 +113,16 @@ public final class PrintingRecipes {
 
 	public static List<PrintingRecipe> all() {
 		return recipes();
+	}
+
+	public static List<String> recipeIdsForMatrix(ItemStack matrix) {
+		if (matrix.isEmpty()) {
+			return List.of();
+		}
+		return recipes().stream()
+			.filter(recipe -> recipe.matrix() == matrix.getItem())
+			.map(recipe -> recipe.id().getPath())
+			.distinct()
+			.toList();
 	}
 }

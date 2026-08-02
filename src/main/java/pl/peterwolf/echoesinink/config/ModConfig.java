@@ -31,6 +31,16 @@ public final class ModConfig {
 	public int printshopSpacingChunks = 32;
 	public int printshopSeparationChunks = 12;
 	public boolean enablePrintshopGeneration = true;
+	/** Use all four stable visual/functional variants; false preserves a rural layout. */
+	public boolean enablePrintshopVariants = true;
+	/** First structure-bound investigation claims one complete deterministic starter set. */
+	public boolean starterPrintshopGuaranteesFullPress = true;
+	/** Number of consumable Ink Balls guaranteed at the starter ink station. */
+	public int starterInkImpressions = 5;
+	/** Total loose/hidden floor investigation targets placed per workshop. */
+	public int suspiciousFloorboardsPerWorkshop = 4;
+	/** Permit a rare, secondary replacement part in deterministic later-ruin rewards. */
+	public boolean allowSparePressPartsInLaterRuins = true;
 
 	// ── Printing press (Phase 4) ───────────────────────────────────────────
 	public int defaultPrintingDurationTicks = 60;
@@ -83,6 +93,8 @@ public final class ModConfig {
 		c.lensInspectCooldownTicks = clamp(c.lensInspectCooldownTicks, 0, 200);
 		c.printshopSpacingChunks = clamp(c.printshopSpacingChunks, 8, 256);
 		c.printshopSeparationChunks = clamp(c.printshopSeparationChunks, 0, Math.max(0, c.printshopSpacingChunks - 1));
+		c.starterInkImpressions = clamp(c.starterInkImpressions, 1, 16);
+		c.suspiciousFloorboardsPerWorkshop = clamp(c.suspiciousFloorboardsPerWorkshop, 3, 5);
 		c.defaultPrintingDurationTicks = clamp(c.defaultPrintingDurationTicks, 10, 600);
 		c.echoDurationTicks = clamp(c.echoDurationTicks, 100, 72000);
 		if (Double.isNaN(c.echoVolume) || Double.isInfinite(c.echoVolume)) {

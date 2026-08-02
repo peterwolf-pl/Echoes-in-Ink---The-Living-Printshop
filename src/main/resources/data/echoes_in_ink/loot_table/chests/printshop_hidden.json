@@ -15,9 +15,9 @@
       },
       "entries": [
         { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 3 },
-        { "type": "minecraft:item", "name": "echoes_in_ink:press_screw", "weight": 2 },
-        { "type": "minecraft:item", "name": "echoes_in_ink:press_platen", "weight": 2 },
-        { "type": "minecraft:item", "name": "echoes_in_ink:press_carriage", "weight": 2 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:upper_matrix_fragment", "weight": 2 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:lower_matrix_fragment", "weight": 2 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:printers_notes", "weight": 2 },
         {
           "type": "minecraft:item",
           "name": "echoes_in_ink:metal_type_piece",

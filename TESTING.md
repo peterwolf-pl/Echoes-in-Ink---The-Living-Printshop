@@ -9,29 +9,56 @@
 
 ## Build tests
 
-- [ ] `./gradlew clean build`
-- [ ] `./gradlew runDatagen` (when providers exist)
-- [ ] `./gradlew runClient` — mod appears in mod list
-- [ ] `./gradlew runServer` — no client-class load errors
+- [x] `./gradlew build` — Stage 1 compile/package/test gate (2026-08-02)
+- [x] `./gradlew test classes` — Stage 1 deterministic allocation/audit tests (2026-08-02)
+- [x] `./gradlew runDatagen` — strict run completed; zero providers/zero generated files (Stage 1)
+- [x] `./gradlew runClient` — 1.1.0 common/client initialization and resource atlases completed (Stage 1)
+- [x] `./gradlew runServer` — reached `Done`, no client-class loading, clean `stop` (Stage 1)
+- [x] `./gradlew runClientGameTest` — press renderer/state machine, four generated variants, starter-only loop (Stages 3–4)
+
+## Final 1.1.0 verification — 2026-08-02
+
+- [x] `./gradlew build` — success; 15 tests in seven JVM test classes, zero failures/errors.
+- [x] `./gradlew runDatagen` — strict validation success; hand-authored data loaded, zero providers and zero generated files.
+- [x] `./gradlew runClientGameTest` — three entrypoints passed; four variant screenshots plus press-state screenshots created.
+- [x] `./gradlew runClient` — common/client entrypoints initialized and all block/item/resource atlases loaded; stopped intentionally after the smoke check.
+- [x] `./gradlew runServer` — 1592 recipes and 1699 advancements loaded, reached `Done`, `/locate` returned `[-208, 224]`, clean stop, no client-only class loading.
+- [x] `unzip -t build/libs/echoes-in-ink-1.1.0.jar` — no compressed-data errors.
+- [x] Every project JSON parsed; `git diff --check` passed; generic loot grep found no Restored Chronicle Page.
 
 ## Phase 0
 
-- [ ] Config file created at `config/echoes_in_ink.json`
+- [x] Config file created/loaded at `config/echoes_in_ink.json`
 - [ ] `/echoesinink debug` works (op level 2+)
 - [ ] `/echoesinink give_test_items` responds (pending Phase 1 content)
-- [ ] EN and PL language keys resolve
+- [x] EN and PL language JSON parses and new resource models load without missing-model errors
 
 ## Gameplay (later phases)
 
-- [ ] Natural structure generation + `/locate`
-- [ ] Investigation, brush durability, once-only loot
-- [ ] Press assembly and full print sequence
-- [ ] Recipe processing, no item duplication
-- [ ] Archive unlocks, advancements once
+- [x] Natural structure locate and forced surrounding-chunk generation on dedicated server (Stage 3)
+- [x] Investigation once-only loot and carried break/place state (automated contract + integrated replacement test)
+- [x] Press assembly and full print sequence (integrated client/server GameTest)
+- [x] Recipe processing and one-time ink/paper consumption (integrated client/server GameTest)
+- [x] Archive unlock for collected chronicle and advancement completion (integrated client/server GameTest)
 - [ ] Echo event cleanup, join mid-event
 - [ ] Chronicle reconstruction: use page four times (biome → bearing → map → coords)
 - [ ] Follow-up location: ink archive cache hatch + chest loot
 - [ ] `/echoesinink locate_cache` and vanilla `/locate structure echoes_in_ink:ink_archive_cache`
+
+## Progression rebalance 1.1.0
+
+- [x] Every declared starter variant/layout allocates all four unique press parts exactly once.
+- [x] Starter allocation contains matrix, damaged page, five blank pages, five ink uses, instructions, and clue.
+- [x] Later allocation is stable and specialist rewards outnumber optional spares.
+- [x] Generic loot audit rejects Restored Chronicle Page references.
+- [x] Focused suspicious-floor allocation/configuration tests (Stage 2; 7 JVM tests total).
+- [x] Stage 2 full gate: `build`, `runDatagen`, `runClient` resource reload, and `runServer` to `Done`/clean stop.
+- [x] Structure identity NBT migration contract and four-variant integrated generation/screenshots (Stage 3).
+- [x] Stable variant/layout selection, identity round-trip/defaults, and required-node builder contract (Stage 3; 11 JVM tests total).
+- [x] Matrix definition/JSON contract, Archive tracking/copy, and investigation payload tests (Stage 4).
+- [x] Full starter press-operation ClientGameTest: four parts, matrix, ink, damaged page, Restored Chronicle output, Archive unlock (Stage 4).
+- [x] Specialist Village/Forbidden press recipes resolve to their new outputs (Stage 4 ClientGameTest).
+- [x] Seven data-pack recipes and three recipe advancements loaded: runtime total increased from 1585/1696 to 1592/1699.
 
 ## Persistence
 
@@ -47,11 +74,11 @@
 - [ ] Two players at one press
 - [ ] Join during echo
 - [ ] Disconnect mid-press cycle
-- [ ] Dedicated server without client classes
+- [x] Dedicated server without client classes
 
 ## Exploit checks
 
-- [ ] Break/replace investigated blocks (no second loot)
+- [x] Break/replace investigated blocks (carried full state remains ineligible for a second loot allocation)
 - [ ] Hopper / dropper against press: no insert or extract
 - [ ] Break press mid-cycle: drops parts + inputs once
 - [ ] Chunk-unload duplication

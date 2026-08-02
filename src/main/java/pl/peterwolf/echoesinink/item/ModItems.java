@@ -43,6 +43,33 @@ public final class ModItems {
 	public static final Item METAL_TYPE_PIECE = register("metal_type_piece",
 		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.metal_type_piece.desc"));
 
+	public static final Item UPPER_MATRIX_FRAGMENT = register("upper_matrix_fragment",
+		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.upper_matrix_fragment.desc"));
+
+	public static final Item LOWER_MATRIX_FRAGMENT = register("lower_matrix_fragment",
+		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.lower_matrix_fragment.desc"));
+
+	public static final Item MISSING_LETTER_INSERT = register("missing_letter_insert",
+		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.missing_letter_insert.desc"));
+
+	public static final Item VILLAGE_CHRONICLE_MATRIX = register("village_chronicle_matrix",
+		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.village_chronicle_matrix.desc"));
+
+	public static final Item LEAD_TYPE_SET = register("lead_type_set",
+		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.lead_type_set.desc"));
+
+	public static final Item IRON_CHASE = register("iron_chase",
+		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.iron_chase.desc"));
+
+	public static final Item MISSING_HEADLINE_TYPE = register("missing_headline_type",
+		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.missing_headline_type.desc"));
+
+	public static final Item PRINTERS_NOTES = register("printers_notes",
+		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.printers_notes.desc"));
+
+	public static final Item FORBIDDEN_NOTICE_FORME = register("forbidden_notice_forme",
+		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.forbidden_notice_forme.desc"));
+
 	public static final Item PRESS_SCREW = register("press_screw",
 		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.press_screw.desc"));
 
@@ -74,6 +101,12 @@ public final class ModItems {
 
 	public static final Item PRINTED_WARNING_POSTER = register("printed_warning_poster",
 		props -> new PrintedWarningPosterItem(props.stacksTo(16)));
+
+	public static final Item VILLAGE_CHRONICLE_PRINT = register("village_chronicle_print",
+		props -> new ReadablePrintItem(props.stacksTo(16), "village_chronicle_print", 5));
+
+	public static final Item FORBIDDEN_NOTICE_PRINT = register("forbidden_notice_print",
+		props -> new ReadablePrintItem(props.stacksTo(16), "forbidden_notice_print", 5));
 
 	public static final Item PRINTERS_ARCHIVE = register("printers_archive",
 		props -> new PrintersArchiveItem(props.stacksTo(1)));

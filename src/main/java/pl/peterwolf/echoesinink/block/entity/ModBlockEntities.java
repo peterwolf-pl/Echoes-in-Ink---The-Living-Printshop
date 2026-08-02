@@ -27,7 +27,8 @@ public final class ModBlockEntities {
 				ModBlocks.COLLAPSED_TYPE_CABINET,
 				ModBlocks.DAMAGED_ARCHIVE_SHELF,
 				ModBlocks.BROKEN_PRESS_FRAME,
-				ModBlocks.INK_STAINED_FLOORBOARDS,
+				ModBlocks.LOOSE_INK_STAINED_FLOORBOARDS,
+				ModBlocks.HIDDEN_FLOOR_COMPARTMENT,
 				ModBlocks.FADED_WORKSHOP_PLAQUE
 			)
 		);
