@@ -1,6 +1,7 @@
 package pl.peterwolf.echoesinink.gametest;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -19,9 +20,12 @@ import pl.peterwolf.echoesinink.block.InvestigationState;
 import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.block.PressPhase;
 import pl.peterwolf.echoesinink.block.PrintingPressBlock;
+import pl.peterwolf.echoesinink.block.InvestigatableBlock;
 import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
 import pl.peterwolf.echoesinink.block.entity.PrintingPressBlockEntity;
 import pl.peterwolf.echoesinink.item.ModItems;
+import pl.peterwolf.echoesinink.progression.InvestigationRole;
+import pl.peterwolf.echoesinink.progression.PrintshopProgressionSavedData;
 import pl.peterwolf.echoesinink.progression.RewardKind;
 import pl.peterwolf.echoesinink.progression.RewardStack;
 import pl.peterwolf.echoesinink.progression.WorkshopLayoutPlan;
@@ -55,6 +59,10 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 					PRESS_POS,
 					ModBlocks.PRINTING_PRESS.defaultBlockState().setValue(PrintingPressBlock.FACING, Direction.NORTH)
 				);
+				verifyFullySearchedLegacyRecovery(level, player);
+				player.getInventory().clearContent();
+				harvestStarterWorkshop(level, player);
+				assertInventoryContainsStarterParts(player);
 
 				PrintingPressBlockEntity press = requirePress(level);
 				Map<RewardKind, Integer> starter = starterInventory();
@@ -90,6 +98,10 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 				if (press.phase() != PressPhase.PRESSING) {
 					throw new AssertionError("Starter press did not begin the first impression");
 				}
+				if (!PrintshopProgressionSavedData.get(server.overworld()).basicPressOperated()) {
+					throw new AssertionError("A real handle pull did not close starter reward mode");
+				}
+				verifyLaterWorkshopSwitch(server.overworld(), player);
 			});
 
 			context.waitTicks(110);
@@ -126,6 +138,128 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 			}
 		}
 		return result;
+	}
+
+	private static void harvestStarterWorkshop(
+		net.minecraft.server.level.ServerLevel level,
+		ServerPlayer player
+	) {
+		InvestigationRole[] roles = {
+			InvestigationRole.PRESS_FRAME,
+			InvestigationRole.MACHINE_REMAINS,
+			InvestigationRole.CELLAR_CACHE,
+			InvestigationRole.FLOOR_CACHE,
+			InvestigationRole.MATRIX_BENCH,
+			InvestigationRole.ARCHIVE_DESK,
+			InvestigationRole.INK_STATION,
+			InvestigationRole.PLAQUE_CLUE
+		};
+		var blocks = new net.minecraft.world.level.block.Block[] {
+			ModBlocks.BROKEN_PRESS_FRAME,
+			ModBlocks.PRINTING_DEBRIS,
+			ModBlocks.PRINTING_DEBRIS,
+			ModBlocks.HIDDEN_FLOOR_COMPARTMENT,
+			ModBlocks.DUSTY_PRINTING_TABLE,
+			ModBlocks.DAMAGED_ARCHIVE_SHELF,
+			ModBlocks.COLLAPSED_TYPE_CABINET,
+			ModBlocks.FADED_WORKSHOP_PLAQUE
+		};
+		for (int i = 0; i < roles.length; i++) {
+			BlockPos pos = new BlockPos(-4 + i, 4, 2);
+			level.setBlockAndUpdate(pos, blocks[i].defaultBlockState());
+			if (!(level.getBlockEntity(pos) instanceof InvestigationBlockEntity investigation)) {
+				throw new AssertionError("Starter investigation node missing at " + pos);
+			}
+			investigation.configureWorkshop("starter_reward_path", WorkshopVariant.RURAL_WOODCUT, roles[i]);
+			investigation.clean(level, player);
+			investigation.clean(level, player);
+			if (!investigation.isLootGenerated() || !investigation.lastResultId().startsWith("starter:")) {
+				throw new AssertionError("Real cleaning path missed starter reward for " + roles[i]);
+			}
+		}
+	}
+
+	private static void assertInventoryContainsStarterParts(ServerPlayer player) {
+		for (var item : List.of(
+			ModItems.PRESS_SCREW,
+			ModItems.PRESS_HANDLE,
+			ModItems.PRESS_PLATEN,
+			ModItems.PRESS_CARRIAGE
+		)) {
+			if (player.getInventory().countItem(item) < 1) {
+				throw new AssertionError("Real investigation did not grant " + item);
+			}
+		}
+	}
+
+	private static void verifyLaterWorkshopSwitch(
+		net.minecraft.server.level.ServerLevel level,
+		ServerPlayer player
+	) {
+		BlockPos pos = new BlockPos(4, 4, -2);
+		level.setBlockAndUpdate(pos, ModBlocks.BROKEN_PRESS_FRAME.defaultBlockState());
+		if (!(level.getBlockEntity(pos) instanceof InvestigationBlockEntity investigation)) {
+			throw new AssertionError("Later-workshop node missing");
+		}
+		investigation.configureWorkshop(
+			"after_press_workshop",
+			WorkshopVariant.RURAL_WOODCUT,
+			InvestigationRole.PRESS_FRAME
+		);
+		investigation.clean(level, player);
+		investigation.clean(level, player);
+		if (!investigation.lastResultId().startsWith("later:")) {
+			throw new AssertionError("Later workshop did not switch to specialist rewards");
+		}
+	}
+
+	private static void verifyFullySearchedLegacyRecovery(
+		net.minecraft.server.level.ServerLevel level,
+		ServerPlayer player
+	) {
+		BlockPos base = new BlockPos(40, 4, 40);
+		level.getChunk(base.getX() >> 4, base.getZ() >> 4);
+		var blocks = new net.minecraft.world.level.block.Block[] {
+			ModBlocks.BROKEN_PRESS_FRAME,
+			ModBlocks.BROKEN_PRESS_FRAME,
+			ModBlocks.DUSTY_PRINTING_TABLE,
+			ModBlocks.DAMAGED_ARCHIVE_SHELF,
+			ModBlocks.COLLAPSED_TYPE_CABINET,
+			ModBlocks.PRINTING_DEBRIS,
+			ModBlocks.PRINTING_DEBRIS,
+			ModBlocks.FADED_WORKSHOP_PLAQUE
+		};
+		for (int i = 0; i < blocks.length; i++) {
+			BlockPos pos = base.offset(i, 0, 0);
+			level.setBlockAndUpdate(
+				pos,
+				blocks[i].defaultBlockState().setValue(
+					InvestigatableBlock.INVESTIGATION,
+					InvestigationState.FULLY_INVESTIGATED
+				)
+			);
+			if (!(level.getBlockEntity(pos) instanceof InvestigationBlockEntity investigation)) {
+				throw new AssertionError("Legacy node missing at index " + i);
+			}
+			investigation.applyFromItemData(InvestigationData.of(
+				true,
+				"legacy:weighted",
+				InvestigationState.FULLY_INVESTIGATED
+			));
+		}
+		InvestigationBlockEntity trigger = (InvestigationBlockEntity) level.getBlockEntity(base);
+		if (!trigger.clean(level, player)
+			|| !trigger.lastResultId().equals("starter:legacy_compensation")) {
+			throw new AssertionError("Fully searched legacy printshop did not compensate on revisit");
+		}
+		for (int i = 0; i < blocks.length; i++) {
+			if (!(level.getBlockEntity(base.offset(i, 0, 0)) instanceof InvestigationBlockEntity investigation)
+				|| investigation.workshopId().isBlank()
+				|| investigation.investigationRole().isBlank()) {
+				throw new AssertionError("Legacy node remained unbound at index " + i);
+			}
+		}
+		assertInventoryContainsStarterParts(player);
 	}
 
 	private static void install(

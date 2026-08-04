@@ -6,7 +6,7 @@ Discover abandoned historical print workshops, restore lost printing technology,
 
 **Author:** Peter Wolf  
 **Mod ID:** `echoes_in_ink`  
-**Version:** 1.1.0
+**Version:** 1.1.1
 
 **Licence:** MPL-2.0
 
@@ -36,10 +36,19 @@ Discover abandoned historical print workshops, restore lost printing technology,
 
 ## Progression rebalance
 
-The first structure-bound investigation completed in a world now claims that
-printshop as the shared multiplayer starter workshop. Its stable workshop ID,
-semantic investigation roles, and world saved data guarantee the complete
-starter inventory across chunk unloads and server restarts.
+Semantic investigation roles and world saved data guarantee the complete
+starter inventory across chunk unloads and server restarts. Starter mode stays
+active in every visited printshop until a complete press actually pulls its
+handle, so leaving an earlier ruin cannot permanently remove required parts.
+After that real press run, newly investigated printshops switch to their stable
+specialist profiles.
+
+Printshops generated before 1.1 are upgraded when an unbound investigation
+node is next cleaned. Their old furniture is assigned deterministic semantic
+roles; rewards belonging to already searched mandatory roles are compensated
+through that migration interaction. If every old node was already fully
+searched, use the Printer's Brush on any investigated printshop furniture once
+more to trigger the same one-time recovery bundle.
 
 The starter printshop guarantees:
 
@@ -86,8 +95,9 @@ two stable layout subvariants:
 
 Their footprints, entrance positions, roof collapse, cellar/crawlspace, machine
 remains, props, deterministic investigation rewards, and optional chest tables
-differ. `enablePrintshopVariants=false` preserves the rural layout selection for
-compatibility.
+differ. Every variant also contains several cobwebs, laid papers/prints on work
+surfaces, and wall posters. `enablePrintshopVariants=false` preserves the rural
+layout selection for compatibility.
 
 ### Matrix, ink, and archive progression
 
@@ -137,6 +147,15 @@ Typical sequence:
 ## Exploration and investigation
 
 Printshops contain investigatable machine remains, archive shelves, type cabinets, printing tables, plaques, debris, and hidden storage.
+
+The Faded Workshop Plaque is not filler decoration. Inspect it with the
+Magnifying Lens and clean it with the Printer's Brush. During starter mode it
+contains the Printer's Instruction Sheet and Workshop Map Fragment; later it
+provides a stable historical clue.
+
+Every custom item and block item has two tooltip lines: a description and an
+explicit gameplay purpose identifying required components, crafting parts,
+investigation locations, optional tools, finished prints, or decoration.
 
 Investigation state and generated loot are server-authoritative and persist across chunk unloads and restarts. Breaking and replacing investigated blocks does not reroll their contents.
 
@@ -205,11 +224,12 @@ The production artifact is generated in `build/libs`.
 
 The mod uses a server-authoritative design. Dedicated servers must not load client-only rendering classes. Clients handle rendering, animation interpolation, particles, subtitles, and visual presentation only.
 
-The first investigated workshop is claimed once per world, so a group shares
-one physical deterministic starter set and cannot repeat interactions to
-duplicate it. After the first handle pull, the Press Screw, Handle, Platen, and
-Carriage replacement recipes are revealed in the player's recipe book. Later
-ruins may additionally contain rare spare parts when
+Starter mode is world-shared and remains active until the first real handle
+pull. This lets a multiplayer group recover from an abandoned or legacy ruin;
+each investigation node itself still pays only once and cannot be rerolled.
+After that handle pull, the Press Screw, Handle, Platen, and Carriage replacement
+recipes are revealed in the player's recipe book. Later ruins may additionally
+contain rare spare parts when
 `allowSparePressPartsInLaterRuins` is enabled.
 
 ## Attribution

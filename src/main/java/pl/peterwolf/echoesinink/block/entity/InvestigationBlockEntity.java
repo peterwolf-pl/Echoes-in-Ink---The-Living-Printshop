@@ -21,6 +21,7 @@ import pl.peterwolf.echoesinink.block.InvestigatableBlock;
 import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.item.ModItems;
 import pl.peterwolf.echoesinink.progression.InvestigationRole;
+import pl.peterwolf.echoesinink.progression.LegacyWorkshopBinder;
 import pl.peterwolf.echoesinink.progression.PrintshopProgressionSavedData;
 import pl.peterwolf.echoesinink.progression.RewardStack;
 import pl.peterwolf.echoesinink.progression.WorkshopRewardAllocator;
@@ -66,7 +67,7 @@ public class InvestigationBlockEntity extends BlockEntity {
 
 	/** Called by structure generation. Once assigned, a node cannot be repurposed. */
 	public void configureWorkshop(String workshopId, WorkshopVariant variant, InvestigationRole role) {
-		if (lootGenerated || !this.workshopId.isBlank() || workshopId == null || workshopId.isBlank()) {
+		if (!this.workshopId.isBlank() || workshopId == null || workshopId.isBlank()) {
 			return;
 		}
 		this.workshopId = workshopId;
@@ -109,7 +110,7 @@ public class InvestigationBlockEntity extends BlockEntity {
 		}
 		InvestigationState current = state.getValue(InvestigatableBlock.INVESTIGATION);
 		if (!current.canClean()) {
-			return false;
+			return recoverFullySearchedLegacyWorkshop(level, player, current);
 		}
 
 		InvestigationState next = current.next();
@@ -121,46 +122,98 @@ public class InvestigationBlockEntity extends BlockEntity {
 			lootGenerated = true;
 			lastResultId = result.id();
 			setChanged();
-
-			for (ItemStack stack : result.stacks()) {
-				giveOrDrop(level, player, stack.copy());
-			}
-			player.sendSystemMessage(result.message());
-			if (player instanceof ServerPlayer serverPlayer) {
-				if (!workshopId.isBlank()) {
-					ArchiveService.recordWorkshop(serverPlayer, workshopId, workshopVariant);
-				}
-				ArchiveService.unlock(serverPlayer, ArchiveEntries.CLUE_DUST);
-				ArchiveService.unlock(serverPlayer, ArchiveEntries.WORKSHOP_ASHEN);
-				for (ItemStack stack : result.stacks()) {
-					unlockForItem(serverPlayer, stack);
-				}
-				if (result.id().contains("cellar") || result.id().contains("floor_cache")) {
-					ArchiveService.unlock(serverPlayer, ArchiveEntries.CLUE_HIDDEN);
-				}
-				if (result.id().contains("plaque")) {
-					ArchiveService.unlock(serverPlayer, ArchiveEntries.CLUE_PLAQUE);
-				}
-			}
+			deliverReward(level, player, result);
 		} else if (next == InvestigationState.FULLY_INVESTIGATED && lootGenerated) {
 			player.sendSystemMessage(Component.translatable("investigation.echoes_in_ink.already_searched"));
 		}
 		return true;
 	}
 
+	private boolean recoverFullySearchedLegacyWorkshop(
+		ServerLevel level,
+		Player player,
+		InvestigationState current
+	) {
+		if (current != InvestigationState.FULLY_INVESTIGATED
+			|| (!workshopId.isBlank() && !investigationRole.isBlank())) {
+			return false;
+		}
+		LegacyWorkshopBinder.MigrationResult migration = LegacyWorkshopBinder.bind(level, worldPosition);
+		if (!migration.migrated()) {
+			return false;
+		}
+		if (!ModConfig.INSTANCE.starterPrintshopGuaranteesFullPress
+			|| !PrintshopProgressionSavedData.get(level).starterRewardsAllowed(workshopId)
+			|| migration.compensationRoles().isEmpty()) {
+			return true;
+		}
+
+		List<RewardStack> allocation = new java.util.ArrayList<>();
+		for (InvestigationRole role : migration.compensationRoles()) {
+			allocation.addAll(WorkshopRewardAllocator.starter(
+				role,
+				ModConfig.INSTANCE.starterInkImpressions
+			));
+		}
+		RewardResult result = new RewardResult(
+			"starter:legacy_compensation",
+			allocation.stream().map(WorkshopRewardItems::createStack).toList(),
+			Component.translatable("investigation.echoes_in_ink.starter_reward")
+		);
+		lastResultId = result.id();
+		setChanged();
+		deliverReward(level, player, result);
+		return true;
+	}
+
+	private void deliverReward(ServerLevel level, Player player, RewardResult result) {
+		for (ItemStack stack : result.stacks()) {
+			giveOrDrop(level, player, stack.copy());
+		}
+		player.sendSystemMessage(result.message());
+		if (player instanceof ServerPlayer serverPlayer) {
+			if (!workshopId.isBlank()) {
+				ArchiveService.recordWorkshop(serverPlayer, workshopId, workshopVariant);
+			}
+			ArchiveService.unlock(serverPlayer, ArchiveEntries.CLUE_DUST);
+			ArchiveService.unlock(serverPlayer, ArchiveEntries.WORKSHOP_ASHEN);
+			for (ItemStack stack : result.stacks()) {
+				unlockForItem(serverPlayer, stack);
+			}
+			if (result.id().contains("cellar") || result.id().contains("floor_cache")) {
+				ArchiveService.unlock(serverPlayer, ArchiveEntries.CLUE_HIDDEN);
+			}
+			if (result.id().contains("plaque")) {
+				ArchiveService.unlock(serverPlayer, ArchiveEntries.CLUE_PLAQUE);
+			}
+		}
+	}
+
 	private RewardResult createReward(ServerLevel level, InvestigatableBlock block) {
+		LegacyWorkshopBinder.MigrationResult migration = LegacyWorkshopBinder.MigrationResult.NONE;
+		if (workshopId.isBlank() || investigationRole.isBlank()) {
+			migration = LegacyWorkshopBinder.bind(level, worldPosition);
+		}
 		if (!workshopId.isBlank() && !investigationRole.isBlank()) {
 			InvestigationRole role = InvestigationRole.byId(investigationRole);
 			boolean starter = ModConfig.INSTANCE.starterPrintshopGuaranteesFullPress
-				&& PrintshopProgressionSavedData.get(level).claimAndIsStarter(workshopId);
-			List<RewardStack> allocation = starter
+				&& PrintshopProgressionSavedData.get(level).starterRewardsAllowed(workshopId);
+			List<RewardStack> allocation = new java.util.ArrayList<>(starter
 				? WorkshopRewardAllocator.starter(role, ModConfig.INSTANCE.starterInkImpressions)
 				: WorkshopRewardAllocator.later(
 					WorkshopVariant.byId(workshopVariant),
 					role,
 					workshopId,
 					ModConfig.INSTANCE.allowSparePressPartsInLaterRuins
-				);
+				));
+			if (starter) {
+				for (InvestigationRole compensatedRole : migration.compensationRoles()) {
+					allocation.addAll(WorkshopRewardAllocator.starter(
+						compensatedRole,
+						ModConfig.INSTANCE.starterInkImpressions
+					));
+				}
+			}
 			if (!allocation.isEmpty()) {
 				String prefix = starter ? "starter" : "later";
 				return new RewardResult(

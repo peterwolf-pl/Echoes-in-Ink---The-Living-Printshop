@@ -35,6 +35,7 @@ import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.item.ModItems;
 import pl.peterwolf.echoesinink.recipe.PrintingRecipe;
 import pl.peterwolf.echoesinink.recipe.PrintingRecipes;
+import pl.peterwolf.echoesinink.progression.PrintshopProgressionSavedData;
 import pl.peterwolf.echoesinink.sound.ModSounds;
 
 /**
@@ -444,6 +445,9 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		progress = 0;
 		animProgress = 0.0F;
 		phase = PressPhase.PRESSING;
+		if (level instanceof ServerLevel serverLevel) {
+			PrintshopProgressionSavedData.get(serverLevel).markBasicPressOperated();
+		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			ArchiveService.grantAdvancement(serverPlayer, pl.peterwolf.echoesinink.EchoesInInk.id("pull_the_handle"));
 			ArchiveService.recordAvailableRecipe(serverPlayer, "press_screw");

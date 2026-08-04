@@ -23,6 +23,7 @@ public final class EchoesInInkClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		ModItemTooltips.init();
 		BlockEntityRendererRegistry.register(ModBlockEntities.PRINTING_PRESS, PrintingPressRenderer::new);
 		BlockEntityRendererRegistry.register(ModBlockEntities.LAID_PAPER, LaidPaperRenderer::new);
 

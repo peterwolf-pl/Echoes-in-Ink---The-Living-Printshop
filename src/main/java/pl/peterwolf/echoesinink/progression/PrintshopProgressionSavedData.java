@@ -13,7 +13,9 @@ public final class PrintshopProgressionSavedData extends SavedData {
 	private static final Codec<PrintshopProgressionSavedData> CODEC = RecordCodecBuilder.create(instance ->
 		instance.group(
 			Codec.STRING.optionalFieldOf("starter_workshop_id", "")
-				.forGetter(PrintshopProgressionSavedData::starterWorkshopId)
+				.forGetter(PrintshopProgressionSavedData::starterWorkshopId),
+			Codec.BOOL.optionalFieldOf("basic_press_operated", false)
+				.forGetter(PrintshopProgressionSavedData::basicPressOperated)
 		).apply(instance, PrintshopProgressionSavedData::new)
 	);
 
@@ -25,11 +27,13 @@ public final class PrintshopProgressionSavedData extends SavedData {
 	);
 
 	private String starterWorkshopId = "";
+	private boolean basicPressOperated;
 
 	public PrintshopProgressionSavedData() {}
 
-	private PrintshopProgressionSavedData(String starterWorkshopId) {
+	private PrintshopProgressionSavedData(String starterWorkshopId, boolean basicPressOperated) {
 		this.starterWorkshopId = normalize(starterWorkshopId);
+		this.basicPressOperated = basicPressOperated;
 	}
 
 	public static PrintshopProgressionSavedData get(ServerLevel level) {
@@ -50,6 +54,27 @@ public final class PrintshopProgressionSavedData extends SavedData {
 			setDirty();
 		}
 		return starterWorkshopId.equals(normalized);
+	}
+
+	/**
+	 * Starter rewards remain available in every investigated workshop until the
+	 * server has actually operated a complete press. This prevents an abandoned
+	 * first ruin from permanently stranding a world without mandatory parts.
+	 */
+	public synchronized boolean starterRewardsAllowed(String workshopId) {
+		claimAndIsStarter(workshopId);
+		return !basicPressOperated && !normalize(workshopId).isEmpty();
+	}
+
+	public synchronized void markBasicPressOperated() {
+		if (!basicPressOperated) {
+			basicPressOperated = true;
+			setDirty();
+		}
+	}
+
+	public boolean basicPressOperated() {
+		return basicPressOperated;
 	}
 
 	public String starterWorkshopId() {

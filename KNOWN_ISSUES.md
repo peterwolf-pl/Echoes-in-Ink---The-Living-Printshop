@@ -20,6 +20,10 @@
 | REB-FLOOR | Every generated floorboard was an equal investigation target. | 1.1.0 Stage 2 |
 | REB-VARIANTS | Generated printshops shared one palette and layout. | 1.1.0 Stage 3 |
 | REB-ARCHIVE-OUTPUT | Collected prints were consumed into inventory before their Archive result was identified. | 1.1.0 Stage 4 |
+| REB-STARTER-STRAND | Leaving the first claimed workshop switched all later ruins away from mandatory components before a press was operated. | 1.1.1 |
+| REB-LEGACY-ROLES | Pre-1.1 generated investigation furniture had no semantic role and therefore used weighted fallback loot. | 1.1.1 |
+| REB-ASCETIC | Rebalanced variants lost much of the former cobweb, paper, and poster atmosphere. | 1.1.1 |
+| UI-ITEM-PURPOSE | Several block items lacked tooltips and item descriptions did not clearly state whether they were required. | 1.1.1 |
 
 ## Tracking guidelines
 

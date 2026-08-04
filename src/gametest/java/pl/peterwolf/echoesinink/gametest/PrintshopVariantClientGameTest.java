@@ -23,6 +23,7 @@ import org.lwjgl.glfw.GLFW;
 import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
+import pl.peterwolf.echoesinink.block.entity.LaidPaperBlockEntity;
 import pl.peterwolf.echoesinink.progression.InvestigationRole;
 import pl.peterwolf.echoesinink.progression.WorkshopLayoutPlan;
 import pl.peterwolf.echoesinink.progression.WorkshopVariant;
@@ -104,6 +105,12 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 				context.waitTicks(12);
 				singleplayer.getClientLevel().waitForChunksRender();
 				takeScreenshot(context, "printshop_variant_" + scene.variant().id());
+				serverContext.runCommand(
+					"tp @a " + (scene.x() + 0.5) + " " + (scene.baseY() + 2.25) + " "
+						+ (scene.z() + 0.5) + " 45 8"
+				);
+				context.waitTicks(6);
+				takeScreenshot(context, "printshop_variant_" + scene.variant().id() + "_interior");
 			}
 
 			context.getInput().pressKey(GLFW.GLFW_KEY_F1);
@@ -120,6 +127,10 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 		Map<InvestigationRole, Integer> roles = new EnumMap<>(InvestigationRole.class);
 		int looseFloors = 0;
 		int hiddenFloors = 0;
+		int cobwebs = 0;
+		int hangingPrints = 0;
+		int laidPrints = 0;
+		int populatedLaidPrints = 0;
 		Block signature = signatureBlock(variant);
 		boolean signatureFound = false;
 		for (int x = scan.minX(); x <= scan.maxX(); x++) {
@@ -129,6 +140,16 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 					Block block = level.getBlockState(pos).getBlock();
 					if (block == signature) {
 						signatureFound = true;
+					}
+					if (block == Blocks.COBWEB) {
+						cobwebs++;
+					} else if (block == ModBlocks.HANGING_POSTER) {
+						hangingPrints++;
+					} else if (block == ModBlocks.LAID_PAPER) {
+						laidPrints++;
+						if (level.getBlockEntity(pos) instanceof LaidPaperBlockEntity paper && !paper.page().isEmpty()) {
+							populatedLaidPrints++;
+						}
 					}
 					if (block == ModBlocks.LOOSE_INK_STAINED_FLOORBOARDS) {
 						looseFloors++;
@@ -156,9 +177,17 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 		if (!signatureFound) {
 			throw new AssertionError(variant.id() + " missing signature block " + signature);
 		}
+		if (cobwebs < 4 || hangingPrints < 2 || laidPrints < 2 || populatedLaidPrints != laidPrints) {
+			throw new AssertionError(
+				variant.id() + " atmosphere: cobwebs=" + cobwebs
+					+ ", hangingPrints=" + hangingPrints
+					+ ", laidPrints=" + laidPrints
+					+ ", populated=" + populatedLaidPrints
+			);
+		}
 		EchoesInInk.LOGGER.info(
-			"VARIANT_GAMETEST_OK variant={} layout={} roles={} suspiciousFloors={}",
-			variant.id(), layout, roles, expectedFloors
+			"VARIANT_GAMETEST_OK variant={} layout={} roles={} suspiciousFloors={} cobwebs={} hangingPrints={} laidPrints={}",
+			variant.id(), layout, roles, expectedFloors, cobwebs, hangingPrints, laidPrints
 		);
 	}
 

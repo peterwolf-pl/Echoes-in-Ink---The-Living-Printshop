@@ -2,6 +2,32 @@
 
 All notable changes to **Echoes in Ink** are documented here.
 
+## [1.1.1] — 2026-08-04
+
+### Fixed
+
+- Kept deterministic starter rewards active across additional printshops until
+  a complete press actually pulls its handle, preventing an abandoned first
+  ruin from stranding the world without press components.
+- Added automatic semantic-role migration for pre-1.1 printshops. Already
+  searched legacy roles are compensated on the next eligible investigation;
+  completely exhausted ruins recover on one more brush interaction with any
+  investigated printshop furnishing.
+- Added integrated coverage for real block cleaning, inventory delivery,
+  legacy binding, first press operation, and the later-workshop transition.
+
+### Changed
+
+- Restored a busier abandoned atmosphere with at least four cobwebs, two
+  populated laid prints/pages, and two wall posters in every generated variant.
+- Added a localized description and an explicit gameplay-purpose line to all
+  31 custom items and all 11 custom block items in English and Polish.
+- Clarified the Faded Workshop Plaque lens result and tooltip: it is a clue
+  location that yields the starter instructions and map fragment before the
+  first successful press run.
+- Expanded variant ClientGameTests with decoration counts and exterior/interior
+  screenshots for each printshop type.
+
 ## [1.1.0] — 2026-08-02
 
 ### Progression rebalance — Stage 1

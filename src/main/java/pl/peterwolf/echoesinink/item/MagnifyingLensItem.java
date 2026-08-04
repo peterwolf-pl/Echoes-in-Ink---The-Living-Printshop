@@ -153,7 +153,7 @@ public class MagnifyingLensItem extends Item {
 			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.debris");
 		}
 		if (block == ModBlocks.FADED_WORKSHOP_PLAQUE) {
-			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.shelf");
+			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.plaque");
 		}
 		if (block == ModBlocks.LAID_PAPER) {
 			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.paper");

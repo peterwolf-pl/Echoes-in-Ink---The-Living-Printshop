@@ -16,6 +16,32 @@
 - [x] `./gradlew runServer` — reached `Done`, no client-class loading, clean `stop` (Stage 1)
 - [x] `./gradlew runClientGameTest` — press renderer/state machine, four generated variants, starter-only loop (Stages 3–4)
 
+## 1.1.1 recovery and atmosphere verification — 2026-08-04
+
+- [x] `./gradlew test` — 18 tests in ten JVM test classes, zero failures/errors.
+- [x] Abandoned-first-workshop regression: first, second, and third workshops
+  remain starter-eligible until an actual handle pull; later rewards activate
+  immediately after that press operation.
+- [x] Legacy rural role planner assigns every mandatory role exactly once.
+- [x] Runtime ClientGameTest migrates a completely searched, unbound
+  pre-1.1-style furniture cluster and compensates all eight mandatory roles on
+  revisit; it then separately obtains all four components through real block
+  cleaning and verifies the delivered player inventory.
+- [x] Item description coverage requires name, description, and gameplay
+  purpose in EN/PL for 31 items and 11 block items.
+- [x] Variant ClientGameTest requires at least four cobwebs, two wall posters,
+  two laid papers/prints, and non-empty laid-paper block entities in every type.
+- [x] `./gradlew runDatagen` — strict success, zero providers/files, version 1.1.1.
+- [x] `./gradlew runClient` — 1.1.1 common/client initialization and all atlases loaded; stopped intentionally.
+- [x] `./gradlew runServer` — loaded 1592 recipes/1699 advancements, reached `Done`, located the printshop at `[-208, 224]`, force-loaded nine surrounding chunks, and stopped cleanly.
+- [x] Final `./gradlew build` — success; 18 tests in ten JVM test classes,
+  zero failures/errors.
+- [x] `unzip -t build/libs/echoes-in-ink-1.1.1.jar` — no compressed-data
+  errors; all project JSON parsed; `git diff --check` passed; generic loot
+  contains no Restored Chronicle Page.
+- [x] Refreshed exterior and interior screenshots captured for all four
+  printshop variants (eight 1920×1080 images total).
+
 ## Final 1.1.0 verification — 2026-08-02
 
 - [x] `./gradlew build` — success; 15 tests in seven JVM test classes, zero failures/errors.
@@ -62,8 +88,8 @@
 
 ## Persistence
 
-- [ ] World save/reload
-- [ ] Server restart
+- [x] World save/reload (development worlds and saved-data codec smoke-tested)
+- [x] Server restart (dedicated startup/clean stop repeated for 1.1.1)
 - [ ] Chunk unload
 - [ ] Player logout / death
 - [ ] Press broken while idle / while processing

@@ -1,10 +1,10 @@
 # Implementation Status
 
-**Last updated:** 2026-08-02
+**Last updated:** 2026-08-04
 
-**Version:** 1.1.0
+**Version:** 1.1.1
 
-**Current phase:** Progression rebalance complete; final verification passed
+**Current phase:** Starter recovery hotfix and atmosphere pass complete
 
 ## Summary
 
@@ -35,8 +35,9 @@
 
 ## Release artifact
 
-The verified 1.1.0 release artifact is `build/libs/echoes-in-ink-1.1.0.jar`
-(about 1.0 MiB). ZIP integrity validation reported no compressed-data errors.
+The verified 1.1.1 release artifact is
+`build/libs/echoes-in-ink-1.1.1.jar`. Final ZIP integrity validation is
+recorded in `TESTING.md`.
 
 ## Rebalance status
 
@@ -79,7 +80,31 @@ press using only deterministic starter rewards, produces the Restored Chronicle
 Page, unlocks its Archive entry, checks specialist print recipes, and proves a
 replaced investigation node remains ineligible for reroll.
 
-Final validation: `build` passed with 15 tests in seven test classes and no
+### 1.1.1 recovery and atmosphere follow-up
+
+The starter gate now closes only after a complete press actually begins an
+impression. Visiting or abandoning several ruins beforehand therefore cannot
+strand the world without mandatory components. Pre-1.1 investigation furniture
+is recognized, assigned deterministic semantic roles, and compensated for any
+mandatory role whose legacy node was already searched. Even a completely
+exhausted old ruin can trigger its one-time compensation when any investigated
+furnishing is brushed again.
+
+All four generated variants now require at least four cobwebs, two populated
+laid papers/prints, and two wall posters. A client-only tooltip callback adds
+localized descriptions and explicit gameplay-purpose lines to all 31 items and
+11 block items without loading client classes on a dedicated server. The Faded
+Workshop Plaque is documented as the starter instruction/map clue location.
+
+The 1.1.1 JVM suite contains 18 tests in ten classes. The integrated test now
+uses the real investigation cleaning path, verifies player inventory delivery,
+fully searched legacy recovery, the first handle pull, and specialist
+switching. The variant test asserts decoration counts and captures exterior
+plus interior screenshots.
+Final `build` and JAR integrity passed; all project JSON parsed; `git diff
+--check` passed; and the generic-loot audit found no Restored Chronicle Page.
+
+Final 1.1.0 validation: `build` passed with 15 tests in seven test classes and no
 failures/errors; strict `runDatagen` passed; all three integrated ClientGameTests
 passed; normal `runClient` initialized 1.1.0 and built every atlas; `runServer`
 loaded 1592 recipes/1699 advancements, reached `Done`, located the printshop at

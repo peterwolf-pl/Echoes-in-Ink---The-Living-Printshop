@@ -131,9 +131,19 @@ Sounds, tooltips, balance, exploit hardening, screenshots, trailer shots, produc
 - [x] Stage 4: reusable matrix-fragment assembly, expanded archive tracking,
   renewable ink, multiplayer replacement recipes, and final acceptance audit.
 
-The first completed structure-bound investigation atomically claims the starter
-workshop for the whole server. This avoids fragile per-player world-generation
-rewrites while giving a multiplayer group one physical, deterministic starter set.
+The first completed structure-bound investigation records the initial workshop,
+but starter rewards remain available until a complete press actually begins an
+impression. This prevents an abandoned ruin from stranding the shared world.
+
+## Recovery and atmosphere follow-up — version 1.1.1
+
+- [x] Keep starter rewards active until the first real press handle pull.
+- [x] Migrate semantic roles into pre-1.1 generated printshops and compensate
+  mandatory roles already exhausted under weighted loot, including a revisit
+  path for completely searched ruins.
+- [x] Restore cobwebs and add laid papers/prints plus wall posters to every variant.
+- [x] Give every mod item and block item EN/PL description and purpose tooltips.
+- [x] Extend JVM and ClientGameTest coverage through actual cleaning/inventory paths.
 
 ---
 

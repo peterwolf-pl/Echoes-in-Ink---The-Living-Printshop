@@ -4,7 +4,8 @@ The ModJam MVP is complete. Future work should deepen the central printing loop 
 
 ## Current gameplay milestone: progression rebalance
 
-Version 1.1.0 implements one-printshop starter progression in verified stages.
+Version 1.1.1 implements verified starter recovery, legacy workshop migration,
+and a denser printshop atmosphere on top of the 1.1.0 progression stages.
 
 ### Starter printshop
 
