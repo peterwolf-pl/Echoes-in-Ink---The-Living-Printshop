@@ -124,6 +124,8 @@
 	"block.echoes_in_ink.collapsed_type_cabinet.inserted": "Stored in the open drawer",
 	"block.echoes_in_ink.collapsed_type_cabinet.taken": "Taken from the open drawer",
 	"block.echoes_in_ink.collapsed_type_cabinet.cannot_store": "That does not belong in a type cabinet drawer",
+	"block.echoes_in_ink.collapsed_type_cabinet.drawer_empty": "Drawer %s — empty",
+	"block.echoes_in_ink.collapsed_type_cabinet.drawer_holds": "Drawer %s — %s",
 	"block.echoes_in_ink.collapsed_type_cabinet.desc": "A cabinet of thin type drawers for paper, matrices, and type.",
 	"block.echoes_in_ink.collapsed_type_cabinet.purpose": "Meaningful investigation location: supplies starter ink or later metal-type material. Drawers store workshop items.",
 	"block.echoes_in_ink.ink_stained_floorboards": "Ink-Stained Floorboards",

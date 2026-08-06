@@ -2,7 +2,14 @@ package pl.peterwolf.echoesinink.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -94,13 +101,15 @@ public class TypeCabinetBlockEntity extends InvestigationBlockEntity implements 
 		if (!existing.isEmpty()) {
 			return false;
 		}
-		drawers.set(slot, stack.copyWithCount(1));
+		ItemStack stored = stack.copyWithCount(1);
+		drawers.set(slot, stored);
 		if (!player.getAbilities().instabuild) {
 			stack.shrink(1);
 		}
 		level.playSound(null, worldPosition, ModSounds.PRESS_LOAD, SoundSource.BLOCKS, 0.4F, 1.1F);
 		setChanged();
 		sync();
+		announceDrawer(player, slot);
 		return true;
 	}
 
@@ -125,6 +134,34 @@ public class TypeCabinetBlockEntity extends InvestigationBlockEntity implements 
 		return true;
 	}
 
+	/** Overlay: which drawer is open and what it holds. */
+	public void announceDrawer(Player player, int slot) {
+		if (!(player instanceof ServerPlayer serverPlayer)) {
+			return;
+		}
+		int human = slot + 1;
+		ItemStack stack = drawers.get(slot);
+		if (stack.isEmpty()) {
+			serverPlayer.sendOverlayMessage(Component.translatable(
+				"block.echoes_in_ink.collapsed_type_cabinet.drawer_empty",
+				human
+			));
+		} else {
+			serverPlayer.sendOverlayMessage(Component.translatable(
+				"block.echoes_in_ink.collapsed_type_cabinet.drawer_holds",
+				human,
+				stack.getHoverName()
+			));
+		}
+	}
+
+	public void announceOpenDrawer(Player player) {
+		int open = getBlockState().getValue(TypeCabinetBlock.OPEN_DRAWER);
+		if (open > 0) {
+			announceDrawer(player, open - 1);
+		}
+	}
+
 	public void dropContents(Level level, BlockPos pos) {
 		Containers.dropContents(level, pos, this);
 		drawers.clear();
@@ -136,6 +173,17 @@ public class TypeCabinetBlockEntity extends InvestigationBlockEntity implements 
 			BlockState state = getBlockState();
 			level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_CLIENTS);
 		}
+	}
+
+	/** Client must receive drawer stacks for BER visibility. */
+	@Override
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		return saveWithoutMetadata(registries);
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	public static boolean canStore(ItemStack stack) {

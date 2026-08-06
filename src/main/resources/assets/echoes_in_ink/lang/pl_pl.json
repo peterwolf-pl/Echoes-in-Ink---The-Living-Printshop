@@ -124,6 +124,8 @@
 	"block.echoes_in_ink.collapsed_type_cabinet.inserted": "Schowano w otwartej szufladzie",
 	"block.echoes_in_ink.collapsed_type_cabinet.taken": "Wyjęto z otwartej szuflady",
 	"block.echoes_in_ink.collapsed_type_cabinet.cannot_store": "Tego nie da się schować w szufladzie szafy na czcionki",
+	"block.echoes_in_ink.collapsed_type_cabinet.drawer_empty": "Szuflada %s — pusta",
+	"block.echoes_in_ink.collapsed_type_cabinet.drawer_holds": "Szuflada %s — %s",
 	"block.echoes_in_ink.collapsed_type_cabinet.desc": "Szafa z cienkimi szufladami na czcionki, papier i matryce.",
 	"block.echoes_in_ink.collapsed_type_cabinet.purpose": "Ważne miejsce badania: daje atrament startowy lub późniejsze materiały zecerskie. Szuflady służą do przechowywania.",
 	"block.echoes_in_ink.ink_stained_floorboards": "Podłoga poplamiona atramentem",

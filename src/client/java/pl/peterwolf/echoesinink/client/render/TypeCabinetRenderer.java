@@ -21,10 +21,11 @@ import pl.peterwolf.echoesinink.block.entity.TypeCabinetBlockEntity;
 import pl.peterwolf.echoesinink.item.ModItems;
 
 /**
- * Draws four thin drawers sliding out of the cabinet body and any stored stack.
+ * Draws four thin drawers and makes stored items clearly visible — large and
+ * floating above an open drawer, with a peek icon on closed occupied drawers.
  */
 public class TypeCabinetRenderer implements BlockEntityRenderer<TypeCabinetBlockEntity, TypeCabinetRenderState> {
-	private static final float MAX_PULL = 0.52F;
+	private static final float MAX_PULL = 0.62F;
 	/** Top → bottom drawer center Y. */
 	private static final float[] DRAWER_Y = {
 		13.5F / 16.0F,
@@ -57,7 +58,7 @@ public class TypeCabinetRenderer implements BlockEntityRenderer<TypeCabinetBlock
 		int open = be.getBlockState().getValue(TypeCabinetBlock.OPEN_DRAWER);
 		state.openDrawer = open <= 0 ? -1 : open - 1;
 		float target = open <= 0 ? 0.0F : 1.0F;
-		state.openAnim = Mth.clamp(Mth.lerp(0.35F, be.openAnim(), target), 0.0F, 1.0F);
+		state.openAnim = Mth.clamp(Mth.lerp(0.45F, be.openAnim(), target), 0.0F, 1.0F);
 		Level level = be.getLevel();
 		int seed = be.getBlockPos().hashCode();
 		for (int i = 0; i < TypeCabinetBlockEntity.DRAWER_COUNT; i++) {
@@ -78,41 +79,48 @@ public class TypeCabinetRenderer implements BlockEntityRenderer<TypeCabinetBlock
 		poseStack.translate(0.5F, 0.0F, 0.5F);
 		poseStack.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
 
-		// Drawer fronts use a wooden matrix as a flat panel stand-in.
-		ItemStackRenderState panel = resolveItem(
-			new ItemStack(ModItems.WOODEN_PRINTING_MATRIX),
-			null,
-			7
-		);
+		ItemStackRenderState panel = resolveItem(new ItemStack(ModItems.WOODEN_PRINTING_MATRIX), null, 7);
 
 		for (int i = 0; i < TypeCabinetBlockEntity.DRAWER_COUNT; i++) {
-			float pull = (state.openDrawer == i) ? state.openAnim * MAX_PULL : 0.0F;
-			// Front of cabinet is local -Z after facing rotation (model faces north).
-			float z = -0.30F - pull;
+			boolean isOpen = state.openDrawer == i;
+			float pull = isOpen ? state.openAnim * MAX_PULL : 0.0F;
+			// Front is local -Z after facing rotation.
+			float z = -0.28F - pull;
 
-			// Thin drawer slab
+			// Drawer face / floor panel
 			if (panel != null) {
 				poseStack.pushPose();
 				poseStack.translate(0.0F, DRAWER_Y[i], z);
 				poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-				poseStack.scale(0.72F, 0.55F, 0.10F);
+				poseStack.scale(0.78F, isOpen ? 0.72F : 0.48F, 0.12F);
 				panel.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 				poseStack.popPose();
 			}
 
-			// Contents resting in the drawer
-			if (state.drawerItemStates[i] != null
+			boolean hasItem = state.drawerItemStates[i] != null
 				&& state.drawerStacks[i] != null
-				&& !state.drawerStacks[i].isEmpty()) {
-				poseStack.pushPose();
-				poseStack.translate(0.0F, DRAWER_Y[i] + 0.04F, z + 0.02F);
-				poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-				poseStack.scale(0.32F, 0.32F, 0.32F);
-				state.drawerItemStates[i].submit(
-					poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0
-				);
-				poseStack.popPose();
+				&& !state.drawerStacks[i].isEmpty();
+			if (!hasItem) {
+				continue;
 			}
+
+			// Open drawer: large, readable item sitting on the pulled tray.
+			// Closed drawer: small peek icon on the front so occupancy is visible.
+			poseStack.pushPose();
+			if (isOpen && state.openAnim > 0.15F) {
+				poseStack.translate(0.0F, DRAWER_Y[i] + 0.08F, z - 0.06F);
+				poseStack.mulPose(Axis.XP.rotationDegrees(75.0F));
+				float s = 0.55F;
+				poseStack.scale(s, s, s);
+			} else {
+				// Peek on drawer front
+				poseStack.translate(0.0F, DRAWER_Y[i] + 0.02F, -0.36F);
+				poseStack.scale(0.28F, 0.28F, 0.28F);
+			}
+			state.drawerItemStates[i].submit(
+				poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0
+			);
+			poseStack.popPose();
 		}
 
 		poseStack.popPose();
@@ -133,5 +141,15 @@ public class TypeCabinetRenderer implements BlockEntityRenderer<TypeCabinetBlock
 			seed
 		);
 		return itemRenderState.isEmpty() ? null : itemRenderState;
+	}
+
+	@Override
+	public boolean shouldRenderOffScreen() {
+		return true;
+	}
+
+	@Override
+	public int getViewDistance() {
+		return 48;
 	}
 }

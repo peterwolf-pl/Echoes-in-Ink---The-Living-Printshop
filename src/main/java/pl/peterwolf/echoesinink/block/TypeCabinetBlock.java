@@ -156,21 +156,19 @@ public class TypeCabinetBlock extends InvestigatableBlock {
 				hint(player, Component.translatable("block.echoes_in_ink.collapsed_type_cabinet.closed"));
 			} else {
 				cabinet.openDrawer(level, pos, state, next - 1);
-				hint(player, Component.translatable(
-					"block.echoes_in_ink.collapsed_type_cabinet.opened",
-					next
-				));
+				cabinet.announceOpenDrawer(player);
 			}
 			return InteractionResult.SUCCESS_SERVER;
 		}
 		if (open == 0) {
 			cabinet.openDrawer(level, pos, state, 0);
-			hint(player, Component.translatable("block.echoes_in_ink.collapsed_type_cabinet.opened", 1));
+			cabinet.announceOpenDrawer(player);
 			return InteractionResult.SUCCESS_SERVER;
 		}
 		// Extract from open drawer.
 		if (cabinet.tryExtract(player)) {
 			hint(player, Component.translatable("block.echoes_in_ink.collapsed_type_cabinet.taken"));
+			cabinet.announceOpenDrawer(player);
 			return InteractionResult.SUCCESS_SERVER;
 		}
 		// Empty open drawer — close it.
