@@ -2,7 +2,6 @@ package pl.peterwolf.echoesinink.item;
 
 import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -11,10 +10,15 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import pl.peterwolf.echoesinink.util.PrintPlacement;
 
-/** Rubbing result that displays its stored pattern identifier; can be laid on a surface. */
-public class CharcoalRubbingItem extends Item {
-	public CharcoalRubbingItem(Properties properties) {
+/**
+ * Workshop matrix or machine part that can be laid on a table / floor top face.
+ */
+public class PlaceableOnSurfaceItem extends Item {
+	private final String descKey;
+
+	public PlaceableOnSurfaceItem(Properties properties, String descKey) {
 		super(properties);
+		this.descKey = descKey;
 	}
 
 	@Override
@@ -30,14 +34,7 @@ public class CharcoalRubbingItem extends Item {
 		Consumer<Component> tooltip,
 		TooltipFlag flag
 	) {
-		tooltip.accept(Component.translatable("item.echoes_in_ink.charcoal_rubbing.desc").withColor(0xAAAAAA));
-		Identifier pattern = stack.get(ModDataComponents.RUBBING_PATTERN);
-		if (pattern != null) {
-			tooltip.accept(Component.translatable("item.echoes_in_ink.charcoal_rubbing.pattern", pattern.toString())
-				.withColor(0xC0C0FF));
-		} else {
-			tooltip.accept(Component.translatable("item.echoes_in_ink.charcoal_rubbing.no_pattern").withColor(0xFF5555));
-		}
+		tooltip.accept(Component.translatable(descKey).withColor(0xAAAAAA));
 		tooltip.accept(Component.translatable("item.echoes_in_ink.place_on_surface.hint").withColor(0xC0C0FF));
 	}
 }

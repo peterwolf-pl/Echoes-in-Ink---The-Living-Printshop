@@ -41,40 +41,40 @@ public final class ModItems {
 		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.ink_pad.desc"));
 
 	public static final Item WOODEN_PRINTING_MATRIX = register("wooden_printing_matrix",
-		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.wooden_printing_matrix.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(8), "item.echoes_in_ink.wooden_printing_matrix.desc"));
 
 	public static final Item METAL_TYPE_PIECE = register("metal_type_piece",
-		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.metal_type_piece.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(8), "item.echoes_in_ink.metal_type_piece.desc"));
 
 	public static final Item VILLAGE_CHRONICLE_MATRIX = register("village_chronicle_matrix",
-		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.village_chronicle_matrix.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(8), "item.echoes_in_ink.village_chronicle_matrix.desc"));
 
 	public static final Item LEAD_TYPE_SET = register("lead_type_set",
-		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.lead_type_set.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(16), "item.echoes_in_ink.lead_type_set.desc"));
 
 	public static final Item IRON_CHASE = register("iron_chase",
-		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.iron_chase.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(16), "item.echoes_in_ink.iron_chase.desc"));
 
 	public static final Item MISSING_HEADLINE_TYPE = register("missing_headline_type",
-		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.missing_headline_type.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(16), "item.echoes_in_ink.missing_headline_type.desc"));
 
 	public static final Item PRINTERS_NOTES = register("printers_notes",
-		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.printers_notes.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(16), "item.echoes_in_ink.printers_notes.desc"));
 
 	public static final Item FORBIDDEN_NOTICE_FORME = register("forbidden_notice_forme",
-		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.forbidden_notice_forme.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(8), "item.echoes_in_ink.forbidden_notice_forme.desc"));
 
 	public static final Item PRESS_SCREW = register("press_screw",
-		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.press_screw.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(8), "item.echoes_in_ink.press_screw.desc"));
 
 	public static final Item PRESS_HANDLE = register("press_handle",
-		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.press_handle.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(8), "item.echoes_in_ink.press_handle.desc"));
 
 	public static final Item PRESS_PLATEN = register("press_platen",
-		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.press_platen.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(8), "item.echoes_in_ink.press_platen.desc"));
 
 	public static final Item PRESS_CARRIAGE = register("press_carriage",
-		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.press_carriage.desc"));
+		props -> new PlaceableOnSurfaceItem(props.stacksTo(8), "item.echoes_in_ink.press_carriage.desc"));
 
 	public static final Item RESTORED_CHRONICLE_PAGE = register("restored_chronicle_page",
 		props -> new RestoredChroniclePageItem(props.stacksTo(16)));
@@ -82,6 +82,8 @@ public final class ModItems {
 	/** Result of a successful charcoal rubbing (holds pattern component). */
 	public static final Item CHARCOAL_RUBBING = register("charcoal_rubbing",
 		props -> new CharcoalRubbingItem(props.stacksTo(16)));
+
+	// Note: ink tools stay non-placeable; use the press / table interaction instead.
 
 	// ── Print outputs (readable; poster is also hangable) ──────────────────
 	public static final Item PRINTERS_INSTRUCTION_SHEET = register("printers_instruction_sheet",
