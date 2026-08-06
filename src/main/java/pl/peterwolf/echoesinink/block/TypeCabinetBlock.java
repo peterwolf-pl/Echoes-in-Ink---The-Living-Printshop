@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -32,8 +33,8 @@ import pl.peterwolf.echoesinink.block.entity.ModBlockEntities;
 import pl.peterwolf.echoesinink.block.entity.TypeCabinetBlockEntity;
 
 /**
- * Type cabinet with thin drawers: open/close animation, one stack per drawer.
- * Still investigatable with brush for progression loot.
+ * Type cabinet with four thin drawers. Click a drawer band to open it;
+ * empty-hand takes contents; items insert into the open drawer.
  */
 public class TypeCabinetBlock extends InvestigatableBlock {
 	public static final MapCodec<TypeCabinetBlock> CODEC = simpleCodec(TypeCabinetBlock::new);
@@ -108,15 +109,19 @@ public class TypeCabinetBlock extends InvestigatableBlock {
 			return InteractionResult.SUCCESS;
 		}
 		if (stack.isEmpty()) {
-			return cabinetEmptyHand(cabinet, state, level, pos, player);
+			return handleEmptyHand(cabinet, state, level, pos, player, hit);
 		}
-		// Insert into currently open drawer; open first drawer if closed.
-		if (state.getValue(OPEN_DRAWER) == 0) {
-			cabinet.openDrawer(level, pos, state, 0);
+
+		// Open the clicked drawer (or keep current), then insert.
+		int drawer = drawerIndexFromHit(hit);
+		int open = state.getValue(OPEN_DRAWER);
+		if (open != drawer + 1) {
+			cabinet.openDrawer(level, pos, state, drawer);
 			state = level.getBlockState(pos);
 		}
 		if (cabinet.tryInsert(player, stack)) {
 			hint(player, Component.translatable("block.echoes_in_ink.collapsed_type_cabinet.inserted"));
+			cabinet.announceOpenDrawer(player);
 			return InteractionResult.SUCCESS_SERVER;
 		}
 		hint(player, Component.translatable("block.echoes_in_ink.collapsed_type_cabinet.cannot_store"));
@@ -137,44 +142,75 @@ public class TypeCabinetBlock extends InvestigatableBlock {
 		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
-		return cabinetEmptyHand(cabinet, state, level, pos, player);
+		return handleEmptyHand(cabinet, state, level, pos, player, hit);
 	}
 
-	private InteractionResult cabinetEmptyHand(
+	/**
+	 * Empty hand:
+	 * <ul>
+	 *   <li>Click a different drawer band → open that drawer</li>
+	 *   <li>Click the already-open drawer with an item → take it</li>
+	 *   <li>Click the already-open empty drawer → close</li>
+	 * </ul>
+	 * No shift required (sneak often cancels block use in vanilla).
+	 */
+	private InteractionResult handleEmptyHand(
 		TypeCabinetBlockEntity cabinet,
 		BlockState state,
 		Level level,
 		BlockPos pos,
-		Player player
+		Player player,
+		BlockHitResult hit
 	) {
+		// Always read live state (open_drawer may have changed).
+		state = level.getBlockState(pos);
 		int open = state.getValue(OPEN_DRAWER);
-		if (player.isShiftKeyDown()) {
-			// Cycle drawers (or close).
-			int next = open >= TypeCabinetBlockEntity.DRAWER_COUNT ? 0 : open + 1;
-			if (next == 0) {
-				cabinet.closeDrawer(level, pos, state);
-				hint(player, Component.translatable("block.echoes_in_ink.collapsed_type_cabinet.closed"));
-			} else {
-				cabinet.openDrawer(level, pos, state, next - 1);
-				cabinet.announceOpenDrawer(player);
-			}
-			return InteractionResult.SUCCESS_SERVER;
-		}
-		if (open == 0) {
-			cabinet.openDrawer(level, pos, state, 0);
+		int clicked = drawerIndexFromHit(hit);
+
+		// Clicked another drawer → switch to it.
+		if (open != clicked + 1) {
+			cabinet.openDrawer(level, pos, state, clicked);
 			cabinet.announceOpenDrawer(player);
 			return InteractionResult.SUCCESS_SERVER;
 		}
-		// Extract from open drawer.
+
+		// Same open drawer again: take contents, or close if empty.
 		if (cabinet.tryExtract(player)) {
 			hint(player, Component.translatable("block.echoes_in_ink.collapsed_type_cabinet.taken"));
 			cabinet.announceOpenDrawer(player);
 			return InteractionResult.SUCCESS_SERVER;
 		}
-		// Empty open drawer — close it.
 		cabinet.closeDrawer(level, pos, state);
 		hint(player, Component.translatable("block.echoes_in_ink.collapsed_type_cabinet.closed"));
 		return InteractionResult.SUCCESS_SERVER;
+	}
+
+	/**
+	 * Map click height on the block to drawer index 0 (top) .. 3 (bottom).
+	 * Bands match the visual drawer layout.
+	 */
+	static int drawerIndexFromHit(BlockHitResult hit) {
+		Vec3 loc = hit.getLocation();
+		BlockPos pos = hit.getBlockPos();
+		double localY = loc.y - pos.getY();
+		// Clamp into block
+		if (localY < 0.0) {
+			localY = 0.0;
+		}
+		if (localY > 1.0) {
+			localY = 1.0;
+		}
+		// Top drawer ~ y 0.75-1.0, then 0.50-0.75, 0.25-0.50, 0-0.25
+		if (localY >= 0.75) {
+			return 0;
+		}
+		if (localY >= 0.50) {
+			return 1;
+		}
+		if (localY >= 0.25) {
+			return 2;
+		}
+		return 3;
 	}
 
 	private static void hint(Player player, Component text) {

@@ -128,6 +128,7 @@
 	"block.echoes_in_ink.collapsed_type_cabinet.drawer_holds": "Szuflada %s — %s",
 	"block.echoes_in_ink.collapsed_type_cabinet.desc": "Szafa z cienkimi szufladami na czcionki, papier i matryce.",
 	"block.echoes_in_ink.collapsed_type_cabinet.purpose": "Ważne miejsce badania: daje atrament startowy lub późniejsze materiały zecerskie. Szuflady służą do przechowywania.",
+	"block.echoes_in_ink.collapsed_type_cabinet.action": "Kliknij pas szuflady (góra/górna/dolna/dół), by ją otworzyć. Pusta ręka wyjmuje item; z itemem wkładasz. Klik w pustą otwartą szufladę zamyka.",
 	"block.echoes_in_ink.ink_stained_floorboards": "Podłoga poplamiona atramentem",
 	"block.echoes_in_ink.ink_stained_floorboards.desc": "Zwykłe deski warsztatu trwale poplamione atramentem.",
 	"block.echoes_in_ink.ink_stained_floorboards.purpose": "Tylko dekoracja: te deski nie są podejrzane i nie zawierają nagrody.",
