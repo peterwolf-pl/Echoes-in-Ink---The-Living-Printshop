@@ -128,7 +128,7 @@
 	"block.echoes_in_ink.collapsed_type_cabinet.drawer_holds": "Drawer %s — %s",
 	"block.echoes_in_ink.collapsed_type_cabinet.desc": "A cabinet of thin type drawers for paper, matrices, and type.",
 	"block.echoes_in_ink.collapsed_type_cabinet.purpose": "Meaningful investigation location: supplies starter ink or later metal-type material. Drawers store workshop items.",
-	"block.echoes_in_ink.collapsed_type_cabinet.action": "Click a drawer band (top/upper/lower/bottom) to open it. Empty hand takes the item; use with an item to store. Click again on an empty open drawer to close.",
+	"block.echoes_in_ink.collapsed_type_cabinet.action": "Click a drawer band (top→bottom) to open it. Empty hand takes the item; use with an item to store. Click an empty open drawer again to cycle to the next (closes after #4).",
 	"block.echoes_in_ink.ink_stained_floorboards": "Ink-Stained Floorboards",
 	"block.echoes_in_ink.ink_stained_floorboards.desc": "Ordinary workshop boards permanently stained by ink.",
 	"block.echoes_in_ink.ink_stained_floorboards.purpose": "Decoration only: these boards are not suspicious and contain no investigation reward.",

@@ -33,8 +33,9 @@ import pl.peterwolf.echoesinink.block.entity.ModBlockEntities;
 import pl.peterwolf.echoesinink.block.entity.TypeCabinetBlockEntity;
 
 /**
- * Type cabinet with four thin drawers. Click a drawer band to open it;
- * empty-hand takes contents; items insert into the open drawer.
+ * Type cabinet with four thin drawers. Click a height band to open that drawer;
+ * empty-hand takes contents; re-click an empty open drawer cycles to the next
+ * (shift is unreliable in vanilla when offhand holds an item).
  */
 public class TypeCabinetBlock extends InvestigatableBlock {
 	public static final MapCodec<TypeCabinetBlock> CODEC = simpleCodec(TypeCabinetBlock::new);
@@ -148,11 +149,11 @@ public class TypeCabinetBlock extends InvestigatableBlock {
 	/**
 	 * Empty hand:
 	 * <ul>
-	 *   <li>Click a different drawer band → open that drawer</li>
-	 *   <li>Click the already-open drawer with an item → take it</li>
-	 *   <li>Click the already-open empty drawer → close</li>
+	 *   <li>Click a height band → open that drawer</li>
+	 *   <li>Click the open drawer that has an item → take it</li>
+	 *   <li>Click the open empty drawer again → next drawer (then close after #4)</li>
+	 *   <li>Secondary use (shift), when delivered → same cycle</li>
 	 * </ul>
-	 * No shift required (sneak often cancels block use in vanilla).
 	 */
 	private InteractionResult handleEmptyHand(
 		TypeCabinetBlockEntity cabinet,
@@ -165,49 +166,83 @@ public class TypeCabinetBlock extends InvestigatableBlock {
 		// Always read live state (open_drawer may have changed).
 		state = level.getBlockState(pos);
 		int open = state.getValue(OPEN_DRAWER);
+
+		// Prefer cycle when secondary-use reaches the block (empty both hands).
+		if (player.isSecondaryUseActive()) {
+			return cycleDrawer(cabinet, state, level, pos, player, open);
+		}
+
 		int clicked = drawerIndexFromHit(hit);
 
-		// Clicked another drawer → switch to it.
+		// Closed, or a different band than the open drawer → open that band.
 		if (open != clicked + 1) {
 			cabinet.openDrawer(level, pos, state, clicked);
 			cabinet.announceOpenDrawer(player);
 			return InteractionResult.SUCCESS_SERVER;
 		}
 
-		// Same open drawer again: take contents, or close if empty.
+		// Same open drawer: take contents, or cycle if empty.
 		if (cabinet.tryExtract(player)) {
 			hint(player, Component.translatable("block.echoes_in_ink.collapsed_type_cabinet.taken"));
 			cabinet.announceOpenDrawer(player);
 			return InteractionResult.SUCCESS_SERVER;
 		}
-		cabinet.closeDrawer(level, pos, state);
-		hint(player, Component.translatable("block.echoes_in_ink.collapsed_type_cabinet.closed"));
+		return cycleDrawer(cabinet, state, level, pos, player, open);
+	}
+
+	/**
+	 * Advance open drawer: closed→1, 1→2, 2→3, 3→4, 4→closed.
+	 */
+	private InteractionResult cycleDrawer(
+		TypeCabinetBlockEntity cabinet,
+		BlockState state,
+		Level level,
+		BlockPos pos,
+		Player player,
+		int open
+	) {
+		int next = open >= TypeCabinetBlockEntity.DRAWER_COUNT ? 0 : open + 1;
+		if (next == 0) {
+			cabinet.closeDrawer(level, pos, state);
+			hint(player, Component.translatable("block.echoes_in_ink.collapsed_type_cabinet.closed"));
+		} else {
+			cabinet.openDrawer(level, pos, state, next - 1);
+			cabinet.announceOpenDrawer(player);
+		}
 		return InteractionResult.SUCCESS_SERVER;
 	}
 
 	/**
 	 * Map click height on the block to drawer index 0 (top) .. 3 (bottom).
-	 * Bands match the visual drawer layout.
+	 * Bands match model dividers at y=12, 8, 4 (block pixels).
 	 */
 	static int drawerIndexFromHit(BlockHitResult hit) {
+		// Top/bottom face: don't invent a lower drawer from glancing hits.
+		Direction face = hit.getDirection();
+		if (face == Direction.UP) {
+			return 0;
+		}
+		if (face == Direction.DOWN) {
+			return 3;
+		}
+
 		Vec3 loc = hit.getLocation();
 		BlockPos pos = hit.getBlockPos();
 		double localY = loc.y - pos.getY();
-		// Clamp into block
 		if (localY < 0.0) {
 			localY = 0.0;
 		}
 		if (localY > 1.0) {
 			localY = 1.0;
 		}
-		// Top drawer ~ y 0.75-1.0, then 0.50-0.75, 0.25-0.50, 0-0.25
-		if (localY >= 0.75) {
+		// Dividers at 12/16, 8/16, 4/16 → four slots top→bottom
+		if (localY >= 12.0 / 16.0) {
 			return 0;
 		}
-		if (localY >= 0.50) {
+		if (localY >= 8.0 / 16.0) {
 			return 1;
 		}
-		if (localY >= 0.25) {
+		if (localY >= 4.0 / 16.0) {
 			return 2;
 		}
 		return 3;
