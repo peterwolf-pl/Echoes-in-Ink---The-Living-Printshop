@@ -452,20 +452,94 @@ def add_ink_stains(img: Image.Image, heavy: bool) -> Image.Image:
 
 
 def block_printing_debris(stage: str) -> Image.Image:
+    """Wood scrap pile used as the main debris face texture."""
     img = wood_base(True)
     if stage == "untouched":
         img = add_dust(img, 3)
         img = add_ink_stains(img, True)
-        # debris bits
-        fill_rect(img, 5, 5, 7, 7, METAL_D)
-        fill_rect(img, 10, 9, 12, 11, PAPER_S)
+        # metal type bits + paper scraps
+        fill_rect(img, 5, 5, 6, 6, METAL_D)
+        px(img, 6, 5, METAL)
+        px(img, 5, 6, METAL_L)
+        fill_rect(img, 10, 9, 11, 10, METAL)
+        px(img, 11, 10, BRASS_D)
+        fill_rect(img, 9, 3, 12, 5, PAPER_S)
+        px(img, 9, 3, PAPER)
+        px(img, 12, 5, PAPER_E)
+        fill_rect(img, 3, 10, 6, 12, PAPER_E)
+        px(img, 4, 11, PAPER_STAIN)
+        fill_rect(img, 0, 14, 4, 15, WOOD_VD)
+        fill_rect(img, 12, 0, 15, 2, WOOD_D)
     elif stage == "partial":
         img = add_dust(img, 1)
         img = add_ink_stains(img, False)
         fill_rect(img, 6, 6, 8, 8, METAL)
+        px(img, 6, 6, METAL_L)
+        fill_rect(img, 10, 4, 12, 5, PAPER_S)
     else:  # done
         img = add_dust(img, 0)
-        fill_rect(img, 6, 6, 9, 9, WOOD_L)
+        fill_rect(img, 5, 5, 10, 10, WOOD_L)
+        fill_rect(img, 6, 6, 9, 9, WOOD)
+        px(img, 7, 7, WOOD_L)
+    return img
+
+
+def block_printing_debris_paper() -> Image.Image:
+    """Block-atlas paper scrap (item textures cannot be used on block models)."""
+    img = new_img()
+    fill_rect(img, 0, 0, 15, 15, PAPER)
+    for y in range(16):
+        for x in range(16):
+            if (x + y * 3) % 7 == 0:
+                px(img, x, y, PAPER_S)
+            if (x * 2 + y) % 11 == 0:
+                px(img, x, y, PAPER_E)
+    for y in (3, 6, 9, 12):
+        for x in range(2, 14):
+            if (x + y) % 3 != 0:
+                px(img, x, y, PAPER_STAIN if y % 2 else PAPER_E)
+    px(img, 4, 5, INK_M)
+    px(img, 5, 5, INK_L)
+    px(img, 11, 10, INK_M)
+    for i in range(16):
+        px(img, i, 0, PAPER_E)
+        px(img, i, 15, PAPER_S)
+        px(img, 0, i, PAPER_E)
+        px(img, 15, i, PAPER_S)
+    return img
+
+
+def block_printing_debris_metal() -> Image.Image:
+    """Block-atlas lead/type metal for debris pile bits."""
+    img = new_img()
+    for y in range(16):
+        for x in range(16):
+            v = (x * 3 + y * 5) % 5
+            if v == 0:
+                px(img, x, y, METAL_L)
+            elif v == 1:
+                px(img, x, y, METAL)
+            elif v == 2:
+                px(img, x, y, METAL_D)
+            else:
+                px(img, x, y, METAL if (x + y) % 2 == 0 else METAL_D)
+    for cx, cy in ((4, 4), (11, 4), (4, 11), (11, 11), (8, 8)):
+        px(img, cx, cy, METAL_VD)
+        px(img, cx + 1, cy, METAL_L)
+    fill_rect(img, 6, 2, 9, 3, BRASS_D)
+    fill_rect(img, 6, 12, 9, 13, METAL_VD)
+    return img
+
+
+def block_printing_debris_dark() -> Image.Image:
+    """Dark underside wood for debris pile."""
+    img = new_img()
+    for y in range(16):
+        for x in range(16):
+            band = (x // 4) % 2
+            px(img, x, y, WOOD_VD if band == 0 else WOOD_D)
+            if (x + y * 2) % 9 == 0:
+                px(img, x, y, (32, 20, 12, 255))
     return img
 
 
@@ -698,6 +772,9 @@ def main() -> None:
         "printing_debris_untouched": lambda: block_printing_debris("untouched"),
         "printing_debris_partial": lambda: block_printing_debris("partial"),
         "printing_debris_done": lambda: block_printing_debris("done"),
+        "printing_debris_paper": block_printing_debris_paper,
+        "printing_debris_metal": block_printing_debris_metal,
+        "printing_debris_dark": block_printing_debris_dark,
         "carved_wooden_matrix": block_carved_wooden_matrix,
         "dusty_printing_table_untouched": lambda: block_dusty_printing_table("untouched"),
         "dusty_printing_table_partial": lambda: block_dusty_printing_table("partial"),

@@ -3,8 +3,9 @@
   "textures": {
     "particle": "echoes_in_ink:block/printing_debris_done",
     "wood": "echoes_in_ink:block/printing_debris_done",
-    "paper": "echoes_in_ink:item/blank_archive_page",
-    "dark": "minecraft:block/dark_oak_planks"
+    "paper": "echoes_in_ink:block/printing_debris_paper",
+    "metal": "echoes_in_ink:block/printing_debris_metal",
+    "dark": "echoes_in_ink:block/printing_debris_dark"
   },
   "elements": [
     { "from": [3, 0, 4], "to": [10, 2, 11],
