@@ -9,6 +9,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -44,7 +45,11 @@ public class InvestigationBlockEntity extends BlockEntity {
 	private String investigationRole = "";
 
 	public InvestigationBlockEntity(BlockPos pos, BlockState state) {
-		super(ModBlockEntities.INVESTIGATION, pos, state);
+		this(ModBlockEntities.INVESTIGATION, pos, state);
+	}
+
+	protected InvestigationBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	public boolean isLootGenerated() {

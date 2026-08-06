@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "echoes_in_ink:block/printing_debris_untouched"
-  }
+  "parent": "echoes_in_ink:block/printing_debris_untouched"
 }

@@ -30,7 +30,8 @@ public final class ModBlocks {
 		key -> new PrintingDebrisBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
 			.setId(key)
 			.strength(1.5F)
-			.sound(SoundType.WOOD)),
+			.sound(SoundType.WOOD)
+			.noOcclusion()),
 		InvestigatableBlockItem::new
 	);
 
@@ -71,11 +72,12 @@ public final class ModBlocks {
 		InvestigatableBlockItem::new
 	);
 
-	public static final InvestigatableBlock COLLAPSED_TYPE_CABINET = register(
+	public static final TypeCabinetBlock COLLAPSED_TYPE_CABINET = register(
 		"collapsed_type_cabinet",
-		key -> new InvestigatableBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).setId(key),
-			InvestigationLoot.Profile.CABINET),
+		key -> new TypeCabinetBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
+				.setId(key)
+				.noOcclusion()),
 		InvestigatableBlockItem::new
 	);
 

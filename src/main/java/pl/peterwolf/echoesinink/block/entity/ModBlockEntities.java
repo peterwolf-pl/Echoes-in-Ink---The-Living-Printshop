@@ -13,6 +13,7 @@ public final class ModBlockEntities {
 	public static final BlockEntityType<InvestigationBlockEntity> INVESTIGATION;
 	public static final BlockEntityType<PrintingPressBlockEntity> PRINTING_PRESS;
 	public static final BlockEntityType<LaidPaperBlockEntity> LAID_PAPER;
+	public static final BlockEntityType<TypeCabinetBlockEntity> TYPE_CABINET;
 
 	static {
 		ResourceKey<BlockEntityType<?>> invKey = ResourceKey.create(
@@ -24,7 +25,6 @@ public final class ModBlockEntities {
 			Set.of(
 				ModBlocks.PRINTING_DEBRIS,
 				ModBlocks.DUSTY_PRINTING_TABLE,
-				ModBlocks.COLLAPSED_TYPE_CABINET,
 				ModBlocks.DAMAGED_ARCHIVE_SHELF,
 				ModBlocks.PRESS_FRAME,
 				ModBlocks.LOOSE_INK_STAINED_FLOORBOARDS,
@@ -33,6 +33,16 @@ public final class ModBlockEntities {
 			)
 		);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, invKey, INVESTIGATION);
+
+		ResourceKey<BlockEntityType<?>> cabinetKey = ResourceKey.create(
+			Registries.BLOCK_ENTITY_TYPE,
+			EchoesInInk.id("type_cabinet")
+		);
+		TYPE_CABINET = new BlockEntityType<>(
+			TypeCabinetBlockEntity::new,
+			Set.of(ModBlocks.COLLAPSED_TYPE_CABINET)
+		);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, cabinetKey, TYPE_CABINET);
 
 		ResourceKey<BlockEntityType<?>> pressKey = ResourceKey.create(
 			Registries.BLOCK_ENTITY_TYPE,
