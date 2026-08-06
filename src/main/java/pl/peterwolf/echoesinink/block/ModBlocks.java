@@ -44,11 +44,12 @@ public final class ModBlocks {
 		BlockItem::new
 	);
 
-	public static final InvestigatableBlock DUSTY_PRINTING_TABLE = register(
+	public static final DustyPrintingTableBlock DUSTY_PRINTING_TABLE = register(
 		"dusty_printing_table",
-		key -> new InvestigatableBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE).setId(key),
-			InvestigationLoot.Profile.TABLE),
+		key -> new DustyPrintingTableBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE)
+				.setId(key)
+				.noOcclusion()),
 		InvestigatableBlockItem::new
 	);
 
