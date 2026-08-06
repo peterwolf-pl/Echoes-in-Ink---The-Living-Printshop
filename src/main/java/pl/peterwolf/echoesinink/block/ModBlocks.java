@@ -61,15 +61,14 @@ public final class ModBlocks {
 		InvestigatableBlockItem::new
 	);
 
-	public static final InvestigatableBlock PRESS_FRAME = register(
+	public static final PressFrameBlock PRESS_FRAME = register(
 		"press_frame",
-		key -> new InvestigatableBlock(
+		key -> new PressFrameBlock(
 			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
 				.setId(key)
 				.strength(2.5F)
 				.sound(SoundType.WOOD)
-				.noOcclusion(),
-			InvestigationLoot.Profile.PRESS),
+				.noOcclusion()),
 		InvestigatableBlockItem::new
 	);
 
