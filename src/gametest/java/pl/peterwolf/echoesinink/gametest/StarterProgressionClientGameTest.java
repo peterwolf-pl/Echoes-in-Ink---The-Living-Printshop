@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.archive.ArchiveEntries;
 import pl.peterwolf.echoesinink.archive.ArchiveService;
@@ -26,6 +27,7 @@ import pl.peterwolf.echoesinink.block.entity.PrintingPressBlockEntity;
 import pl.peterwolf.echoesinink.item.ModItems;
 import pl.peterwolf.echoesinink.progression.InvestigationRole;
 import pl.peterwolf.echoesinink.progression.PrintshopProgressionSavedData;
+import pl.peterwolf.echoesinink.progression.PrintshopStarterChestService;
 import pl.peterwolf.echoesinink.progression.RewardKind;
 import pl.peterwolf.echoesinink.progression.RewardStack;
 import pl.peterwolf.echoesinink.progression.WorkshopLayoutPlan;
@@ -59,6 +61,7 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 					PRESS_POS,
 					ModBlocks.PRINTING_PRESS.defaultBlockState().setValue(PrintingPressBlock.FACING, Direction.NORTH)
 				);
+				verifyStarterChest(level, player);
 				verifyFullySearchedLegacyRecovery(level, player);
 				player.getInventory().clearContent();
 				harvestStarterWorkshop(level, player);
@@ -140,6 +143,31 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 		return result;
 	}
 
+	private static void verifyStarterChest(
+		net.minecraft.server.level.ServerLevel level,
+		ServerPlayer player
+	) {
+		BlockPos pos = new BlockPos(-3, 4, -2);
+		level.setBlockAndUpdate(pos, Blocks.CHEST.defaultBlockState());
+		if (!(level.getBlockEntity(pos) instanceof ChestBlockEntity chest)) {
+			throw new AssertionError("Starter chest block entity missing");
+		}
+		if (!PrintshopStarterChestService.grantStarterSupply(level, player, chest, "physical_starter_chest")) {
+			throw new AssertionError("Starter chest did not receive its deterministic kit");
+		}
+		if (PrintshopStarterChestService.starterKit().size() != 8) {
+			throw new AssertionError("Starter chest kit must contain four tools and four press parts");
+		}
+		for (ItemStack expected : PrintshopStarterChestService.starterKit()) {
+			if (chest.countItem(expected.getItem()) != 1) {
+				throw new AssertionError("Starter chest missing " + expected.getItem());
+			}
+		}
+		if (PrintshopStarterChestService.grantStarterSupply(level, player, chest, "physical_starter_chest")) {
+			throw new AssertionError("Starter chest kit was granted twice for one workshop");
+		}
+	}
+
 	private static void harvestStarterWorkshop(
 		net.minecraft.server.level.ServerLevel level,
 		ServerPlayer player
@@ -155,7 +183,7 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 			InvestigationRole.PLAQUE_CLUE
 		};
 		var blocks = new net.minecraft.world.level.block.Block[] {
-			ModBlocks.BROKEN_PRESS_FRAME,
+			ModBlocks.PRESS_FRAME,
 			ModBlocks.PRINTING_DEBRIS,
 			ModBlocks.PRINTING_DEBRIS,
 			ModBlocks.HIDDEN_FLOOR_COMPARTMENT,
@@ -197,7 +225,7 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 		ServerPlayer player
 	) {
 		BlockPos pos = new BlockPos(4, 4, -2);
-		level.setBlockAndUpdate(pos, ModBlocks.BROKEN_PRESS_FRAME.defaultBlockState());
+		level.setBlockAndUpdate(pos, ModBlocks.PRESS_FRAME.defaultBlockState());
 		if (!(level.getBlockEntity(pos) instanceof InvestigationBlockEntity investigation)) {
 			throw new AssertionError("Later-workshop node missing");
 		}
@@ -211,6 +239,12 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 		if (!investigation.lastResultId().startsWith("later:")) {
 			throw new AssertionError("Later workshop did not switch to specialist rewards");
 		}
+		BlockPos chestPos = new BlockPos(3, 4, -2);
+		level.setBlockAndUpdate(chestPos, Blocks.CHEST.defaultBlockState());
+		ChestBlockEntity chest = (ChestBlockEntity) level.getBlockEntity(chestPos);
+		if (PrintshopStarterChestService.grantStarterSupply(level, player, chest, "after_press_workshop")) {
+			throw new AssertionError("Later workshop incorrectly received another starter chest kit");
+		}
 	}
 
 	private static void verifyFullySearchedLegacyRecovery(
@@ -220,8 +254,8 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 		BlockPos base = new BlockPos(40, 4, 40);
 		level.getChunk(base.getX() >> 4, base.getZ() >> 4);
 		var blocks = new net.minecraft.world.level.block.Block[] {
-			ModBlocks.BROKEN_PRESS_FRAME,
-			ModBlocks.BROKEN_PRESS_FRAME,
+			ModBlocks.PRESS_FRAME,
+			ModBlocks.PRESS_FRAME,
 			ModBlocks.DUSTY_PRINTING_TABLE,
 			ModBlocks.DAMAGED_ARCHIVE_SHELF,
 			ModBlocks.COLLAPSED_TYPE_CABINET,

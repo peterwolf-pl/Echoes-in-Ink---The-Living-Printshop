@@ -6,7 +6,7 @@ Discover abandoned historical print workshops, restore lost printing technology,
 
 **Author:** Peter Wolf  
 **Mod ID:** `echoes_in_ink`  
-**Version:** 1.1.1
+**Version:** 1.1.2
 
 **Licence:** MPL-2.0
 
@@ -43,6 +43,14 @@ handle, so leaving an earlier ruin cannot permanently remove required parts.
 After that real press run, newly investigated printshops switch to their stable
 specialist profiles.
 
+Before that first press operation, opening a chest inside a confirmed printshop
+adds one deterministic physical kit for that workshop: Workshop Broom,
+Printer's Brush, Magnifying Lens, Printer's Archive, Press Screw, Press Handle,
+Press Platen, and Press Carriage. This does not replace the variant's specialist
+loot. Reopen an already-looted printshop chest in an existing world to receive
+the kit; no new world is required. If the chest is full, overflow goes to the
+opening player instead of disappearing.
+
 Printshops generated before 1.1 are upgraded when an unbound investigation
 node is next cleaned. Their old furniture is assigned deterministic semantic
 roles; rewards belonging to already searched mandatory roles are compensated
@@ -52,6 +60,7 @@ more to trigger the same one-time recovery bundle.
 
 The starter printshop guarantees:
 
+- Workshop Broom, Printer's Brush, Magnifying Lens, and Printer's Archive
 - Press Screw
 - Press Handle
 - Press Platen
@@ -149,9 +158,11 @@ Typical sequence:
 Printshops contain investigatable machine remains, archive shelves, type cabinets, printing tables, plaques, debris, and hidden storage.
 
 The Faded Workshop Plaque is not filler decoration. Inspect it with the
-Magnifying Lens and clean it with the Printer's Brush. During starter mode it
-contains the Printer's Instruction Sheet and Workshop Map Fragment; later it
-provides a stable historical clue.
+Magnifying Lens, then hold use with the Printer's Brush twice to clean both
+stages. During starter mode it contains the Printer's Instruction Sheet and
+Workshop Map Fragment; later it provides a stable historical clue. The optional
+Workshop Broom removes decorative cobwebs; it does not replace the Printer's
+Brush during investigations.
 
 Every custom item and block item has two tooltip lines: a description and an
 explicit gameplay purpose identifying required components, crafting parts,
@@ -224,9 +235,10 @@ The production artifact is generated in `build/libs`.
 
 The mod uses a server-authoritative design. Dedicated servers must not load client-only rendering classes. Clients handle rendering, animation interpolation, particles, subtitles, and visual presentation only.
 
-Starter mode is world-shared and remains active until the first real handle
-pull. This lets a multiplayer group recover from an abandoned or legacy ruin;
-each investigation node itself still pays only once and cannot be rerolled.
+Starter mode and physical chest-kit claims are world-shared and remain active
+until the first real handle pull. This lets a multiplayer group recover from an
+abandoned or legacy ruin; each investigation node and each workshop chest kit
+still pays only once and cannot be rerolled.
 After that handle pull, the Press Screw, Handle, Platen, and Carriage replacement
 recipes are revealed in the player's recipe book. Later ruins may additionally
 contain rare spare parts when

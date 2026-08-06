@@ -16,6 +16,9 @@ import pl.peterwolf.echoesinink.EchoesInInk;
 public final class ModItems {
 	private static final List<Item> ALL = new ArrayList<>();
 
+	public static final Item WORKSHOP_BROOM = register("workshop_broom",
+		props -> new WorkshopBroomItem(props.durability(96).stacksTo(1)));
+
 	public static final Item PRINTERS_BRUSH = register("printers_brush",
 		props -> new PrintersBrushItem(props.durability(64).stacksTo(1)));
 

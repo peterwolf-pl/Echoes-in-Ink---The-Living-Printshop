@@ -145,6 +145,19 @@ impression. This prevents an abandoned ruin from stranding the shared world.
 - [x] Give every mod item and block item EN/PL description and purpose tooltips.
 - [x] Extend JVM and ClientGameTest coverage through actual cleaning/inventory paths.
 
+## Physical starter supplies and plaque clarity — version 1.1.2
+
+- [x] Put all four basic press components and all four investigation tools in a
+  deterministic physical printshop chest kit before the first press operation.
+- [x] Persist one chest-kit claim per workshop and retain specialist chest loot.
+- [x] Support already-opened chests in existing worlds by injecting the kit on
+  their next valid interaction.
+- [x] Add a functional Workshop Broom for optional cobweb cleanup.
+- [x] Rebuild the Faded Workshop Plaque as a thin directional model with a
+  readable historical press emblem and explicit lens/brush instructions.
+- [x] Extend automated progression, item-description, orientation, and visual
+  screenshot coverage.
+
 ---
 
 ## Workflow rules

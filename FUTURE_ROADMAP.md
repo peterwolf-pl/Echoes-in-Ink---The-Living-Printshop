@@ -4,8 +4,10 @@ The ModJam MVP is complete. Future work should deepen the central printing loop 
 
 ## Current gameplay milestone: progression rebalance
 
-Version 1.1.1 implements verified starter recovery, legacy workshop migration,
-and a denser printshop atmosphere on top of the 1.1.0 progression stages.
+Version 1.1.2 adds a deterministic physical starter kit to real printshop
+chests, introduces the Workshop Broom, and makes the plaque's appearance and
+interaction explicit on top of the 1.1.0 progression stages and 1.1.1 recovery
+work.
 
 ### Starter printshop
 

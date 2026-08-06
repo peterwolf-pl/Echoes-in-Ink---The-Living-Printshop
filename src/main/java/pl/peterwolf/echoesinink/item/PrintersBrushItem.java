@@ -24,7 +24,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import pl.peterwolf.echoesinink.block.FadedWorkshopPlaqueBlock;
 import pl.peterwolf.echoesinink.block.Investigatable;
+import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
 import pl.peterwolf.echoesinink.config.ModConfig;
 
 /**
@@ -43,6 +45,18 @@ public class PrintersBrushItem extends Item {
 			BlockPos pos = context.getClickedPos();
 			BlockState state = level.getBlockState(pos);
 			if (state.getBlock() instanceof Investigatable investigatable && investigatable.canClean(state)) {
+				// Plaque: refuse to start brush hold until lens-inspected.
+				if (state.getBlock() instanceof FadedWorkshopPlaqueBlock
+					&& level.getBlockEntity(pos) instanceof InvestigationBlockEntity inv
+					&& !inv.isLensInspected()) {
+					if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+						serverPlayer.sendSystemMessage(
+							Component.translatable("investigation.echoes_in_ink.need_lens_first"),
+							true
+						);
+					}
+					return InteractionResult.FAIL;
+				}
 				player.startUsingItem(context.getHand());
 				return InteractionResult.CONSUME;
 			}

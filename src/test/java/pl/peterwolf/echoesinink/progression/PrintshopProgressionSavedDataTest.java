@@ -13,9 +13,14 @@ class PrintshopProgressionSavedDataTest {
 		assertTrue(data.starterRewardsAllowed("printshop_first"));
 		assertTrue(data.starterRewardsAllowed("printshop_second"));
 		assertTrue(data.starterRewardsAllowed("printshop_third"));
+		assertTrue(data.claimStarterSupply("printshop_first"));
+		assertTrue(data.hasStarterSupply("printshop_first"));
+		assertFalse(data.claimStarterSupply("printshop_first"));
+		assertTrue(data.claimStarterSupply("printshop_second"));
 
 		data.markBasicPressOperated();
 		assertTrue(data.basicPressOperated());
 		assertFalse(data.starterRewardsAllowed("printshop_fourth"));
+		assertFalse(data.claimStarterSupply("printshop_fourth"));
 	}
 }

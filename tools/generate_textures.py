@@ -100,6 +100,23 @@ def item_printers_brush() -> Image.Image:
     return img
 
 
+def item_workshop_broom() -> Image.Image:
+    img = new_img()
+    # long diagonal ash handle
+    for x, y in [(11, 1), (10, 2), (10, 3), (9, 4), (9, 5), (8, 6), (8, 7), (7, 8), (7, 9)]:
+        px(img, x, y, WOOD_L)
+        px(img, x - 1, y, WOOD_D)
+    # binding and broad straw head
+    fill_rect(img, 5, 9, 8, 10, BRASS_D)
+    hline(img, 4, 8, 11, BRISTLE_D)
+    hline(img, 3, 8, 12, BRISTLE)
+    hline(img, 2, 8, 13, BRISTLE)
+    hline(img, 1, 8, 14, BRISTLE_D)
+    for x in (2, 4, 6, 8):
+        px(img, x, 14, WOOD_D)
+    return img
+
+
 def item_magnifying_lens() -> Image.Image:
     img = new_img()
     # ring
@@ -582,30 +599,36 @@ def block_ink_stained_floorboards(stage: str) -> Image.Image:
 
 def block_faded_workshop_plaque(stage: str) -> Image.Image:
     img = new_img()
-    fill_rect(img, 1, 3, 14, 12, WOOD)
-    hline(img, 1, 14, 3, WOOD_L)
-    hline(img, 1, 14, 12, WOOD_D)
-    vline(img, 1, 3, 12, WOOD_D)
-    vline(img, 14, 3, 12, WOOD_VD)
-    # plaque plate
-    fill_rect(img, 3, 5, 12, 10, BRASS_D if stage == "untouched" else BRASS)
-    if stage == "done":
-        fill_rect(img, 4, 6, 11, 9, BRASS_L)
-        # abstract name plate lines (no letters)
-        hline(img, 5, 10, 7, BRASS_D)
-        hline(img, 6, 9, 8, BRASS_D)
+    fill_rect(img, 0, 0, 15, 15, WOOD_VD)
+    fill_rect(img, 1, 1, 14, 14, WOOD_D)
+    # worn brass rim and four fasteners, based on the generated press-plaque concept
+    hline(img, 1, 14, 1, BRASS_L if stage == "done" else BRASS)
+    hline(img, 1, 14, 14, BRASS_D)
+    vline(img, 1, 1, 14, BRASS)
+    vline(img, 14, 1, 14, BRASS_D)
+    for x, y in [(2, 2), (13, 2), (2, 13), (13, 13)]:
+        px(img, x, y, BRASS_L if stage == "done" else BRASS_D)
+    # screw press maker's mark: cap, screw, platen, posts, bed and base
+    metal = BRASS_L if stage == "done" else BRASS
+    shadow = BRASS if stage == "done" else BRASS_D
+    hline(img, 4, 11, 4, metal)
+    px(img, 4, 5, shadow)
+    px(img, 11, 5, shadow)
+    for y in range(5, 10):
+        px(img, 7, y, metal if y % 2 else shadow)
+        px(img, 8, y, shadow if y % 2 else metal)
+    hline(img, 5, 10, 9, metal)
+    vline(img, 4, 6, 12, shadow)
+    vline(img, 11, 6, 12, shadow)
+    hline(img, 5, 10, 11, metal)
+    hline(img, 4, 11, 12, shadow)
+    hline(img, 3, 12, 13, metal)
+    if stage == "untouched":
+        for x, y in [(3, 3), (6, 4), (9, 5), (5, 8), (10, 9), (6, 12), (12, 11)]:
+            px(img, x, y, DUST_D)
     elif stage == "partial":
-        fill_rect(img, 4, 6, 11, 9, BRASS)
-        hline(img, 5, 10, 7, BRASS_D)
-        img = add_dust(img, 1)
-    else:
-        img = add_dust(img, 2)
-        hline(img, 5, 10, 7, WOOD_D)
-    # nails
-    px(img, 2, 4, METAL)
-    px(img, 13, 4, METAL)
-    px(img, 2, 11, METAL)
-    px(img, 13, 11, METAL)
+        for x, y in [(3, 3), (10, 9), (12, 11)]:
+            px(img, x, y, DUST)
     return img
 
 
@@ -646,6 +669,7 @@ def block_press_stone() -> Image.Image:
 def main() -> None:
     print("Generating Echoes in Ink textures…")
     items = {
+        "workshop_broom": item_workshop_broom,
         "printers_brush": item_printers_brush,
         "magnifying_lens": item_magnifying_lens,
         "charcoal_rubbing_paper": item_charcoal_rubbing_paper,
@@ -681,9 +705,9 @@ def main() -> None:
         "damaged_archive_shelf_untouched": lambda: block_damaged_archive_shelf("untouched"),
         "damaged_archive_shelf_partial": lambda: block_damaged_archive_shelf("partial"),
         "damaged_archive_shelf_done": lambda: block_damaged_archive_shelf("done"),
-        "broken_press_frame_untouched": lambda: block_broken_press_frame("untouched"),
-        "broken_press_frame_partial": lambda: block_broken_press_frame("partial"),
-        "broken_press_frame_done": lambda: block_broken_press_frame("done"),
+        "press_frame_untouched": lambda: block_broken_press_frame("untouched"),
+        "press_frame_partial": lambda: block_broken_press_frame("partial"),
+        "press_frame_done": lambda: block_broken_press_frame("done"),
         "collapsed_type_cabinet_untouched": lambda: block_collapsed_type_cabinet("untouched"),
         "collapsed_type_cabinet_partial": lambda: block_collapsed_type_cabinet("partial"),
         "collapsed_type_cabinet_done": lambda: block_collapsed_type_cabinet("done"),

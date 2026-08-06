@@ -16,7 +16,8 @@ public record InvestigationData(
 	String state,
 	String workshopId,
 	String workshopVariant,
-	String investigationRole
+	String investigationRole,
+	boolean lensInspected
 ) {
 	public static final InvestigationData DEFAULT = new InvestigationData(
 		false,
@@ -24,7 +25,8 @@ public record InvestigationData(
 		InvestigationState.UNTOUCHED.getSerializedName(),
 		"",
 		"",
-		""
+		"",
+		false
 	);
 
 	public static final Codec<InvestigationData> CODEC = RecordCodecBuilder.create(instance ->
@@ -34,7 +36,8 @@ public record InvestigationData(
 			Codec.STRING.optionalFieldOf("state", InvestigationState.UNTOUCHED.getSerializedName()).forGetter(InvestigationData::state),
 			Codec.STRING.optionalFieldOf("workshop_id", "").forGetter(InvestigationData::workshopId),
 			Codec.STRING.optionalFieldOf("workshop_variant", "").forGetter(InvestigationData::workshopVariant),
-			Codec.STRING.optionalFieldOf("investigation_role", "").forGetter(InvestigationData::investigationRole)
+			Codec.STRING.optionalFieldOf("investigation_role", "").forGetter(InvestigationData::investigationRole),
+			Codec.BOOL.optionalFieldOf("lens_inspected", false).forGetter(InvestigationData::lensInspected)
 		).apply(instance, InvestigationData::new)
 	);
 
@@ -45,6 +48,7 @@ public record InvestigationData(
 		ByteBufCodecs.STRING_UTF8, InvestigationData::workshopId,
 		ByteBufCodecs.STRING_UTF8, InvestigationData::workshopVariant,
 		ByteBufCodecs.STRING_UTF8, InvestigationData::investigationRole,
+		ByteBufCodecs.BOOL, InvestigationData::lensInspected,
 		InvestigationData::new
 	);
 
@@ -58,7 +62,7 @@ public record InvestigationData(
 	}
 
 	public static InvestigationData of(boolean lootGenerated, String lastResultId, InvestigationState state) {
-		return of(lootGenerated, lastResultId, state, "", "", "");
+		return of(lootGenerated, lastResultId, state, "", "", "", false);
 	}
 
 	public static InvestigationData of(
@@ -69,13 +73,26 @@ public record InvestigationData(
 		String workshopVariant,
 		String investigationRole
 	) {
+		return of(lootGenerated, lastResultId, state, workshopId, workshopVariant, investigationRole, false);
+	}
+
+	public static InvestigationData of(
+		boolean lootGenerated,
+		String lastResultId,
+		InvestigationState state,
+		String workshopId,
+		String workshopVariant,
+		String investigationRole,
+		boolean lensInspected
+	) {
 		return new InvestigationData(
 			lootGenerated,
 			lastResultId == null ? "" : lastResultId,
 			state.getSerializedName(),
 			workshopId == null ? "" : workshopId,
 			workshopVariant == null ? "" : workshopVariant,
-			investigationRole == null ? "" : investigationRole
+			investigationRole == null ? "" : investigationRole,
+			lensInspected
 		);
 	}
 }

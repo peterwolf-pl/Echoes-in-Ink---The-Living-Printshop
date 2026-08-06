@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.lwjgl.glfw.GLFW;
 import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.block.ModBlocks;
+import pl.peterwolf.echoesinink.block.FadedWorkshopPlaqueBlock;
 import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
 import pl.peterwolf.echoesinink.block.entity.LaidPaperBlockEntity;
 import pl.peterwolf.echoesinink.progression.InvestigationRole;
@@ -85,9 +87,9 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 						new BlockPos(west, 64, north)
 					);
 					BoundingBox bounds = piece.getBoundingBox();
-					assertVariant(level, variant, layout, bounds);
+					PlaqueView plaque = assertVariant(level, variant, layout, bounds);
 					BlockPos center = bounds.getCenter();
-					scenes.add(new Scene(variant, center.getX(), bounds.minY(), center.getZ()));
+					scenes.add(new Scene(variant, center.getX(), bounds.minY(), center.getZ(), plaque));
 				}
 				scenesRef.set(List.copyOf(scenes));
 			});
@@ -111,13 +113,24 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 				);
 				context.waitTicks(6);
 				takeScreenshot(context, "printshop_variant_" + scene.variant().id() + "_interior");
+				PlaqueView plaque = scene.plaque();
+				Direction look = plaque.facing().getOpposite();
+				serverContext.runCommand(
+					"tp @a "
+						+ (plaque.pos().getX() + 0.5 + plaque.facing().getStepX() * 1.25) + " "
+						+ (plaque.pos().getY() - 1.12) + " "
+						+ (plaque.pos().getZ() + 0.5 + plaque.facing().getStepZ() * 1.25) + " "
+						+ yaw(look) + " 0"
+				);
+				context.waitTicks(6);
+				takeScreenshot(context, "printshop_variant_" + scene.variant().id() + "_plaque");
 			}
 
 			context.getInput().pressKey(GLFW.GLFW_KEY_F1);
 		}
 	}
 
-	private static void assertVariant(
+	private static PlaqueView assertVariant(
 		net.minecraft.server.level.ServerLevel level,
 		WorkshopVariant variant,
 		int layout,
@@ -133,6 +146,8 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 		int populatedLaidPrints = 0;
 		Block signature = signatureBlock(variant);
 		boolean signatureFound = false;
+		BlockPos plaquePos = null;
+		Direction plaqueFacing = null;
 		for (int x = scan.minX(); x <= scan.maxX(); x++) {
 			for (int y = scan.minY(); y <= scan.maxY(); y++) {
 				for (int z = scan.minZ(); z <= scan.maxZ(); z++) {
@@ -140,6 +155,10 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 					Block block = level.getBlockState(pos).getBlock();
 					if (block == signature) {
 						signatureFound = true;
+					}
+					if (block == ModBlocks.FADED_WORKSHOP_PLAQUE) {
+						plaquePos = pos;
+						plaqueFacing = level.getBlockState(pos).getValue(FadedWorkshopPlaqueBlock.FACING);
 					}
 					if (block == Blocks.COBWEB) {
 						cobwebs++;
@@ -177,6 +196,15 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 		if (!signatureFound) {
 			throw new AssertionError(variant.id() + " missing signature block " + signature);
 		}
+		if (plaquePos == null || plaqueFacing == null || plaqueFacing.getAxis().isVertical()) {
+			throw new AssertionError(variant.id() + " missing a horizontal wall-mounted plaque");
+		}
+		if (!level.getBlockState(plaquePos.relative(plaqueFacing)).isAir()) {
+			throw new AssertionError(
+				variant.id() + " plaque front is obstructed by "
+					+ level.getBlockState(plaquePos.relative(plaqueFacing))
+			);
+		}
 		if (cobwebs < 4 || hangingPrints < 2 || laidPrints < 2 || populatedLaidPrints != laidPrints) {
 			throw new AssertionError(
 				variant.id() + " atmosphere: cobwebs=" + cobwebs
@@ -189,6 +217,17 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 			"VARIANT_GAMETEST_OK variant={} layout={} roles={} suspiciousFloors={} cobwebs={} hangingPrints={} laidPrints={}",
 			variant.id(), layout, roles, expectedFloors, cobwebs, hangingPrints, laidPrints
 		);
+		return new PlaqueView(plaquePos, plaqueFacing);
+	}
+
+	private static int yaw(Direction look) {
+		return switch (look) {
+			case SOUTH -> 0;
+			case WEST -> 90;
+			case NORTH -> 180;
+			case EAST -> -90;
+			default -> 0;
+		};
 	}
 
 	private static Block signatureBlock(WorkshopVariant variant) {
@@ -223,5 +262,7 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 		return screenshot;
 	}
 
-	private record Scene(WorkshopVariant variant, int x, int baseY, int z) {}
+	private record PlaqueView(BlockPos pos, Direction facing) {}
+
+	private record Scene(WorkshopVariant variant, int x, int baseY, int z, PlaqueView plaque) {}
 }

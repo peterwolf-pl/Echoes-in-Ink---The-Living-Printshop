@@ -74,6 +74,7 @@ public final class EchoesCommands {
 			return 0;
 		}
 
+		give(player, new ItemStack(ModItems.WORKSHOP_BROOM));
 		give(player, new ItemStack(ModItems.PRINTERS_BRUSH));
 		give(player, new ItemStack(ModItems.MAGNIFYING_LENS));
 		give(player, new ItemStack(ModItems.CHARCOAL_RUBBING_PAPER, 8));
@@ -107,7 +108,7 @@ public final class EchoesCommands {
 		give(player, new ItemStack(ModBlocks.CARVED_WOODEN_MATRIX));
 		give(player, new ItemStack(ModBlocks.DUSTY_PRINTING_TABLE));
 		give(player, new ItemStack(ModBlocks.DAMAGED_ARCHIVE_SHELF));
-		give(player, new ItemStack(ModBlocks.BROKEN_PRESS_FRAME));
+		give(player, new ItemStack(ModBlocks.PRESS_FRAME));
 		give(player, new ItemStack(ModBlocks.PRINTING_PRESS));
 		give(player, new ItemStack(ModItems.PRINTERS_ARCHIVE));
 

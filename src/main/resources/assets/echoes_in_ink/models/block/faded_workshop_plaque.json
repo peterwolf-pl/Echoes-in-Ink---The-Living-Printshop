@@ -1,6 +1,22 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/block",
   "textures": {
-    "all": "echoes_in_ink:block/faded_workshop_plaque_untouched"
-  }
+    "particle": "echoes_in_ink:block/faded_workshop_plaque_untouched",
+    "front": "echoes_in_ink:block/faded_workshop_plaque_untouched",
+    "side": "minecraft:block/dark_oak_planks"
+  },
+  "elements": [
+    {
+      "from": [2, 2, 14],
+      "to": [14, 14, 16],
+      "faces": {
+        "north": { "uv": [0, 0, 16, 16], "texture": "#front" },
+        "south": { "uv": [2, 2, 14, 14], "texture": "#side" },
+        "west":  { "uv": [14, 2, 16, 14], "texture": "#side" },
+        "east":  { "uv": [0, 2, 2, 14], "texture": "#side" },
+        "up":    { "uv": [2, 0, 14, 2], "texture": "#side" },
+        "down":  { "uv": [2, 14, 14, 16], "texture": "#side" }
+      }
+    }
+  ]
 }

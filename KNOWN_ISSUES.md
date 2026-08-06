@@ -24,6 +24,9 @@
 | REB-LEGACY-ROLES | Pre-1.1 generated investigation furniture had no semantic role and therefore used weighted fallback loot. | 1.1.1 |
 | REB-ASCETIC | Rebalanced variants lost much of the former cobweb, paper, and poster atmosphere. | 1.1.1 |
 | UI-ITEM-PURPOSE | Several block items lacked tooltips and item descriptions did not clearly state whether they were required. | 1.1.1 |
+| REB-CHEST-PARTS | Printshop chests contained only weighted specialist loot, so players could visit several ruins without seeing physical starter press parts or tools in a chest. | 1.1.2 |
+| REB-TOOLS | The Workshop Broom did not exist and the brush, lens, and Archive were not physically supplied by printshop chests. | 1.1.2 |
+| REB-PLAQUE-UX | The Faded Workshop Plaque looked like a wooden cube and did not explain its two-step brush interaction. | 1.1.2 |
 
 ## Tracking guidelines
 

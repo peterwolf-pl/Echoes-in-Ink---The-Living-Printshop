@@ -16,6 +16,33 @@
 - [x] `./gradlew runServer` — reached `Done`, no client-class loading, clean `stop` (Stage 1)
 - [x] `./gradlew runClientGameTest` — press renderer/state machine, four generated variants, starter-only loop (Stages 3–4)
 
+## 1.1.2 physical starter supplies and plaque verification — 2026-08-04
+
+- [x] `./gradlew test` — 18 tests in ten JVM test classes, zero
+  failures/errors; description coverage updated to 32 items and 11 block items.
+- [x] Saved-data contract — the first starter-supply claim succeeds once per
+  workshop, another workshop remains recoverable before the first press, and no
+  starter kit is allowed after the real handle pull.
+- [x] `./gradlew runDatagen` — strict success, zero providers/files, version
+  1.1.2.
+- [x] `./gradlew runClientGameTest` — exact deterministic eight-item chest kit,
+  no repeated claim for one workshop, no kit after press operation, legacy
+  recovery, specialist switch, and complete Restored Chronicle print all pass.
+- [x] Variant ClientGameTest — every printshop retains at least four cobwebs,
+  two populated laid prints, two wall prints, all semantic roles, and four
+  suspicious targets; every directional plaque has an unobstructed front.
+- [x] Captured and visually inspected exterior, interior, and plaque close-up
+  screenshots for all four variants (12 printshop images, 1920×1080).
+- [x] `./gradlew runClient` — normal 1.1.2 client initialized and created all
+  block/item/resource atlases; stopped intentionally after resource validation.
+- [x] `./gradlew runServer` — dedicated server loaded 1592 recipes/1699
+  advancements, reached `Done`, located a natural printshop at `[-208, 224]`,
+  and stopped cleanly with no client-class loading.
+- [x] Final `./gradlew build` and `unzip -t
+  build/libs/echoes-in-ink-1.1.2.jar` — production gate and archive integrity
+  passed; all project JSON parsed; `git diff --check` passed; generic loot audit
+  contains no Restored Chronicle Page.
+
 ## 1.1.1 recovery and atmosphere verification — 2026-08-04
 
 - [x] `./gradlew test` — 18 tests in ten JVM test classes, zero failures/errors.

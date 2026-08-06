@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -26,11 +26,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import pl.peterwolf.echoesinink.block.ModBlocks;
+import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
 import pl.peterwolf.echoesinink.config.ModConfig;
 
 /**
  * Magnifying lens: hold right-click to look through (spyglass-style zoom);
- * right-click a block to inspect recoverable details (server).
+ * right-click a block to inspect recoverable details (server) and start zoom.
  */
 public class MagnifyingLensItem extends Item {
 	private static final Map<UUID, Long> LAST_INSPECT_TICK = new HashMap<>();
@@ -39,7 +40,7 @@ public class MagnifyingLensItem extends Item {
 		super(properties);
 	}
 
-	/** Hold to look through the glass (client FOV via isScoping mixin). */
+	/** Hold to look through the glass (FOV via isScoping + client FOV mixin). */
 	@Override
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		player.startUsingItem(hand);
@@ -56,7 +57,6 @@ public class MagnifyingLensItem extends Item {
 
 	@Override
 	public int getUseDuration(ItemStack stack, LivingEntity entity) {
-		// Long hold like spyglass; release stops zoom.
 		return 1200;
 	}
 
@@ -68,6 +68,10 @@ public class MagnifyingLensItem extends Item {
 		return super.releaseUsing(stack, level, entity, timeLeft);
 	}
 
+	/**
+	 * Inspect the targeted block, then keep holding for zoom.
+	 * Must start using the item so scoping FOV works even when looking at a block.
+	 */
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		Level level = context.getLevel();
@@ -76,52 +80,51 @@ public class MagnifyingLensItem extends Item {
 			return InteractionResult.PASS;
 		}
 
-		// Sneak + block: inspect. Plain block click still inspects (historical tools).
-		// Looking through is use() when not targeting a usable block inspect path —
-		// we inspect first, then player can use in air to zoom.
+		// Always enter use-hold so zoom works (useOn SUCCESS previously blocked use()).
+		player.startUsingItem(context.getHand());
+
 		if (level.isClientSide()) {
-			return InteractionResult.SUCCESS;
+			return InteractionResult.CONSUME;
 		}
 
 		if (!(player instanceof ServerPlayer serverPlayer)) {
-			return InteractionResult.PASS;
+			return InteractionResult.CONSUME;
 		}
 
 		long now = level.getGameTime();
 		int cooldown = Math.max(0, ModConfig.INSTANCE.lensInspectCooldownTicks);
 		Long last = LAST_INSPECT_TICK.get(serverPlayer.getUUID());
-		if (last != null && now - last < cooldown) {
-			return InteractionResult.FAIL;
-		}
-		LAST_INSPECT_TICK.put(serverPlayer.getUUID(), now);
+		if (last == null || now - last >= cooldown) {
+			LAST_INSPECT_TICK.put(serverPlayer.getUUID(), now);
 
-		BlockPos pos = context.getClickedPos();
-		BlockState state = level.getBlockState(pos);
-		Component result = inspect(state);
-		serverPlayer.sendSystemMessage(result, true);
-		if (state.is(ModBlocks.LOOSE_INK_STAINED_FLOORBOARDS)
-			|| state.is(ModBlocks.HIDDEN_FLOOR_COMPARTMENT)) {
-			((ServerLevel) level).sendParticles(
-				ParticleTypes.ENCHANT,
-				pos.getX() + 0.5,
-				pos.getY() + 1.03,
-				pos.getZ() + 0.5,
-				4,
-				0.18,
-				0.02,
-				0.18,
-				0.01
-			);
-			level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.28F, 1.65F);
-		} else {
-			level.playSound(null, pos, SoundEvents.SPYGLASS_USE, SoundSource.PLAYERS, 0.35F, 1.4F);
+			BlockPos pos = context.getClickedPos();
+			BlockState state = level.getBlockState(pos);
+			if (level.getBlockEntity(pos) instanceof InvestigationBlockEntity investigation) {
+				investigation.markLensInspected(serverPlayer);
+			}
+			Component result = inspect(state);
+			serverPlayer.sendSystemMessage(result, true);
+			if (state.is(ModBlocks.LOOSE_INK_STAINED_FLOORBOARDS)
+				|| state.is(ModBlocks.HIDDEN_FLOOR_COMPARTMENT)) {
+				((ServerLevel) level).sendParticles(
+					ParticleTypes.ENCHANT,
+					pos.getX() + 0.5,
+					pos.getY() + 1.03,
+					pos.getZ() + 0.5,
+					4,
+					0.18,
+					0.02,
+					0.18,
+					0.01
+				);
+				level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.28F, 1.65F);
+			} else {
+				level.playSound(null, pos, SoundEvents.SPYGLASS_USE, SoundSource.PLAYERS, 0.35F, 1.4F);
+			}
 		}
-		return InteractionResult.SUCCESS_SERVER;
+		return InteractionResult.CONSUME;
 	}
 
-	/**
-	 * Server-side inspection table. At least three distinct findings for Phase 1 tests.
-	 */
 	static Component inspect(BlockState state) {
 		Block block = state.getBlock();
 		if (block == ModBlocks.HIDDEN_FLOOR_COMPARTMENT) {
@@ -146,7 +149,7 @@ public class MagnifyingLensItem extends Item {
 			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.table");
 		}
 		if (block == Blocks.ANVIL || block == Blocks.CHIPPED_ANVIL || block == Blocks.DAMAGED_ANVIL
-			|| block == ModBlocks.BROKEN_PRESS_FRAME) {
+			|| block == ModBlocks.PRESS_FRAME) {
 			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.press");
 		}
 		if (block == ModBlocks.COLLAPSED_TYPE_CABINET) {

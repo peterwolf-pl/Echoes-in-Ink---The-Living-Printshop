@@ -23,6 +23,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import net.minecraft.world.level.storage.loot.LootTable;
 import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.block.ModBlocks;
+import pl.peterwolf.echoesinink.block.FadedWorkshopPlaqueBlock;
 import pl.peterwolf.echoesinink.block.HangingPosterBlock;
 import pl.peterwolf.echoesinink.block.LaidPaperBlock;
 import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
@@ -157,12 +158,14 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 			}
 		}
 
-		placeNode(level, box, ModBlocks.BROKEN_PRESS_FRAME.defaultBlockState(), mx(4, width), 1, 5, InvestigationRole.PRESS_FRAME);
-		placeNode(level, box, ModBlocks.BROKEN_PRESS_FRAME.defaultBlockState(), mx(5, width), 1, 5, InvestigationRole.MACHINE_REMAINS);
+		placeNode(level, box, ModBlocks.PRESS_FRAME.defaultBlockState(), mx(4, width), 1, 5, InvestigationRole.PRESS_FRAME);
+		placeNode(level, box, ModBlocks.PRESS_FRAME.defaultBlockState(), mx(5, width), 1, 5, InvestigationRole.MACHINE_REMAINS);
 		placeNode(level, box, ModBlocks.DUSTY_PRINTING_TABLE.defaultBlockState(), mx(2, width), 1, 3, InvestigationRole.MATRIX_BENCH);
 		placeNode(level, box, ModBlocks.DAMAGED_ARCHIVE_SHELF.defaultBlockState(), mx(1, width), 1, 8, InvestigationRole.ARCHIVE_DESK);
 		placeNode(level, box, ModBlocks.COLLAPSED_TYPE_CABINET.defaultBlockState(), mx(7, width), 1, 2, InvestigationRole.INK_STATION);
-		placeNode(level, box, ModBlocks.FADED_WORKSHOP_PLAQUE.defaultBlockState(), mx(1, width), 2, doorZ, InvestigationRole.PLAQUE_CLUE);
+		placeNode(level, box, ModBlocks.FADED_WORKSHOP_PLAQUE.defaultBlockState()
+			.setValue(FadedWorkshopPlaqueBlock.FACING, layoutIndex == 0 ? Direction.EAST : Direction.WEST),
+			mx(1, width), 2, layoutIndex == 0 ? doorZ + 1 : doorZ - 1, InvestigationRole.PLAQUE_CLUE);
 		placeNode(level, box, ModBlocks.HIDDEN_FLOOR_COMPARTMENT.defaultBlockState(), mx(9, width), 0, 4, InvestigationRole.FLOOR_CACHE);
 
 		buildCellar(level, box, mx(10, width), 3, mx(8, width), mx(11, width), 1, 5, Blocks.COBBLESTONE.defaultBlockState(), mx(9, width), 4);
@@ -202,12 +205,13 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 			}
 		}
 
-		placeNode(level, box, ModBlocks.BROKEN_PRESS_FRAME.defaultBlockState(), mx(7, width), 1, 7, InvestigationRole.PRESS_FRAME);
+		placeNode(level, box, ModBlocks.PRESS_FRAME.defaultBlockState(), mx(7, width), 1, 7, InvestigationRole.PRESS_FRAME);
 		placeNode(level, box, ModBlocks.PRINTING_DEBRIS.defaultBlockState(), mx(13, width), 1, 5, InvestigationRole.MACHINE_REMAINS);
 		placeNode(level, box, ModBlocks.DUSTY_PRINTING_TABLE.defaultBlockState(), mx(5, width), 1, 3, InvestigationRole.MATRIX_BENCH);
 		placeNode(level, box, ModBlocks.DAMAGED_ARCHIVE_SHELF.defaultBlockState(), mx(2, width), 1, 10, InvestigationRole.ARCHIVE_DESK);
 		placeNode(level, box, ModBlocks.COLLAPSED_TYPE_CABINET.defaultBlockState(), mx(11, width), 1, 3, InvestigationRole.INK_STATION);
-		placeNode(level, box, ModBlocks.FADED_WORKSHOP_PLAQUE.defaultBlockState(), entranceX + 1, 2, 1, InvestigationRole.PLAQUE_CLUE);
+		placeNode(level, box, ModBlocks.FADED_WORKSHOP_PLAQUE.defaultBlockState()
+			.setValue(FadedWorkshopPlaqueBlock.FACING, Direction.NORTH), entranceX + 1, 2, 1, InvestigationRole.PLAQUE_CLUE);
 		placeNode(level, box, ModBlocks.HIDDEN_FLOOR_COMPARTMENT.defaultBlockState(), mx(14, width), 0, 9, InvestigationRole.FLOOR_CACHE);
 
 		buildCellar(level, box, mx(14, width), 10, mx(12, width), mx(15, width), 8, 11, Blocks.STONE_BRICKS.defaultBlockState(), mx(13, width), 9);
@@ -251,12 +255,14 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 			}
 		}
 
-		placeNode(level, box, ModBlocks.BROKEN_PRESS_FRAME.defaultBlockState(), 7, 1, mz(8, depth), InvestigationRole.PRESS_FRAME);
+		placeNode(level, box, ModBlocks.PRESS_FRAME.defaultBlockState(), 7, 1, mz(8, depth), InvestigationRole.PRESS_FRAME);
 		placeNode(level, box, ModBlocks.PRINTING_DEBRIS.defaultBlockState(), 10, 1, mz(10, depth), InvestigationRole.MACHINE_REMAINS);
 		placeNode(level, box, ModBlocks.DUSTY_PRINTING_TABLE.defaultBlockState(), 9, 1, mz(5, depth), InvestigationRole.MATRIX_BENCH);
 		placeNode(level, box, ModBlocks.DAMAGED_ARCHIVE_SHELF.defaultBlockState(), 3, 1, mz(10, depth), InvestigationRole.ARCHIVE_DESK);
 		placeNode(level, box, ModBlocks.COLLAPSED_TYPE_CABINET.defaultBlockState(), 11, 1, mz(3, depth), InvestigationRole.INK_STATION);
-		placeNode(level, box, ModBlocks.FADED_WORKSHOP_PLAQUE.defaultBlockState(), 13, 2, entranceZ, InvestigationRole.PLAQUE_CLUE);
+		placeNode(level, box, ModBlocks.FADED_WORKSHOP_PLAQUE.defaultBlockState()
+			.setValue(FadedWorkshopPlaqueBlock.FACING, Direction.WEST), 13, 2,
+			layoutIndex == 0 ? entranceZ + 1 : entranceZ - 1, InvestigationRole.PLAQUE_CLUE);
 		placeNode(level, box, ModBlocks.HIDDEN_FLOOR_COMPARTMENT.defaultBlockState(), 3, 0, mz(12, depth), InvestigationRole.FLOOR_CACHE);
 
 		buildCellar(level, box, 4, mz(12, depth), 2, 6, mz(10, depth), mz(13, depth), Blocks.MOSSY_STONE_BRICKS.defaultBlockState(), 3, mz(11, depth));
@@ -292,12 +298,14 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeBlock(level, Blocks.IRON_BARS.defaultBlockState(), mx(6, width), 2, 0, box);
 		buildRoof(level, box, width, depth, Blocks.DARK_OAK_SLAB.defaultBlockState(), 21, 6, 5, 4);
 
-		placeNode(level, box, ModBlocks.BROKEN_PRESS_FRAME.defaultBlockState(), mx(5, width), 1, 6, InvestigationRole.PRESS_FRAME);
+		placeNode(level, box, ModBlocks.PRESS_FRAME.defaultBlockState(), mx(5, width), 1, 6, InvestigationRole.PRESS_FRAME);
 		placeNode(level, box, ModBlocks.PRINTING_DEBRIS.defaultBlockState(), mx(7, width), 1, 5, InvestigationRole.MACHINE_REMAINS);
 		placeNode(level, box, ModBlocks.DUSTY_PRINTING_TABLE.defaultBlockState(), mx(3, width), 1, 4, InvestigationRole.MATRIX_BENCH);
 		placeNode(level, box, ModBlocks.DAMAGED_ARCHIVE_SHELF.defaultBlockState(), mx(10, width), 1, 8, InvestigationRole.ARCHIVE_DESK);
 		placeNode(level, box, ModBlocks.COLLAPSED_TYPE_CABINET.defaultBlockState(), mx(9, width), 1, 3, InvestigationRole.INK_STATION);
-		placeNode(level, box, ModBlocks.FADED_WORKSHOP_PLAQUE.defaultBlockState(), rearDoorX, 2, depth - 2, InvestigationRole.PLAQUE_CLUE);
+		placeNode(level, box, ModBlocks.FADED_WORKSHOP_PLAQUE.defaultBlockState()
+			.setValue(FadedWorkshopPlaqueBlock.FACING, Direction.SOUTH),
+			layoutIndex == 0 ? rearDoorX + 1 : rearDoorX - 1, 2, depth - 2, InvestigationRole.PLAQUE_CLUE);
 		placeNode(level, box, ModBlocks.HIDDEN_FLOOR_COMPARTMENT.defaultBlockState(), mx(9, width), 0, 8, InvestigationRole.FLOOR_CACHE);
 
 		// A concealed crawlspace replaces the formal cellar.

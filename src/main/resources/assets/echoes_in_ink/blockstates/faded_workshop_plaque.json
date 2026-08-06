@@ -1,7 +1,16 @@
 {
   "variants": {
-    "investigation=untouched": { "model": "echoes_in_ink:block/faded_workshop_plaque_untouched" },
-    "investigation=partially_cleaned": { "model": "echoes_in_ink:block/faded_workshop_plaque_partial" },
-    "investigation=fully_investigated": { "model": "echoes_in_ink:block/faded_workshop_plaque_done" }
+    "facing=north,investigation=untouched": { "model": "echoes_in_ink:block/faded_workshop_plaque_untouched" },
+    "facing=east,investigation=untouched": { "model": "echoes_in_ink:block/faded_workshop_plaque_untouched", "y": 90 },
+    "facing=south,investigation=untouched": { "model": "echoes_in_ink:block/faded_workshop_plaque_untouched", "y": 180 },
+    "facing=west,investigation=untouched": { "model": "echoes_in_ink:block/faded_workshop_plaque_untouched", "y": 270 },
+    "facing=north,investigation=partially_cleaned": { "model": "echoes_in_ink:block/faded_workshop_plaque_partial" },
+    "facing=east,investigation=partially_cleaned": { "model": "echoes_in_ink:block/faded_workshop_plaque_partial", "y": 90 },
+    "facing=south,investigation=partially_cleaned": { "model": "echoes_in_ink:block/faded_workshop_plaque_partial", "y": 180 },
+    "facing=west,investigation=partially_cleaned": { "model": "echoes_in_ink:block/faded_workshop_plaque_partial", "y": 270 },
+    "facing=north,investigation=fully_investigated": { "model": "echoes_in_ink:block/faded_workshop_plaque_done" },
+    "facing=east,investigation=fully_investigated": { "model": "echoes_in_ink:block/faded_workshop_plaque_done", "y": 90 },
+    "facing=south,investigation=fully_investigated": { "model": "echoes_in_ink:block/faded_workshop_plaque_done", "y": 180 },
+    "facing=west,investigation=fully_investigated": { "model": "echoes_in_ink:block/faded_workshop_plaque_done", "y": 270 }
   }
 }

@@ -2,6 +2,37 @@
 
 All notable changes to **Echoes in Ink** are documented here.
 
+## [1.1.2] — 2026-08-04
+
+### Fixed
+
+- Added a deterministic physical starter kit to the first opened chest in each
+  confirmed printshop before the first press operation: all four press parts,
+  Workshop Broom, Printer's Brush, Magnifying Lens, and Printer's Archive.
+- Kept the specialist chest loot and unpacked it before inserting the guaranteed
+  kit; full-chest overflow is delivered to the opening player instead of being
+  lost.
+- Made the guarantee work when reopening an already-looted chest in an existing
+  world. The one-time workshop claim is persisted in world saved data and is
+  shared by multiplayer players.
+
+### Added
+
+- Added the Workshop Broom as an optional cobweb-cleaning tool with durability,
+  EN/PL descriptions, item model, and pixel-art texture.
+- Added integrated starter-chest coverage for exact tool/part delivery,
+  one-claim-per-workshop behavior, and the post-handle specialist transition.
+
+### Changed
+
+- Rebuilt the Faded Workshop Plaque as a thin, directional wall plaque with a
+  worn brass press emblem and three visibly different cleaning textures.
+- Added explicit plaque guidance: inspect it with the Magnifying Lens, then hold
+  use with the Printer's Brush twice. Its starter reward remains the instruction
+  sheet and map fragment; later plaques provide historical clues.
+- Expanded the variant visual test with a front-clearance assertion and a
+  dedicated close-up screenshot for every plaque orientation.
+
 ## [1.1.1] — 2026-08-04
 
 ### Fixed

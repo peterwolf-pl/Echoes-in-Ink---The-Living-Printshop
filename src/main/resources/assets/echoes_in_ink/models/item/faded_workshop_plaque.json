@@ -1,1 +1,6 @@
-{"parent":"echoes_in_ink:block/faded_workshop_plaque_untouched"}
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "echoes_in_ink:block/faded_workshop_plaque_untouched"
+  }
+}

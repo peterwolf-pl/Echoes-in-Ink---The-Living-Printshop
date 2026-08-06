@@ -36,6 +36,8 @@ import pl.peterwolf.echoesinink.recipe.PrintingRecipes;
  */
 public class InvestigationBlockEntity extends BlockEntity {
 	private boolean lootGenerated;
+	/** Plaque/clue nodes must be inspected with the lens before the brush. */
+	private boolean lensInspected;
 	private String lastResultId = "";
 	private String workshopId = "";
 	private String workshopVariant = "";
@@ -81,6 +83,7 @@ public class InvestigationBlockEntity extends BlockEntity {
 			return;
 		}
 		lootGenerated = data.lootGenerated();
+		lensInspected = data.lensInspected();
 		lastResultId = safe(data.lastResultId());
 		workshopId = safe(data.workshopId());
 		workshopVariant = safe(data.workshopVariant());
@@ -98,8 +101,33 @@ public class InvestigationBlockEntity extends BlockEntity {
 			investigation,
 			workshopId,
 			workshopVariant,
-			investigationRole
+			investigationRole,
+			lensInspected
 		);
+	}
+
+	public boolean isLensInspected() {
+		return lensInspected;
+	}
+
+	/** Called when the player inspects this block with the magnifying lens. */
+	public void markLensInspected(Player player) {
+		if (lensInspected) {
+			return;
+		}
+		lensInspected = true;
+		setChanged();
+		if (player instanceof ServerPlayer serverPlayer
+			&& getBlockState().getBlock() instanceof pl.peterwolf.echoesinink.block.FadedWorkshopPlaqueBlock) {
+			serverPlayer.sendOverlayMessage(
+				Component.translatable("investigation.echoes_in_ink.plaque_inspected")
+			);
+		}
+	}
+
+	private boolean requiresLensBeforeBrush() {
+		return getBlockState().getBlock() instanceof pl.peterwolf.echoesinink.block.FadedWorkshopPlaqueBlock
+			|| InvestigationRole.PLAQUE_CLUE.id().equals(investigationRole);
 	}
 
 	/** Server-only: advance cleaning and allocate the final reward exactly once. */
@@ -111,6 +139,16 @@ public class InvestigationBlockEntity extends BlockEntity {
 		InvestigationState current = state.getValue(InvestigatableBlock.INVESTIGATION);
 		if (!current.canClean()) {
 			return recoverFullySearchedLegacyWorkshop(level, player, current);
+		}
+
+		// Plaque: lens first, then brush twice (untouched → partial → fully).
+		if (requiresLensBeforeBrush() && !lensInspected) {
+			if (player instanceof ServerPlayer serverPlayer) {
+				serverPlayer.sendOverlayMessage(Component.translatable("investigation.echoes_in_ink.need_lens_first"));
+			} else {
+				player.sendSystemMessage(Component.translatable("investigation.echoes_in_ink.need_lens_first"));
+			}
+			return false;
 		}
 
 		InvestigationState next = current.next();
@@ -298,6 +336,7 @@ public class InvestigationBlockEntity extends BlockEntity {
 	protected void saveAdditional(ValueOutput tag) {
 		super.saveAdditional(tag);
 		tag.putBoolean("LootGenerated", lootGenerated);
+		tag.putBoolean("LensInspected", lensInspected);
 		tag.putString("LastResultId", safe(lastResultId));
 		tag.putString("WorkshopId", safe(workshopId));
 		tag.putString("WorkshopVariant", safe(workshopVariant));
@@ -308,6 +347,7 @@ public class InvestigationBlockEntity extends BlockEntity {
 	protected void loadAdditional(ValueInput tag) {
 		super.loadAdditional(tag);
 		lootGenerated = tag.getBooleanOr("LootGenerated", false);
+		lensInspected = tag.getBooleanOr("LensInspected", false);
 		lastResultId = tag.getStringOr("LastResultId", "");
 		workshopId = tag.getStringOr("WorkshopId", "");
 		workshopVariant = tag.getStringOr("WorkshopVariant", "");

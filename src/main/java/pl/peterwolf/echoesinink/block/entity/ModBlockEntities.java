@@ -26,7 +26,7 @@ public final class ModBlockEntities {
 				ModBlocks.DUSTY_PRINTING_TABLE,
 				ModBlocks.COLLAPSED_TYPE_CABINET,
 				ModBlocks.DAMAGED_ARCHIVE_SHELF,
-				ModBlocks.BROKEN_PRESS_FRAME,
+				ModBlocks.PRESS_FRAME,
 				ModBlocks.LOOSE_INK_STAINED_FLOORBOARDS,
 				ModBlocks.HIDDEN_FLOOR_COMPARTMENT,
 				ModBlocks.FADED_WORKSHOP_PLAQUE

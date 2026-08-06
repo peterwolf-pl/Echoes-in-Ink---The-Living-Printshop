@@ -2,6 +2,9 @@ package pl.peterwolf.echoesinink.progression;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -15,7 +18,9 @@ public final class PrintshopProgressionSavedData extends SavedData {
 			Codec.STRING.optionalFieldOf("starter_workshop_id", "")
 				.forGetter(PrintshopProgressionSavedData::starterWorkshopId),
 			Codec.BOOL.optionalFieldOf("basic_press_operated", false)
-				.forGetter(PrintshopProgressionSavedData::basicPressOperated)
+				.forGetter(PrintshopProgressionSavedData::basicPressOperated),
+			Codec.STRING.listOf().optionalFieldOf("starter_supply_workshops", List.of())
+				.forGetter(data -> List.copyOf(data.starterSupplyWorkshops))
 		).apply(instance, PrintshopProgressionSavedData::new)
 	);
 
@@ -28,12 +33,23 @@ public final class PrintshopProgressionSavedData extends SavedData {
 
 	private String starterWorkshopId = "";
 	private boolean basicPressOperated;
+	private final Set<String> starterSupplyWorkshops = new LinkedHashSet<>();
 
 	public PrintshopProgressionSavedData() {}
 
-	private PrintshopProgressionSavedData(String starterWorkshopId, boolean basicPressOperated) {
+	private PrintshopProgressionSavedData(
+		String starterWorkshopId,
+		boolean basicPressOperated,
+		List<String> starterSupplyWorkshops
+	) {
 		this.starterWorkshopId = normalize(starterWorkshopId);
 		this.basicPressOperated = basicPressOperated;
+		for (String workshopId : starterSupplyWorkshops) {
+			String normalized = normalize(workshopId);
+			if (!normalized.isEmpty()) {
+				this.starterSupplyWorkshops.add(normalized);
+			}
+		}
 	}
 
 	public static PrintshopProgressionSavedData get(ServerLevel level) {
@@ -71,6 +87,20 @@ public final class PrintshopProgressionSavedData extends SavedData {
 			basicPressOperated = true;
 			setDirty();
 		}
+	}
+
+	/** Reserves one physical starter supply chest per workshop before the first press run. */
+	public synchronized boolean claimStarterSupply(String workshopId) {
+		String normalized = normalize(workshopId);
+		if (basicPressOperated || normalized.isEmpty() || !starterSupplyWorkshops.add(normalized)) {
+			return false;
+		}
+		setDirty();
+		return true;
+	}
+
+	public synchronized boolean hasStarterSupply(String workshopId) {
+		return starterSupplyWorkshops.contains(normalize(workshopId));
 	}
 
 	public boolean basicPressOperated() {

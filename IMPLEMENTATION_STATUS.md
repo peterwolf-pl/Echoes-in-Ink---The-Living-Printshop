@@ -2,9 +2,9 @@
 
 **Last updated:** 2026-08-04
 
-**Version:** 1.1.1
+**Version:** 1.1.2
 
-**Current phase:** Starter recovery hotfix and atmosphere pass complete
+**Current phase:** Physical starter supplies and plaque clarity complete
 
 ## Summary
 
@@ -35,8 +35,8 @@
 
 ## Release artifact
 
-The verified 1.1.1 release artifact is
-`build/libs/echoes-in-ink-1.1.1.jar`. Final ZIP integrity validation is
+The verified 1.1.2 release artifact is
+`build/libs/echoes-in-ink-1.1.2.jar`. Final ZIP integrity validation is
 recorded in `TESTING.md`.
 
 ## Rebalance status
@@ -110,5 +110,29 @@ passed; normal `runClient` initialized 1.1.0 and built every atlas; `runServer`
 loaded 1592 recipes/1699 advancements, reached `Done`, located the printshop at
 `[-208, 224]`, and stopped cleanly with no client-class loading. Exact commands
 are recorded in `TESTING.md`.
+
+### 1.1.2 physical starter supply follow-up
+
+Opening a chest in a confirmed printshop before the first real press operation
+now inserts one deterministic workshop kit: Workshop Broom, Printer's Brush,
+Magnifying Lens, Printer's Archive, and all four basic press components. The
+variant's specialist loot table is unpacked first, and any capacity overflow is
+delivered to the opening player. Claims are persisted once per workshop and are
+shared by multiplayer players; reopening an old already-looted chest triggers
+the same migration-safe path.
+
+The Workshop Broom is a new optional cobweb-cleaning tool. The Faded Workshop
+Plaque is now a thin directional wall object with a brass screw-press emblem,
+three cleaning textures, correct structure orientation, and explicit localized
+lens plus two-brush-use instructions. Every one of the 32 custom items and 11
+block items retains EN/PL description and gameplay-purpose coverage.
+
+Validation passed on version 1.1.2: 18 JVM tests in ten classes; strict datagen;
+all integrated ClientGameTests including exact eight-item starter-chest
+contents, first-handle transition, full Restored Chronicle print, all four
+variant atmosphere/orientation contracts, and 12 new/refreshed printshop
+screenshots; normal client atlas loading; and dedicated server startup to
+`Done`, natural structure locate at `[-208, 224]`, and clean shutdown. Final
+build/JAR integrity results are recorded in `TESTING.md`.
 
 See [MODJAM_CHECKLIST.md](MODJAM_CHECKLIST.md).

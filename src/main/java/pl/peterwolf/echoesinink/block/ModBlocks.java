@@ -59,8 +59,8 @@ public final class ModBlocks {
 		InvestigatableBlockItem::new
 	);
 
-	public static final InvestigatableBlock BROKEN_PRESS_FRAME = register(
-		"broken_press_frame",
+	public static final InvestigatableBlock PRESS_FRAME = register(
+		"press_frame",
 		key -> new InvestigatableBlock(
 			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
 				.setId(key)
@@ -105,14 +105,14 @@ public final class ModBlocks {
 		InvestigatableBlockItem::new
 	);
 
-	public static final InvestigatableBlock FADED_WORKSHOP_PLAQUE = register(
+	public static final FadedWorkshopPlaqueBlock FADED_WORKSHOP_PLAQUE = register(
 		"faded_workshop_plaque",
-		key -> new InvestigatableBlock(
+		key -> new FadedWorkshopPlaqueBlock(
 			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
 				.setId(key)
 				.strength(1.0F)
-				.sound(SoundType.WOOD),
-			InvestigationLoot.Profile.PLAQUE),
+				.sound(SoundType.WOOD)
+				.noOcclusion()),
 		InvestigatableBlockItem::new
 	);
 

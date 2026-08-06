@@ -67,7 +67,7 @@ public final class LegacyWorkshopBinder {
 		return new MigrationResult(true, List.copyOf(compensation));
 	}
 
-	private static WorkshopArea findWorkshop(ServerLevel level, BlockPos origin) {
+	static WorkshopArea findWorkshop(ServerLevel level, BlockPos origin) {
 		Structure structure = level.registryAccess()
 			.lookupOrThrow(Registries.STRUCTURE)
 			.getValue(ModStructures.ABANDONED_PRINTSHOP);
@@ -128,7 +128,7 @@ public final class LegacyWorkshopBinder {
 	}
 
 	private static boolean looksLikeLegacyPrintshop(List<Node> nodes) {
-		boolean hasPress = nodes.stream().anyMatch(node -> node.block() == ModBlocks.BROKEN_PRESS_FRAME);
+		boolean hasPress = nodes.stream().anyMatch(node -> node.block() == ModBlocks.PRESS_FRAME);
 		boolean hasPlaque = nodes.stream().anyMatch(node -> node.block() == ModBlocks.FADED_WORKSHOP_PLAQUE);
 		boolean hasWorkSurface = nodes.stream().anyMatch(node ->
 			node.block() == ModBlocks.DUSTY_PRINTING_TABLE
@@ -185,7 +185,7 @@ public final class LegacyWorkshopBinder {
 	}
 
 	private static NodeKind kind(Node node) {
-		if (node.block() == ModBlocks.BROKEN_PRESS_FRAME) {
+		if (node.block() == ModBlocks.PRESS_FRAME) {
 			return NodeKind.PRESS_FRAME;
 		}
 		if (node.block() == ModBlocks.PRINTING_DEBRIS) {
@@ -226,7 +226,7 @@ public final class LegacyWorkshopBinder {
 
 	private record Node(BlockPos pos, Block block, InvestigationBlockEntity blockEntity) {}
 
-	private record WorkshopArea(
+	record WorkshopArea(
 		BoundingBox bounds,
 		String workshopId,
 		WorkshopVariant variant,
