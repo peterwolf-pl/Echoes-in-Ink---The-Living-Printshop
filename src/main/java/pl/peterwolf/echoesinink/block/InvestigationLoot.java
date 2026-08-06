@@ -70,8 +70,7 @@ public final class InvestigationLoot {
 		switch (profile) {
 			case DEBRIS -> {
 				list.add(new Entry("metal_type", 30, ModItems.METAL_TYPE_PIECE, 1, "investigation.echoes_in_ink.metal_type"));
-				list.add(new Entry("matrix_fragment", 15, ModItems.UPPER_MATRIX_FRAGMENT, 1, "investigation.echoes_in_ink.matrix_fragment"));
-				list.add(new Entry("matrix_fragment", 10, ModItems.LOWER_MATRIX_FRAGMENT, 1, "investigation.echoes_in_ink.matrix_fragment"));
+				list.add(new Entry("wooden_matrix", 15, ModItems.WOODEN_PRINTING_MATRIX, 1, "investigation.echoes_in_ink.matrix_fragment"));
 				list.add(new Entry("damaged_page", 5, ModItems.DAMAGED_ARCHIVE_PAGE, 1, "investigation.echoes_in_ink.damaged_page"));
 			}
 			case TABLE -> {
@@ -92,7 +91,7 @@ public final class InvestigationLoot {
 			}
 			case PRESS -> {
 				list.add(new Entry("metal_type", 30, ModItems.METAL_TYPE_PIECE, 2, "investigation.echoes_in_ink.metal_type"));
-				list.add(new Entry("matrix_fragment", 20, ModItems.MISSING_LETTER_INSERT, 1, "investigation.echoes_in_ink.matrix_fragment"));
+				list.add(new Entry("wooden_matrix", 20, ModItems.WOODEN_PRINTING_MATRIX, 1, "investigation.echoes_in_ink.matrix_fragment"));
 				list.add(new Entry("ink_ball", 15, ModItems.INK_BALL, 2, "investigation.echoes_in_ink.ink"));
 				if (ModConfig.INSTANCE.allowSparePressPartsInLaterRuins) {
 					list.add(new Entry("press_screw", 1, ModItems.PRESS_SCREW, 1, "investigation.echoes_in_ink.press_part"));
@@ -106,7 +105,7 @@ public final class InvestigationLoot {
 				list.add(new Entry("ink_pad", 15, ModItems.INK_PAD, 1, "investigation.echoes_in_ink.ink"));
 			}
 			case FLOOR_HIDDEN -> {
-				list.add(new Entry("matrix_fragment", 30, ModItems.MISSING_LETTER_INSERT, 1, "investigation.echoes_in_ink.matrix_fragment"));
+				list.add(new Entry("wooden_matrix", 30, ModItems.WOODEN_PRINTING_MATRIX, 1, "investigation.echoes_in_ink.matrix_fragment"));
 				list.add(new Entry("ink_pad", 25, ModItems.INK_PAD, 2, "investigation.echoes_in_ink.ink"));
 				list.add(new Entry("printers_notes", 20, ModItems.PRINTERS_NOTES, 1, "investigation.echoes_in_ink.hidden"));
 			}

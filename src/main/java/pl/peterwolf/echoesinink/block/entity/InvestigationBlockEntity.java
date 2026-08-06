@@ -285,9 +285,6 @@ public class InvestigationBlockEntity extends BlockEntity {
 		boolean matrixMaterial = item == ModItems.WOODEN_PRINTING_MATRIX
 			|| item == ModItems.METAL_TYPE_PIECE
 			|| item == ModItems.CHARCOAL_RUBBING
-			|| item == ModItems.UPPER_MATRIX_FRAGMENT
-			|| item == ModItems.LOWER_MATRIX_FRAGMENT
-			|| item == ModItems.MISSING_LETTER_INSERT
 			|| item == ModItems.VILLAGE_CHRONICLE_MATRIX
 			|| item == ModItems.LEAD_TYPE_SET
 			|| item == ModItems.IRON_CHASE
@@ -309,9 +306,6 @@ public class InvestigationBlockEntity extends BlockEntity {
 		} else if (item == ModItems.PRESS_CARRIAGE) {
 			ArchiveService.unlock(player, ArchiveEntries.PART_CARRIAGE);
 		} else if (item == ModItems.WOODEN_PRINTING_MATRIX
-			|| item == ModItems.UPPER_MATRIX_FRAGMENT
-			|| item == ModItems.LOWER_MATRIX_FRAGMENT
-			|| item == ModItems.MISSING_LETTER_INSERT
 			|| item == ModItems.VILLAGE_CHRONICLE_MATRIX) {
 			ArchiveService.unlock(player, ArchiveEntries.MATRIX_WOODEN);
 		} else if (item == ModItems.METAL_TYPE_PIECE

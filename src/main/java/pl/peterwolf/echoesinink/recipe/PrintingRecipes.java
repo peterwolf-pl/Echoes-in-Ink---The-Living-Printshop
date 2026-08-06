@@ -23,80 +23,29 @@ public final class PrintingRecipes {
 	private static List<PrintingRecipe> recipes() {
 		if (recipes == null) {
 			List<PrintingRecipe> list = new ArrayList<>();
-			list.add(new PrintingRecipe(
-				EchoesInInk.id("printers_instruction_sheet"),
-				ModItems.WOODEN_PRINTING_MATRIX,
-				ModItems.BLANK_ARCHIVE_PAGE,
-				ModItems.INK_BALL,
-				new ItemStack(ModItems.PRINTERS_INSTRUCTION_SHEET),
-				60,
-				1
-			));
-			list.add(new PrintingRecipe(
-				EchoesInInk.id("restored_chronicle_page"),
-				ModItems.WOODEN_PRINTING_MATRIX,
-				ModItems.DAMAGED_ARCHIVE_PAGE,
-				ModItems.INK_BALL,
-				new ItemStack(ModItems.RESTORED_CHRONICLE_PAGE),
-				80,
-				1
-			));
-			list.add(new PrintingRecipe(
-				EchoesInInk.id("decorative_woodcut"),
-				ModItems.WOODEN_PRINTING_MATRIX,
-				ModItems.BLANK_ARCHIVE_PAGE,
-				ModItems.INK_PAD,
-				new ItemStack(ModItems.DECORATIVE_WOODCUT),
-				50,
-				1
-			));
-			list.add(new PrintingRecipe(
-				EchoesInInk.id("printed_warning_poster"),
-				ModItems.METAL_TYPE_PIECE,
-				ModItems.BLANK_ARCHIVE_PAGE,
-				ModItems.INK_BALL,
-				new ItemStack(ModItems.PRINTED_WARNING_POSTER),
-				40,
-				1
-			));
-			// Composed metal type is charged with either historical ink tool.
-			// The press accepts both, so both must produce the same impression.
-			list.add(new PrintingRecipe(
-				EchoesInInk.id("printed_warning_poster_ink_pad"),
-				ModItems.METAL_TYPE_PIECE,
-				ModItems.BLANK_ARCHIVE_PAGE,
-				ModItems.INK_PAD,
-				new ItemStack(ModItems.PRINTED_WARNING_POSTER),
-				40,
-				1
-			));
-			list.add(new PrintingRecipe(
-				EchoesInInk.id("workshop_map_fragment"),
-				ModItems.CHARCOAL_RUBBING,
-				ModItems.BLANK_ARCHIVE_PAGE,
-				ModItems.INK_PAD,
-				new ItemStack(ModItems.WORKSHOP_MAP_FRAGMENT),
-				70,
-				1
-			));
-			list.add(new PrintingRecipe(
-				EchoesInInk.id("village_chronicle_print"),
-				ModItems.VILLAGE_CHRONICLE_MATRIX,
-				ModItems.BLANK_ARCHIVE_PAGE,
-				ModItems.INK_BALL,
-				new ItemStack(ModItems.VILLAGE_CHRONICLE_PRINT),
-				70,
-				1
-			));
-			list.add(new PrintingRecipe(
-				EchoesInInk.id("forbidden_notice_print"),
-				ModItems.FORBIDDEN_NOTICE_FORME,
-				ModItems.BLANK_ARCHIVE_PAGE,
-				ModItems.INK_PAD,
-				new ItemStack(ModItems.FORBIDDEN_NOTICE_PRINT),
-				70,
-				1
-			));
+			// Wooden matrix: accept either historical ink tool (ball or pad).
+			addBothInks(list, "printers_instruction_sheet",
+				ModItems.WOODEN_PRINTING_MATRIX, ModItems.BLANK_ARCHIVE_PAGE,
+				new ItemStack(ModItems.PRINTERS_INSTRUCTION_SHEET), 60);
+			addBothInks(list, "restored_chronicle_page",
+				ModItems.WOODEN_PRINTING_MATRIX, ModItems.DAMAGED_ARCHIVE_PAGE,
+				new ItemStack(ModItems.RESTORED_CHRONICLE_PAGE), 80);
+			addBothInks(list, "decorative_woodcut",
+				ModItems.WOODEN_PRINTING_MATRIX, ModItems.BLANK_ARCHIVE_PAGE,
+				new ItemStack(ModItems.DECORATIVE_WOODCUT), 50);
+			// Metal type / specialist forms: also both inks.
+			addBothInks(list, "printed_warning_poster",
+				ModItems.METAL_TYPE_PIECE, ModItems.BLANK_ARCHIVE_PAGE,
+				new ItemStack(ModItems.PRINTED_WARNING_POSTER), 40);
+			addBothInks(list, "workshop_map_fragment",
+				ModItems.CHARCOAL_RUBBING, ModItems.BLANK_ARCHIVE_PAGE,
+				new ItemStack(ModItems.WORKSHOP_MAP_FRAGMENT), 70);
+			addBothInks(list, "village_chronicle_print",
+				ModItems.VILLAGE_CHRONICLE_MATRIX, ModItems.BLANK_ARCHIVE_PAGE,
+				new ItemStack(ModItems.VILLAGE_CHRONICLE_PRINT), 70);
+			addBothInks(list, "forbidden_notice_print",
+				ModItems.FORBIDDEN_NOTICE_FORME, ModItems.BLANK_ARCHIVE_PAGE,
+				new ItemStack(ModItems.FORBIDDEN_NOTICE_PRINT), 70);
 			recipes = List.copyOf(list);
 		}
 		return recipes;
@@ -121,8 +70,36 @@ public final class PrintingRecipes {
 		}
 		return recipes().stream()
 			.filter(recipe -> recipe.matrix() == matrix.getItem())
-			.map(recipe -> recipe.id().getPath())
+			.map(recipe -> recipe.id().getPath().replace("_ink_pad", "").replace("_ink_ball", ""))
 			.distinct()
 			.toList();
+	}
+
+	private static void addBothInks(
+		List<PrintingRecipe> list,
+		String baseId,
+		net.minecraft.world.item.Item matrix,
+		net.minecraft.world.item.Item paper,
+		ItemStack output,
+		int durationTicks
+	) {
+		list.add(new PrintingRecipe(
+			EchoesInInk.id(baseId),
+			matrix,
+			paper,
+			ModItems.INK_BALL,
+			output.copy(),
+			durationTicks,
+			1
+		));
+		list.add(new PrintingRecipe(
+			EchoesInInk.id(baseId + "_ink_pad"),
+			matrix,
+			paper,
+			ModItems.INK_PAD,
+			output.copy(),
+			durationTicks,
+			1
+		));
 	}
 }

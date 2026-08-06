@@ -347,9 +347,8 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 	 * Idle empty-hand:
 	 * <ul>
 	 *   <li>Sneak → open drawer (eject matrix, then ink, then paper)</li>
-	 *   <li>Full load → push carriage</li>
-	 *   <li>Partial load with matrix → eject matrix (change form)</li>
-	 *   <li>Otherwise → missing-input feedback</li>
+	 *   <li>Full load → push carriage / start inking</li>
+	 *   <li>Partial load → missing-input feedback (never auto-ejects the matrix)</li>
 	 * </ul>
 	 */
 	private String tryIdleEmptyHand(Player player) {
@@ -362,11 +361,9 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		if (hasMatrix && hasInk && hasPaper) {
 			return tryPushCarriage(player);
 		}
-		// Drawer metaphor: incomplete load + empty hand removes the matrix so it can be swapped.
-		if (hasMatrix) {
-			return ejectSlot(player, SLOT_MATRIX, "press.echoes_in_ink.matrix_removed");
-		}
-		if (!hasInk && !hasPaper) {
+		// Never auto-eject the form on a normal empty-hand click — that made wooden
+		// matrices feel "unprintable" when the load was only incomplete.
+		if (!hasMatrix) {
 			return "press.echoes_in_ink.missing_matrix";
 		}
 		if (!hasInk) {

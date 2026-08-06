@@ -46,15 +46,6 @@ public final class ModItems {
 	public static final Item METAL_TYPE_PIECE = register("metal_type_piece",
 		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.metal_type_piece.desc"));
 
-	public static final Item UPPER_MATRIX_FRAGMENT = register("upper_matrix_fragment",
-		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.upper_matrix_fragment.desc"));
-
-	public static final Item LOWER_MATRIX_FRAGMENT = register("lower_matrix_fragment",
-		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.lower_matrix_fragment.desc"));
-
-	public static final Item MISSING_LETTER_INSERT = register("missing_letter_insert",
-		props -> new TooltipItem(props.stacksTo(16), "item.echoes_in_ink.missing_letter_insert.desc"));
-
 	public static final Item VILLAGE_CHRONICLE_MATRIX = register("village_chronicle_matrix",
 		props -> new TooltipItem(props.stacksTo(8), "item.echoes_in_ink.village_chronicle_matrix.desc"));
 

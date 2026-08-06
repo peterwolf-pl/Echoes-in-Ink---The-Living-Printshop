@@ -9,8 +9,8 @@
         "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2.0, "max": 6.0 } }] },
       { "type": "minecraft:item", "name": "echoes_in_ink:printers_notes", "weight": 5 },
       { "type": "minecraft:item", "name": "echoes_in_ink:workshop_map_fragment", "weight": 3 },
-      { "type": "minecraft:item", "name": "echoes_in_ink:upper_matrix_fragment", "weight": 3 },
-      { "type": "minecraft:item", "name": "echoes_in_ink:lower_matrix_fragment", "weight": 3 },
+      { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 3 },
+      { "type": "minecraft:item", "name": "echoes_in_ink:village_chronicle_matrix", "weight": 3 },
       { "type": "minecraft:item", "name": "echoes_in_ink:ink_ball", "weight": 4,
         "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2.0, "max": 6.0 } }] }
     ]

@@ -17,9 +17,9 @@
       "entries": [
         { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 3 },
         { "type": "minecraft:item", "name": "echoes_in_ink:workshop_map_fragment", "weight": 2 },
-        { "type": "minecraft:item", "name": "echoes_in_ink:upper_matrix_fragment", "weight": 1 },
-        { "type": "minecraft:item", "name": "echoes_in_ink:lower_matrix_fragment", "weight": 1 },
-        { "type": "minecraft:item", "name": "echoes_in_ink:missing_letter_insert", "weight": 1 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 1 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:village_chronicle_matrix", "weight": 1 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 1 },
         { "type": "minecraft:item", "name": "echoes_in_ink:iron_chase", "weight": 1 },
         {
           "type": "minecraft:item",

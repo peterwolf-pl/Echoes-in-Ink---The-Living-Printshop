@@ -84,9 +84,6 @@ public final class EchoesCommands {
 		give(player, new ItemStack(ModItems.INK_PAD, 2));
 		give(player, new ItemStack(ModItems.WOODEN_PRINTING_MATRIX));
 		give(player, new ItemStack(ModItems.METAL_TYPE_PIECE, 16));
-		give(player, new ItemStack(ModItems.UPPER_MATRIX_FRAGMENT));
-		give(player, new ItemStack(ModItems.LOWER_MATRIX_FRAGMENT));
-		give(player, new ItemStack(ModItems.MISSING_LETTER_INSERT));
 		give(player, new ItemStack(ModItems.VILLAGE_CHRONICLE_MATRIX));
 		give(player, new ItemStack(ModItems.LEAD_TYPE_SET));
 		give(player, new ItemStack(ModItems.IRON_CHASE));

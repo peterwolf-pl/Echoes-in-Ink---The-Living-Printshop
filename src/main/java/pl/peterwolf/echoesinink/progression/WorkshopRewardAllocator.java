@@ -64,9 +64,9 @@ public final class WorkshopRewardAllocator {
 		int small = 1 + (int) Math.floorMod(seed, 3L);
 		return switch (variant) {
 			case RURAL_WOODCUT -> switch (role) {
-				case PRESS_FRAME, MATRIX_BENCH -> rewards(RewardKind.UPPER_MATRIX_FRAGMENT, 1);
-				case MACHINE_REMAINS, FLOOR_CACHE -> rewards(RewardKind.LOWER_MATRIX_FRAGMENT, 1);
-				case CELLAR_CACHE -> rewards(RewardKind.MISSING_LETTER_INSERT, 1, RewardKind.PRINTERS_NOTES, 1);
+				case PRESS_FRAME, MATRIX_BENCH -> rewards(RewardKind.WOODEN_MATRIX, 1);
+				case MACHINE_REMAINS, FLOOR_CACHE -> rewards(RewardKind.VILLAGE_CHRONICLE_MATRIX, 1);
+				case CELLAR_CACHE -> rewards(RewardKind.WOODEN_MATRIX, 1, RewardKind.PRINTERS_NOTES, 1);
 				case ARCHIVE_DESK -> rewards(RewardKind.DAMAGED_PAGE, small, RewardKind.BLANK_PAGE, 2 + small);
 				case INK_STATION -> rewards(RewardKind.INK_BALL, 4 + small);
 				case PLAQUE_CLUE -> rewards(RewardKind.MAP_FRAGMENT, 1);
@@ -82,10 +82,10 @@ public final class WorkshopRewardAllocator {
 				case SUSPICIOUS_FLOOR -> rewards(RewardKind.METAL_TYPE, small);
 			};
 			case SCHOLARLY_ARCHIVE -> switch (role) {
-				case PRESS_FRAME, MATRIX_BENCH -> rewards(RewardKind.LOWER_MATRIX_FRAGMENT, 1);
-				case MACHINE_REMAINS -> rewards(RewardKind.MISSING_LETTER_INSERT, 1);
+				case PRESS_FRAME, MATRIX_BENCH -> rewards(RewardKind.VILLAGE_CHRONICLE_MATRIX, 1);
+				case MACHINE_REMAINS -> rewards(RewardKind.WOODEN_MATRIX, 1);
 				case CELLAR_CACHE -> rewards(RewardKind.PRINTERS_NOTES, 1, RewardKind.DAMAGED_PAGE, 2);
-				case FLOOR_CACHE -> rewards(RewardKind.UPPER_MATRIX_FRAGMENT, 1);
+				case FLOOR_CACHE -> rewards(RewardKind.WOODEN_MATRIX, 1);
 				case ARCHIVE_DESK -> rewards(RewardKind.DAMAGED_PAGE, 2 + small, RewardKind.BLANK_PAGE, 3 + small);
 				case INK_STATION -> rewards(RewardKind.INK_BALL, 4 + small);
 				case PLAQUE_CLUE -> rewards(RewardKind.MAP_FRAGMENT, 1, RewardKind.PRINTERS_NOTES, 1);
@@ -95,7 +95,7 @@ public final class WorkshopRewardAllocator {
 				case PRESS_FRAME, FLOOR_CACHE -> rewards(RewardKind.MISSING_HEADLINE_TYPE, 1);
 				case MACHINE_REMAINS -> rewards(RewardKind.LEAD_TYPE_SET, 1);
 				case CELLAR_CACHE -> rewards(RewardKind.IRON_CHASE, 1, RewardKind.PRINTERS_NOTES, 1);
-				case MATRIX_BENCH -> rewards(RewardKind.MISSING_LETTER_INSERT, 1);
+				case MATRIX_BENCH -> rewards(RewardKind.WOODEN_MATRIX, 1);
 				case ARCHIVE_DESK -> rewards(RewardKind.DAMAGED_PAGE, small, RewardKind.PRINTERS_NOTES, 1);
 				case INK_STATION -> rewards(RewardKind.INK_PAD, 4 + small);
 				case PLAQUE_CLUE -> rewards(RewardKind.MAP_FRAGMENT, 1);

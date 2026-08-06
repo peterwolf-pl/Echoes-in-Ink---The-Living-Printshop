@@ -19,7 +19,7 @@ class ItemDescriptionCoverageTest {
 	void everyRegisteredModItemAndBlockItemExplainsItsDescriptionAndPurpose() throws IOException {
 		Set<String> itemIds = ids(Path.of("src/main/java/pl/peterwolf/echoesinink/item/ModItems.java"));
 		Set<String> blockItemIds = ids(Path.of("src/main/java/pl/peterwolf/echoesinink/block/ModBlocks.java"));
-		assertEquals(32, itemIds.size(), "Update expected item count when registering a new item");
+		assertEquals(29, itemIds.size(), "Update expected item count when registering a new item");
 		assertEquals(11, blockItemIds.size(), "Update expected block-item count when registering a new block item");
 
 		for (String language : List.of("en_us", "pl_pl")) {

@@ -3,15 +3,12 @@ package pl.peterwolf.echoesinink.progression;
 import java.util.List;
 import java.util.Optional;
 
-/** Data-driven crafting contracts for recoverable multi-part printing forms. */
+/**
+ * Data-driven crafting contracts for recoverable multi-part printing forms.
+ * Incomplete wooden matrix fragments were removed; village chronicle is a
+ * whole matrix drop. Forbidden notice remains multi-part metal type.
+ */
 public final class MatrixAssemblyDefinitions {
-	public static final MatrixAssemblyDefinition VILLAGE_CHRONICLE = new MatrixAssemblyDefinition(
-		"village_chronicle",
-		List.of("upper_matrix_fragment", "lower_matrix_fragment", "missing_letter_insert"),
-		"village_chronicle_matrix",
-		List.of("village_chronicle_print")
-	);
-
 	public static final MatrixAssemblyDefinition FORBIDDEN_NOTICE = new MatrixAssemblyDefinition(
 		"forbidden_notice",
 		List.of("lead_type_set", "iron_chase", "missing_headline_type", "printers_notes"),
@@ -20,7 +17,6 @@ public final class MatrixAssemblyDefinitions {
 	);
 
 	private static final List<MatrixAssemblyDefinition> ALL = List.of(
-		VILLAGE_CHRONICLE,
 		FORBIDDEN_NOTICE
 	);
 
