@@ -5,7 +5,9 @@
   "mixins": [
     "PlayerScopingMixin"
   ],
-  "client": [],
+  "client": [
+    "client.AbstractClientPlayerFovMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

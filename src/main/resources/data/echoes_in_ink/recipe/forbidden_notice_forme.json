@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "echoes_in_ink:lead_type_set",
+    "echoes_in_ink:iron_chase",
+    "echoes_in_ink:missing_headline_type",
+    "echoes_in_ink:printers_notes"
+  ],
+  "result": { "id": "echoes_in_ink:forbidden_notice_forme" }
+}

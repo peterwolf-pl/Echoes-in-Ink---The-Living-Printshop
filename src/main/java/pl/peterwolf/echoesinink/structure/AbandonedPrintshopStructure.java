@@ -9,6 +9,8 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import pl.peterwolf.echoesinink.config.ModConfig;
+import pl.peterwolf.echoesinink.progression.WorkshopIdentity;
+import pl.peterwolf.echoesinink.progression.WorkshopVariantSelector;
 
 /**
  * Surface structure: a single abandoned print workshop with storage cellar.
@@ -34,8 +36,19 @@ public class AbandonedPrintshopStructure extends Structure {
 		int west = chunkPos.getMinBlockX() + 2;
 		int north = chunkPos.getMinBlockZ() + 2;
 		// Stable workshop id from chunk coords (for archive progression later).
-		String workshopId = "printshop_" + Integer.toHexString(chunkPos.x() * 73856093 ^ chunkPos.z() * 19349663);
-		builder.addPiece(new AbandonedPrintshopPiece(random, west, north, workshopId));
+		String workshopId = WorkshopIdentity.idForChunk(chunkPos);
+		WorkshopVariantSelector.Selection selection = WorkshopVariantSelector.select(
+			workshopId,
+			ModConfig.INSTANCE.enablePrintshopVariants
+		);
+		builder.addPiece(new AbandonedPrintshopPiece(
+			random,
+			west,
+			north,
+			workshopId,
+			selection.variant(),
+			selection.layoutIndex()
+		));
 	}
 
 	@Override

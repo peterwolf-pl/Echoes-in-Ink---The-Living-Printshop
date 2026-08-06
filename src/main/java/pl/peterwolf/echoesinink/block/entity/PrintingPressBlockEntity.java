@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -34,6 +35,7 @@ import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.item.ModItems;
 import pl.peterwolf.echoesinink.recipe.PrintingRecipe;
 import pl.peterwolf.echoesinink.recipe.PrintingRecipes;
+import pl.peterwolf.echoesinink.progression.PrintshopProgressionSavedData;
 import pl.peterwolf.echoesinink.sound.ModSounds;
 
 /**
@@ -276,6 +278,14 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 			ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_TYPE);
 		} else if (item == ModItems.CHARCOAL_RUBBING) {
 			ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_RUBBING);
+		} else if (item == ModItems.VILLAGE_CHRONICLE_MATRIX) {
+			ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_VILLAGE_CHRONICLE);
+		} else if (item == ModItems.FORBIDDEN_NOTICE_FORME) {
+			ArchiveService.unlock(serverPlayer, ArchiveEntries.MATRIX_FORBIDDEN_NOTICE);
+		}
+		ArchiveService.recordRecoveredMaterial(serverPlayer, BuiltInRegistries.ITEM.getKey(item).getPath());
+		for (String recipeId : PrintingRecipes.recipeIdsForMatrix(matrix)) {
+			ArchiveService.recordAvailableRecipe(serverPlayer, recipeId);
 		}
 	}
 
@@ -292,7 +302,9 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		var item = stack.getItem();
 		return item == ModItems.WOODEN_PRINTING_MATRIX
 			|| item == ModItems.METAL_TYPE_PIECE
-			|| item == ModItems.CHARCOAL_RUBBING;
+			|| item == ModItems.CHARCOAL_RUBBING
+			|| item == ModItems.VILLAGE_CHRONICLE_MATRIX
+			|| item == ModItems.FORBIDDEN_NOTICE_FORME;
 	}
 
 	private static boolean isInkItem(ItemStack stack) {
@@ -335,9 +347,8 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 	 * Idle empty-hand:
 	 * <ul>
 	 *   <li>Sneak → open drawer (eject matrix, then ink, then paper)</li>
-	 *   <li>Full load → push carriage</li>
-	 *   <li>Partial load with matrix → eject matrix (change form)</li>
-	 *   <li>Otherwise → missing-input feedback</li>
+	 *   <li>Full load → push carriage / start inking</li>
+	 *   <li>Partial load → missing-input feedback (never auto-ejects the matrix)</li>
 	 * </ul>
 	 */
 	private String tryIdleEmptyHand(Player player) {
@@ -350,11 +361,9 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		if (hasMatrix && hasInk && hasPaper) {
 			return tryPushCarriage(player);
 		}
-		// Drawer metaphor: incomplete load + empty hand removes the matrix so it can be swapped.
-		if (hasMatrix) {
-			return ejectSlot(player, SLOT_MATRIX, "press.echoes_in_ink.matrix_removed");
-		}
-		if (!hasInk && !hasPaper) {
+		// Never auto-eject the form on a normal empty-hand click — that made wooden
+		// matrices feel "unprintable" when the load was only incomplete.
+		if (!hasMatrix) {
 			return "press.echoes_in_ink.missing_matrix";
 		}
 		if (!hasInk) {
@@ -433,8 +442,15 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		progress = 0;
 		animProgress = 0.0F;
 		phase = PressPhase.PRESSING;
+		if (level instanceof ServerLevel serverLevel) {
+			PrintshopProgressionSavedData.get(serverLevel).markBasicPressOperated();
+		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			ArchiveService.grantAdvancement(serverPlayer, pl.peterwolf.echoesinink.EchoesInInk.id("pull_the_handle"));
+			ArchiveService.recordAvailableRecipe(serverPlayer, "press_screw");
+			ArchiveService.recordAvailableRecipe(serverPlayer, "press_handle");
+			ArchiveService.recordAvailableRecipe(serverPlayer, "press_platen");
+			ArchiveService.recordAvailableRecipe(serverPlayer, "press_carriage");
 		}
 		play(ModSounds.PRESS_WORK, 0.7F, 0.7F);
 		sync();
@@ -457,15 +473,18 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 			return "press.echoes_in_ink.empty";
 		}
 		ItemStack give = out.copy();
+		ItemStack printedResult = give.copy();
 		items.set(SLOT_OUTPUT, ItemStack.EMPTY);
 		if (!player.getInventory().add(give)) {
 			player.drop(give, false);
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
-			unlockPrintResult(serverPlayer, give);
+			// Inventory insertion may consume the source stack to count zero. Keep a
+			// stable copy so archive progression records the item that was printed.
+			unlockPrintResult(serverPlayer, printedResult);
 			// First meaningful print can stir The Last Print Run (once until archive entry exists).
-			if ((give.getItem() == ModItems.PRINTERS_INSTRUCTION_SHEET
-				|| give.getItem() == ModItems.RESTORED_CHRONICLE_PAGE)
+			if ((printedResult.getItem() == ModItems.PRINTERS_INSTRUCTION_SHEET
+				|| printedResult.getItem() == ModItems.RESTORED_CHRONICLE_PAGE)
 				&& !ArchiveService.get(serverPlayer).has(ArchiveEntries.ECHO_LAST_PRINT)
 				&& level instanceof ServerLevel serverLevel) {
 				pl.peterwolf.echoesinink.echo.EchoManager.startLastPrintRun(
@@ -484,6 +503,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 
 	private static void unlockPrintResult(ServerPlayer player, ItemStack printed) {
 		var item = printed.getItem();
+		ArchiveService.recordPrintedWork(player, BuiltInRegistries.ITEM.getKey(item).getPath());
 		if (item == ModItems.PRINTERS_INSTRUCTION_SHEET) {
 			ArchiveService.unlock(player, ArchiveEntries.WORK_INSTRUCTION);
 		} else if (item == ModItems.RESTORED_CHRONICLE_PAGE) {
@@ -494,6 +514,10 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 			ArchiveService.unlock(player, ArchiveEntries.WORK_POSTER);
 		} else if (item == ModItems.WORKSHOP_MAP_FRAGMENT) {
 			ArchiveService.unlock(player, ArchiveEntries.WORK_MAP);
+		} else if (item == ModItems.VILLAGE_CHRONICLE_PRINT) {
+			ArchiveService.unlock(player, ArchiveEntries.WORK_VILLAGE_CHRONICLE);
+		} else if (item == ModItems.FORBIDDEN_NOTICE_PRINT) {
+			ArchiveService.unlock(player, ArchiveEntries.WORK_FORBIDDEN_NOTICE);
 		}
 	}
 

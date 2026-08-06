@@ -56,7 +56,7 @@ Client rendering never owns gameplay authority.
 - [x] Data generation entrypoint
 - [x] Dev commands scaffold
 - [x] Git ignore, licence (MPL-2.0), tracking docs
-- [ ] Clean compile + client/server run verification
+- [x] Clean compile + client/server run verification
 
 **Acceptance:** Compiles; client and dedicated server start; mod listed; no client classes on dedicated server.
 
@@ -120,6 +120,43 @@ Follow-up: second printshop / cache / library basement / buried crate.
 ## Phase 8 — Polish, security, release
 
 Sounds, tooltips, balance, exploit hardening, screenshots, trailer shots, production JAR, ModJam checklist.
+
+## Progression rebalance — version 1.1.0
+
+- [x] Stage 1: deterministic world-bound starter allocation, complete press set,
+  starter ink/paper/matrix/documents, generic Chronicle skip removal, JVM tests.
+- [x] Stage 2: decorative versus suspicious floorboards and Magnifying Lens cues.
+- [x] Stage 3: four persistent structure variants with two layouts each and
+  specialist later-workshop profiles.
+- [x] Stage 4: reusable matrix-fragment assembly, expanded archive tracking,
+  renewable ink, multiplayer replacement recipes, and final acceptance audit.
+
+The first completed structure-bound investigation records the initial workshop,
+but starter rewards remain available until a complete press actually begins an
+impression. This prevents an abandoned ruin from stranding the shared world.
+
+## Recovery and atmosphere follow-up — version 1.1.1
+
+- [x] Keep starter rewards active until the first real press handle pull.
+- [x] Migrate semantic roles into pre-1.1 generated printshops and compensate
+  mandatory roles already exhausted under weighted loot, including a revisit
+  path for completely searched ruins.
+- [x] Restore cobwebs and add laid papers/prints plus wall posters to every variant.
+- [x] Give every mod item and block item EN/PL description and purpose tooltips.
+- [x] Extend JVM and ClientGameTest coverage through actual cleaning/inventory paths.
+
+## Physical starter supplies and plaque clarity — version 1.1.2
+
+- [x] Put all four basic press components and all four investigation tools in a
+  deterministic physical printshop chest kit before the first press operation.
+- [x] Persist one chest-kit claim per workshop and retain specialist chest loot.
+- [x] Support already-opened chests in existing worlds by injecting the kit on
+  their next valid interaction.
+- [x] Add a functional Workshop Broom for optional cobweb cleanup.
+- [x] Rebuild the Faded Workshop Plaque as a thin directional model with a
+  readable historical press emblem and explicit lens/brush instructions.
+- [x] Extend automated progression, item-description, orientation, and visual
+  screenshot coverage.
 
 ---
 

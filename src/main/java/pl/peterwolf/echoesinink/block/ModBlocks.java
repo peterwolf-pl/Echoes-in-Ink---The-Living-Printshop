@@ -30,7 +30,8 @@ public final class ModBlocks {
 		key -> new PrintingDebrisBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
 			.setId(key)
 			.strength(1.5F)
-			.sound(SoundType.WOOD)),
+			.sound(SoundType.WOOD)
+			.noOcclusion()),
 		InvestigatableBlockItem::new
 	);
 
@@ -43,11 +44,12 @@ public final class ModBlocks {
 		BlockItem::new
 	);
 
-	public static final InvestigatableBlock DUSTY_PRINTING_TABLE = register(
+	public static final DustyPrintingTableBlock DUSTY_PRINTING_TABLE = register(
 		"dusty_printing_table",
-		key -> new InvestigatableBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE).setId(key),
-			InvestigationLoot.Profile.TABLE),
+		key -> new DustyPrintingTableBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE)
+				.setId(key)
+				.noOcclusion()),
 		InvestigatableBlockItem::new
 	);
 
@@ -59,42 +61,60 @@ public final class ModBlocks {
 		InvestigatableBlockItem::new
 	);
 
-	public static final InvestigatableBlock BROKEN_PRESS_FRAME = register(
-		"broken_press_frame",
-		key -> new InvestigatableBlock(
+	public static final PressFrameBlock PRESS_FRAME = register(
+		"press_frame",
+		key -> new PressFrameBlock(
 			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
 				.setId(key)
 				.strength(2.5F)
 				.sound(SoundType.WOOD)
-				.noOcclusion(),
-			InvestigationLoot.Profile.PRESS),
+				.noOcclusion()),
 		InvestigatableBlockItem::new
 	);
 
-	public static final InvestigatableBlock COLLAPSED_TYPE_CABINET = register(
+	public static final TypeCabinetBlock COLLAPSED_TYPE_CABINET = register(
 		"collapsed_type_cabinet",
-		key -> new InvestigatableBlock(
-			BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).setId(key),
-			InvestigationLoot.Profile.CABINET),
+		key -> new TypeCabinetBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
+				.setId(key)
+				.noOcclusion()),
 		InvestigatableBlockItem::new
 	);
 
-	public static final InvestigatableBlock INK_STAINED_FLOORBOARDS = register(
+	public static final DecorativeFloorboardsBlock INK_STAINED_FLOORBOARDS = register(
 		"ink_stained_floorboards",
+		key -> new DecorativeFloorboardsBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).setId(key)),
+		BlockItem::new
+	);
+
+	public static final InvestigatableBlock LOOSE_INK_STAINED_FLOORBOARDS = register(
+		"loose_ink_stained_floorboards",
 		key -> new InvestigatableBlock(
 			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).setId(key),
 			InvestigationLoot.Profile.FLOOR),
 		InvestigatableBlockItem::new
 	);
 
-	public static final InvestigatableBlock FADED_WORKSHOP_PLAQUE = register(
-		"faded_workshop_plaque",
+	public static final InvestigatableBlock HIDDEN_FLOOR_COMPARTMENT = register(
+		"hidden_floor_compartment",
 		key -> new InvestigatableBlock(
 			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
 				.setId(key)
-				.strength(1.0F)
+				.strength(2.0F)
 				.sound(SoundType.WOOD),
-			InvestigationLoot.Profile.PLAQUE),
+			InvestigationLoot.Profile.FLOOR_HIDDEN),
+		InvestigatableBlockItem::new
+	);
+
+	public static final FadedWorkshopPlaqueBlock FADED_WORKSHOP_PLAQUE = register(
+		"faded_workshop_plaque",
+		key -> new FadedWorkshopPlaqueBlock(
+			BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
+				.setId(key)
+				.strength(1.0F)
+				.sound(SoundType.WOOD)
+				.noOcclusion()),
 		InvestigatableBlockItem::new
 	);
 

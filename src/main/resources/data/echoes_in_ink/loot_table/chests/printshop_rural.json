@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:chest",
+  "pools": [{
+    "rolls": { "type": "minecraft:uniform", "min": 3.0, "max": 5.0 },
+    "entries": [
+      { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 4 },
+      { "type": "minecraft:item", "name": "echoes_in_ink:village_chronicle_matrix", "weight": 4 },
+      { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 2 },
+      { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 1 },
+      { "type": "minecraft:item", "name": "echoes_in_ink:charcoal_rubbing_paper", "weight": 4,
+        "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1.0, "max": 3.0 } }] },
+      { "type": "minecraft:item", "name": "echoes_in_ink:blank_archive_page", "weight": 4,
+        "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2.0, "max": 5.0 } }] },
+      { "type": "minecraft:item", "name": "echoes_in_ink:ink_ball", "weight": 4,
+        "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2.0, "max": 5.0 } }] }
+    ]
+  }]
+}

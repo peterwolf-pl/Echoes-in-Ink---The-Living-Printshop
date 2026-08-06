@@ -74,6 +74,7 @@ public final class EchoesCommands {
 			return 0;
 		}
 
+		give(player, new ItemStack(ModItems.WORKSHOP_BROOM));
 		give(player, new ItemStack(ModItems.PRINTERS_BRUSH));
 		give(player, new ItemStack(ModItems.MAGNIFYING_LENS));
 		give(player, new ItemStack(ModItems.CHARCOAL_RUBBING_PAPER, 8));
@@ -83,6 +84,12 @@ public final class EchoesCommands {
 		give(player, new ItemStack(ModItems.INK_PAD, 2));
 		give(player, new ItemStack(ModItems.WOODEN_PRINTING_MATRIX));
 		give(player, new ItemStack(ModItems.METAL_TYPE_PIECE, 16));
+		give(player, new ItemStack(ModItems.VILLAGE_CHRONICLE_MATRIX));
+		give(player, new ItemStack(ModItems.LEAD_TYPE_SET));
+		give(player, new ItemStack(ModItems.IRON_CHASE));
+		give(player, new ItemStack(ModItems.MISSING_HEADLINE_TYPE));
+		give(player, new ItemStack(ModItems.PRINTERS_NOTES));
+		give(player, new ItemStack(ModItems.FORBIDDEN_NOTICE_FORME));
 		give(player, new ItemStack(ModItems.PRESS_SCREW));
 		give(player, new ItemStack(ModItems.PRESS_HANDLE));
 		give(player, new ItemStack(ModItems.PRESS_PLATEN));
@@ -92,11 +99,13 @@ public final class EchoesCommands {
 		give(player, new ItemStack(ModItems.WORKSHOP_MAP_FRAGMENT));
 		give(player, new ItemStack(ModItems.DECORATIVE_WOODCUT));
 		give(player, new ItemStack(ModItems.PRINTED_WARNING_POSTER));
+		give(player, new ItemStack(ModItems.VILLAGE_CHRONICLE_PRINT));
+		give(player, new ItemStack(ModItems.FORBIDDEN_NOTICE_PRINT));
 		give(player, new ItemStack(ModBlocks.PRINTING_DEBRIS));
 		give(player, new ItemStack(ModBlocks.CARVED_WOODEN_MATRIX));
 		give(player, new ItemStack(ModBlocks.DUSTY_PRINTING_TABLE));
 		give(player, new ItemStack(ModBlocks.DAMAGED_ARCHIVE_SHELF));
-		give(player, new ItemStack(ModBlocks.BROKEN_PRESS_FRAME));
+		give(player, new ItemStack(ModBlocks.PRESS_FRAME));
 		give(player, new ItemStack(ModBlocks.PRINTING_PRESS));
 		give(player, new ItemStack(ModItems.PRINTERS_ARCHIVE));
 

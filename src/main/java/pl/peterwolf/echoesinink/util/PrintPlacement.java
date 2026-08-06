@@ -15,7 +15,10 @@ import pl.peterwolf.echoesinink.block.LaidPaperBlock;
 import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.sound.ModSounds;
 
-/** Shared “lay this page on a flat top surface” interaction. */
+/**
+ * Shared “lay this item on a flat top surface” interaction.
+ * Used for pages, prints, matrices, and press parts (stored in {@link LaidPaperBlock}).
+ */
 public final class PrintPlacement {
 	private PrintPlacement() {}
 

@@ -2,13 +2,16 @@
 
 The ModJam MVP is complete. Future work should deepen the central printing loop without turning press assembly into repetitive exploration grind.
 
-## Next gameplay milestone: progression rebalance
+## Current gameplay milestone: progression rebalance
 
-The next major update should make one fully investigated starter printshop sufficient to assemble and operate the basic historical screw press.
+Version 1.1.2 adds a deterministic physical starter kit to real printshop
+chests, introduces the Workshop Broom, and makes the plaque's appearance and
+interaction explicit on top of the 1.1.0 progression stages and 1.1.1 recovery
+work.
 
 ### Starter printshop
 
-Guarantee the following rewards in the first progression workshop:
+Implemented in Stage 1: guarantee the following rewards in the first progression workshop:
 
 - Press Screw
 - Press Handle
@@ -19,7 +22,8 @@ Guarantee the following rewards in the first progression workshop:
 - enough paper and basic ink for the first printing attempts
 - instructions and a clue to another location
 
-The required items should be distributed across the workshop. They must not depend on independent weighted random rolls and must not all appear in one chest.
+The required items are distributed across stable investigation roles and do not
+depend on independent weighted random rolls.
 
 ### Later printshops
 
@@ -40,55 +44,57 @@ Spare press parts may appear as rare replacement loot, but they should not remai
 
 ### Investigation improvements
 
-- Separate decorative ink-stained floorboards from suspicious investigatable floorboards.
-- Limit each workshop to a small number of meaningful floor investigation targets.
-- Use the Magnifying Lens to help identify suspicious locations.
-- Remove Restored Chronicle Page from generic random loot.
-- Preserve the required sequence of damaged page, press reconstruction, and printing.
+- [x] Separate decorative ink-stained floorboards from suspicious investigatable floorboards.
+- [x] Limit each workshop to three-to-five meaningful floor investigation targets.
+- [x] Use the Magnifying Lens to help identify suspicious locations.
+- [x] Remove Restored Chronicle Page from generic random loot.
+- [x] Preserve the required sequence of damaged page, press reconstruction, and printing.
 
 ## Printshop variants
 
+Implemented in version 1.1.0 Stage 3 with two stable layout subvariants per type.
+
 Add visually and functionally distinct workshop types.
 
-### Rural Woodcut Workshop
+### Rural Woodcut Workshop — implemented
 
 - timber construction
 - carving benches and wooden matrix work areas
 - woodcut and matrix rewards
 
-### Town Type Foundry
+### Town Type Foundry — implemented
 
 - brick and stone construction
 - rows of type cabinets
 - metal type and Ink Pad rewards
 
-### Scholarly Archive Printer
+### Scholarly Archive Printer — implemented
 
 - archive shelves and correction desks
 - damaged documents, chronicle fragments, and map clues
 
-### Burned Clandestine Printshop
+### Burned Clandestine Printshop — implemented
 
 - charred structure and hidden storage
 - secret notices, rubbing materials, and concealed matrices
 
 Each type should vary room layout, entrance position, damage pattern, hidden areas, storytelling props, and specialist loot. Palette swaps alone are not sufficient.
 
-## Matrix progression
+## Matrix progression — implemented
 
-Develop a reusable matrix-fragment system.
-
-Possible examples:
+The reusable matrix-fragment system currently includes:
 
 - Village Chronicle Matrix assembled from upper and lower fragments plus a missing letter insert
 - Forbidden Notice Metal Forme assembled from a lead type set, iron chase, headline type, and printer's notes
 
-Completed matrices should unlock new recipes, archive entries, clues, decorative outputs, or Echo Events.
+Each completed form unlocks a dedicated press recipe, readable output, archive
+entry, and variant-specific story lead. More forms remain suitable post-1.1.0
+content rather than required progression.
 
-## Ink progression
+## Ink progression — implemented baseline
 
 - Keep early basic ink generous enough for experimentation.
-- Make basic ink renewable or craftable after the starter loop.
+- [x] Make basic ink renewable with the charcoal + clay recipe.
 - Use rare historical and colored inks as optional exploration rewards.
 - Do not let story progression fail because the player consumed all starter ink.
 

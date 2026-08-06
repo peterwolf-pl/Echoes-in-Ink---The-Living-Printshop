@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "echoes_in_ink:block/faded_workshop_plaque",
   "textures": {
-    "all": "echoes_in_ink:block/faded_workshop_plaque_partial"
+    "front": "echoes_in_ink:block/faded_workshop_plaque_partial"
   }
 }

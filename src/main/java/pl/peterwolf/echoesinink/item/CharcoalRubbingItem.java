@@ -3,15 +3,23 @@ package pl.peterwolf.echoesinink.item;
 import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.context.UseOnContext;
+import pl.peterwolf.echoesinink.util.PrintPlacement;
 
-/** Rubbing result that displays its stored pattern identifier. */
+/** Rubbing result that displays its stored pattern identifier; can be laid on a surface. */
 public class CharcoalRubbingItem extends Item {
 	public CharcoalRubbingItem(Properties properties) {
 		super(properties);
+	}
+
+	@Override
+	public InteractionResult useOn(UseOnContext context) {
+		return PrintPlacement.tryLayOnTop(context);
 	}
 
 	@Override
@@ -30,5 +38,6 @@ public class CharcoalRubbingItem extends Item {
 		} else {
 			tooltip.accept(Component.translatable("item.echoes_in_ink.charcoal_rubbing.no_pattern").withColor(0xFF5555));
 		}
+		tooltip.accept(Component.translatable("item.echoes_in_ink.place_on_surface.hint").withColor(0xC0C0FF));
 	}
 }

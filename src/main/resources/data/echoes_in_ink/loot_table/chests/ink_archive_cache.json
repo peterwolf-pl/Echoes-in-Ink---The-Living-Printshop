@@ -4,7 +4,7 @@
     {
       "rolls": 1.0,
       "entries": [
-        { "type": "minecraft:item", "name": "echoes_in_ink:restored_chronicle_page", "weight": 1 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:printers_notes", "weight": 1 },
         { "type": "minecraft:item", "name": "echoes_in_ink:damaged_archive_page", "weight": 2 }
       ]
     },
@@ -17,10 +17,10 @@
       "entries": [
         { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 3 },
         { "type": "minecraft:item", "name": "echoes_in_ink:workshop_map_fragment", "weight": 2 },
-        { "type": "minecraft:item", "name": "echoes_in_ink:press_screw", "weight": 1 },
-        { "type": "minecraft:item", "name": "echoes_in_ink:press_platen", "weight": 1 },
-        { "type": "minecraft:item", "name": "echoes_in_ink:press_carriage", "weight": 1 },
-        { "type": "minecraft:item", "name": "echoes_in_ink:press_handle", "weight": 1 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 1 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:village_chronicle_matrix", "weight": 1 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 1 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:iron_chase", "weight": 1 },
         {
           "type": "minecraft:item",
           "name": "echoes_in_ink:metal_type_piece",

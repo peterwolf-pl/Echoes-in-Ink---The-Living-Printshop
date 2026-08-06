@@ -11,6 +11,7 @@ import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.block.entity.ModBlockEntities;
 import pl.peterwolf.echoesinink.client.render.LaidPaperRenderer;
 import pl.peterwolf.echoesinink.client.render.PrintingPressRenderer;
+import pl.peterwolf.echoesinink.client.render.TypeCabinetRenderer;
 import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.networking.EchoPayloads;
 
@@ -23,8 +24,10 @@ public final class EchoesInInkClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		ModItemTooltips.init();
 		BlockEntityRendererRegistry.register(ModBlockEntities.PRINTING_PRESS, PrintingPressRenderer::new);
 		BlockEntityRendererRegistry.register(ModBlockEntities.LAID_PAPER, LaidPaperRenderer::new);
+		BlockEntityRendererRegistry.register(ModBlockEntities.TYPE_CABINET, TypeCabinetRenderer::new);
 
 		ClientPlayNetworking.registerGlobalReceiver(EchoPayloads.EchoStartPayload.TYPE, (payload, context) ->
 			context.client().execute(() ->

@@ -33,7 +33,9 @@ import pl.peterwolf.echoesinink.item.ReadablePrintItem;
 import pl.peterwolf.echoesinink.item.RestoredChroniclePageItem;
 
 /**
- * Single page/print laid flat. Visuals match the press sheet (item + impression text).
+ * Workshop object laid on a top surface: page, print, matrix, or press part.
+ * The block entity stores the exact item; client BER draws it (flat sheet/matrix
+ * or small upright prop for machine parts).
  */
 public class LaidPaperBlock extends BaseEntityBlock {
 	public static final MapCodec<LaidPaperBlock> CODEC = simpleCodec(LaidPaperBlock::new);

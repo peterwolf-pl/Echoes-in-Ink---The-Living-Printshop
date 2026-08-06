@@ -100,6 +100,23 @@ def item_printers_brush() -> Image.Image:
     return img
 
 
+def item_workshop_broom() -> Image.Image:
+    img = new_img()
+    # long diagonal ash handle
+    for x, y in [(11, 1), (10, 2), (10, 3), (9, 4), (9, 5), (8, 6), (8, 7), (7, 8), (7, 9)]:
+        px(img, x, y, WOOD_L)
+        px(img, x - 1, y, WOOD_D)
+    # binding and broad straw head
+    fill_rect(img, 5, 9, 8, 10, BRASS_D)
+    hline(img, 4, 8, 11, BRISTLE_D)
+    hline(img, 3, 8, 12, BRISTLE)
+    hline(img, 2, 8, 13, BRISTLE)
+    hline(img, 1, 8, 14, BRISTLE_D)
+    for x in (2, 4, 6, 8):
+        px(img, x, 14, WOOD_D)
+    return img
+
+
 def item_magnifying_lens() -> Image.Image:
     img = new_img()
     # ring
@@ -435,20 +452,94 @@ def add_ink_stains(img: Image.Image, heavy: bool) -> Image.Image:
 
 
 def block_printing_debris(stage: str) -> Image.Image:
+    """Wood scrap pile used as the main debris face texture."""
     img = wood_base(True)
     if stage == "untouched":
         img = add_dust(img, 3)
         img = add_ink_stains(img, True)
-        # debris bits
-        fill_rect(img, 5, 5, 7, 7, METAL_D)
-        fill_rect(img, 10, 9, 12, 11, PAPER_S)
+        # metal type bits + paper scraps
+        fill_rect(img, 5, 5, 6, 6, METAL_D)
+        px(img, 6, 5, METAL)
+        px(img, 5, 6, METAL_L)
+        fill_rect(img, 10, 9, 11, 10, METAL)
+        px(img, 11, 10, BRASS_D)
+        fill_rect(img, 9, 3, 12, 5, PAPER_S)
+        px(img, 9, 3, PAPER)
+        px(img, 12, 5, PAPER_E)
+        fill_rect(img, 3, 10, 6, 12, PAPER_E)
+        px(img, 4, 11, PAPER_STAIN)
+        fill_rect(img, 0, 14, 4, 15, WOOD_VD)
+        fill_rect(img, 12, 0, 15, 2, WOOD_D)
     elif stage == "partial":
         img = add_dust(img, 1)
         img = add_ink_stains(img, False)
         fill_rect(img, 6, 6, 8, 8, METAL)
+        px(img, 6, 6, METAL_L)
+        fill_rect(img, 10, 4, 12, 5, PAPER_S)
     else:  # done
         img = add_dust(img, 0)
-        fill_rect(img, 6, 6, 9, 9, WOOD_L)
+        fill_rect(img, 5, 5, 10, 10, WOOD_L)
+        fill_rect(img, 6, 6, 9, 9, WOOD)
+        px(img, 7, 7, WOOD_L)
+    return img
+
+
+def block_printing_debris_paper() -> Image.Image:
+    """Block-atlas paper scrap (item textures cannot be used on block models)."""
+    img = new_img()
+    fill_rect(img, 0, 0, 15, 15, PAPER)
+    for y in range(16):
+        for x in range(16):
+            if (x + y * 3) % 7 == 0:
+                px(img, x, y, PAPER_S)
+            if (x * 2 + y) % 11 == 0:
+                px(img, x, y, PAPER_E)
+    for y in (3, 6, 9, 12):
+        for x in range(2, 14):
+            if (x + y) % 3 != 0:
+                px(img, x, y, PAPER_STAIN if y % 2 else PAPER_E)
+    px(img, 4, 5, INK_M)
+    px(img, 5, 5, INK_L)
+    px(img, 11, 10, INK_M)
+    for i in range(16):
+        px(img, i, 0, PAPER_E)
+        px(img, i, 15, PAPER_S)
+        px(img, 0, i, PAPER_E)
+        px(img, 15, i, PAPER_S)
+    return img
+
+
+def block_printing_debris_metal() -> Image.Image:
+    """Block-atlas lead/type metal for debris pile bits."""
+    img = new_img()
+    for y in range(16):
+        for x in range(16):
+            v = (x * 3 + y * 5) % 5
+            if v == 0:
+                px(img, x, y, METAL_L)
+            elif v == 1:
+                px(img, x, y, METAL)
+            elif v == 2:
+                px(img, x, y, METAL_D)
+            else:
+                px(img, x, y, METAL if (x + y) % 2 == 0 else METAL_D)
+    for cx, cy in ((4, 4), (11, 4), (4, 11), (11, 11), (8, 8)):
+        px(img, cx, cy, METAL_VD)
+        px(img, cx + 1, cy, METAL_L)
+    fill_rect(img, 6, 2, 9, 3, BRASS_D)
+    fill_rect(img, 6, 12, 9, 13, METAL_VD)
+    return img
+
+
+def block_printing_debris_dark() -> Image.Image:
+    """Dark underside wood for debris pile."""
+    img = new_img()
+    for y in range(16):
+        for x in range(16):
+            band = (x // 4) % 2
+            px(img, x, y, WOOD_VD if band == 0 else WOOD_D)
+            if (x + y * 2) % 9 == 0:
+                px(img, x, y, (32, 20, 12, 255))
     return img
 
 
@@ -582,30 +673,36 @@ def block_ink_stained_floorboards(stage: str) -> Image.Image:
 
 def block_faded_workshop_plaque(stage: str) -> Image.Image:
     img = new_img()
-    fill_rect(img, 1, 3, 14, 12, WOOD)
-    hline(img, 1, 14, 3, WOOD_L)
-    hline(img, 1, 14, 12, WOOD_D)
-    vline(img, 1, 3, 12, WOOD_D)
-    vline(img, 14, 3, 12, WOOD_VD)
-    # plaque plate
-    fill_rect(img, 3, 5, 12, 10, BRASS_D if stage == "untouched" else BRASS)
-    if stage == "done":
-        fill_rect(img, 4, 6, 11, 9, BRASS_L)
-        # abstract name plate lines (no letters)
-        hline(img, 5, 10, 7, BRASS_D)
-        hline(img, 6, 9, 8, BRASS_D)
+    fill_rect(img, 0, 0, 15, 15, WOOD_VD)
+    fill_rect(img, 1, 1, 14, 14, WOOD_D)
+    # worn brass rim and four fasteners, based on the generated press-plaque concept
+    hline(img, 1, 14, 1, BRASS_L if stage == "done" else BRASS)
+    hline(img, 1, 14, 14, BRASS_D)
+    vline(img, 1, 1, 14, BRASS)
+    vline(img, 14, 1, 14, BRASS_D)
+    for x, y in [(2, 2), (13, 2), (2, 13), (13, 13)]:
+        px(img, x, y, BRASS_L if stage == "done" else BRASS_D)
+    # screw press maker's mark: cap, screw, platen, posts, bed and base
+    metal = BRASS_L if stage == "done" else BRASS
+    shadow = BRASS if stage == "done" else BRASS_D
+    hline(img, 4, 11, 4, metal)
+    px(img, 4, 5, shadow)
+    px(img, 11, 5, shadow)
+    for y in range(5, 10):
+        px(img, 7, y, metal if y % 2 else shadow)
+        px(img, 8, y, shadow if y % 2 else metal)
+    hline(img, 5, 10, 9, metal)
+    vline(img, 4, 6, 12, shadow)
+    vline(img, 11, 6, 12, shadow)
+    hline(img, 5, 10, 11, metal)
+    hline(img, 4, 11, 12, shadow)
+    hline(img, 3, 12, 13, metal)
+    if stage == "untouched":
+        for x, y in [(3, 3), (6, 4), (9, 5), (5, 8), (10, 9), (6, 12), (12, 11)]:
+            px(img, x, y, DUST_D)
     elif stage == "partial":
-        fill_rect(img, 4, 6, 11, 9, BRASS)
-        hline(img, 5, 10, 7, BRASS_D)
-        img = add_dust(img, 1)
-    else:
-        img = add_dust(img, 2)
-        hline(img, 5, 10, 7, WOOD_D)
-    # nails
-    px(img, 2, 4, METAL)
-    px(img, 13, 4, METAL)
-    px(img, 2, 11, METAL)
-    px(img, 13, 11, METAL)
+        for x, y in [(3, 3), (10, 9), (12, 11)]:
+            px(img, x, y, DUST)
     return img
 
 
@@ -646,6 +743,7 @@ def block_press_stone() -> Image.Image:
 def main() -> None:
     print("Generating Echoes in Ink textures…")
     items = {
+        "workshop_broom": item_workshop_broom,
         "printers_brush": item_printers_brush,
         "magnifying_lens": item_magnifying_lens,
         "charcoal_rubbing_paper": item_charcoal_rubbing_paper,
@@ -674,6 +772,9 @@ def main() -> None:
         "printing_debris_untouched": lambda: block_printing_debris("untouched"),
         "printing_debris_partial": lambda: block_printing_debris("partial"),
         "printing_debris_done": lambda: block_printing_debris("done"),
+        "printing_debris_paper": block_printing_debris_paper,
+        "printing_debris_metal": block_printing_debris_metal,
+        "printing_debris_dark": block_printing_debris_dark,
         "carved_wooden_matrix": block_carved_wooden_matrix,
         "dusty_printing_table_untouched": lambda: block_dusty_printing_table("untouched"),
         "dusty_printing_table_partial": lambda: block_dusty_printing_table("partial"),
@@ -681,9 +782,9 @@ def main() -> None:
         "damaged_archive_shelf_untouched": lambda: block_damaged_archive_shelf("untouched"),
         "damaged_archive_shelf_partial": lambda: block_damaged_archive_shelf("partial"),
         "damaged_archive_shelf_done": lambda: block_damaged_archive_shelf("done"),
-        "broken_press_frame_untouched": lambda: block_broken_press_frame("untouched"),
-        "broken_press_frame_partial": lambda: block_broken_press_frame("partial"),
-        "broken_press_frame_done": lambda: block_broken_press_frame("done"),
+        "press_frame_untouched": lambda: block_broken_press_frame("untouched"),
+        "press_frame_partial": lambda: block_broken_press_frame("partial"),
+        "press_frame_done": lambda: block_broken_press_frame("done"),
         "collapsed_type_cabinet_untouched": lambda: block_collapsed_type_cabinet("untouched"),
         "collapsed_type_cabinet_partial": lambda: block_collapsed_type_cabinet("partial"),
         "collapsed_type_cabinet_done": lambda: block_collapsed_type_cabinet("done"),

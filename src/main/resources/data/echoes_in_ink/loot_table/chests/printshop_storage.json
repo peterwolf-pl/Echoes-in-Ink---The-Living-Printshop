@@ -43,7 +43,7 @@
             }
           ]
         },
-        { "type": "minecraft:item", "name": "echoes_in_ink:press_handle", "weight": 2 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 2 },
         {
           "type": "minecraft:item",
           "name": "minecraft:paper",
