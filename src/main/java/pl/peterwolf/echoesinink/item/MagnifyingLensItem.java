@@ -25,7 +25,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import pl.peterwolf.echoesinink.block.HangingPosterBlock;
 import pl.peterwolf.echoesinink.block.ModBlocks;
+import pl.peterwolf.echoesinink.block.PosterKind;
 import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
 import pl.peterwolf.echoesinink.block.entity.LaidPaperBlockEntity;
 import pl.peterwolf.echoesinink.config.ModConfig;
@@ -133,12 +135,11 @@ public class MagnifyingLensItem extends Item {
 			return inspectLaidItem(laid.page(), player);
 		}
 		if (state.is(ModBlocks.HANGING_POSTER)) {
-			if (ModItems.PRINTED_WARNING_POSTER instanceof ReadablePrintItem readable) {
-				readable.showPrint(player);
-			}
+			PosterKind kind = state.getValue(HangingPosterBlock.KIND);
+			kind.showPrint(player);
 			return Component.translatable(
 				"item.echoes_in_ink.magnifying_lens.find.poster",
-				new ItemStack(ModItems.PRINTED_WARNING_POSTER).getHoverName()
+				new ItemStack(kind.dropItem()).getHoverName()
 			);
 		}
 		return inspect(state);

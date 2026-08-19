@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import pl.peterwolf.echoesinink.block.HangingPosterBlock;
 import pl.peterwolf.echoesinink.block.ModBlocks;
+import pl.peterwolf.echoesinink.block.PosterKind;
 import pl.peterwolf.echoesinink.sound.ModSounds;
 
 /**
@@ -49,15 +50,15 @@ public class PrintedWarningPosterItem extends ReadablePrintItem {
 			return InteractionResult.SUCCESS;
 		}
 
+		ItemStack stack = context.getItemInHand();
 		BlockState state = ModBlocks.HANGING_POSTER.defaultBlockState()
-			.setValue(HangingPosterBlock.FACING, face);
+			.setValue(HangingPosterBlock.FACING, face)
+			.setValue(HangingPosterBlock.KIND, PosterKind.fromItem(stack.getItem()));
 		if (!level.setBlock(placePos, state, 3)) {
 			return InteractionResult.FAIL;
 		}
 		level.playSound(null, placePos, ModSounds.PRESS_LOAD, SoundSource.BLOCKS, 0.6F, 0.9F);
 		level.gameEvent(GameEvent.BLOCK_PLACE, placePos, GameEvent.Context.of(player, state));
-
-		ItemStack stack = context.getItemInHand();
 		if (player == null || !player.getAbilities().instabuild) {
 			stack.shrink(1);
 		}

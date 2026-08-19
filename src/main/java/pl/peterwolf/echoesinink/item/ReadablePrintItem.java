@@ -35,9 +35,13 @@ public class ReadablePrintItem extends Item {
 		this.lineCount = Math.max(1, lineCount);
 	}
 
-	/** Lay the print on a top surface (same look as on the press). */
+	/** Lay the print on a top surface, or hang it on a wall. */
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
+		InteractionResult hung = PrintPlacement.tryHangOnWall(context);
+		if (hung != InteractionResult.PASS) {
+			return hung;
+		}
 		return PrintPlacement.tryLayOnTop(context);
 	}
 

@@ -197,7 +197,7 @@
 	"item.echoes_in_ink.printed_warning_poster": "Printed Warning Poster",
 	"item.echoes_in_ink.printed_warning_poster.desc": "A bold notice set in metal type. Place on a wall to hang.",
 	"item.echoes_in_ink.printed_warning_poster.purpose": "Optional finished print: read it, lay it on a surface, or hang it on a wall.",
-	"block.echoes_in_ink.hanging_poster": "Hanging Warning Poster",
+	"block.echoes_in_ink.hanging_poster": "Hanging Workshop Poster",
 	"block.echoes_in_ink.hanging_poster.placed": "Poster hung on the wall.",
 	"print.echoes_in_ink.reading": "Reading the print…",
 	"print.echoes_in_ink.use_hint": "Use: read the printed text",

@@ -197,7 +197,7 @@
 	"item.echoes_in_ink.printed_warning_poster": "Drukowany plakat ostrzegawczy",
 	"item.echoes_in_ink.printed_warning_poster.desc": "Wyraźne ogłoszenie z metalowych czcionek. Kliknij ścianę, by powiesić.",
 	"item.echoes_in_ink.printed_warning_poster.purpose": "Opcjonalny gotowy druk: przeczytaj, połóż na powierzchni albo powieś na ścianie.",
-	"block.echoes_in_ink.hanging_poster": "Wiszący plakat ostrzegawczy",
+	"block.echoes_in_ink.hanging_poster": "Wiszący plakat warsztatowy",
 	"block.echoes_in_ink.hanging_poster.placed": "Plakat powieszony na ścianie.",
 	"print.echoes_in_ink.reading": "Czytasz odbitkę…",
 	"print.echoes_in_ink.use_hint": "Użyj: przeczytaj tekst odbitki",

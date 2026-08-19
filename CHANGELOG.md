@@ -16,6 +16,9 @@ All notable changes to **Echoes in Ink** are documented here.
   the archive desk and ink station.
 - Switched the Fabric mod icon to the illustrated press artwork from the
   repository `icon.png`.
+- Hung six distinct workshop posters in every generated printshop — warning,
+  woodcut, chronicle, notice, map, and type-specimen sheets — and added extra
+  work tables with laid papers, notes, and prints.
 
 ### Fixed
 

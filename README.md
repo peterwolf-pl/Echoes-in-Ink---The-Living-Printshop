@@ -159,6 +159,8 @@ Printshops contain investigatable machine remains, archive shelves, type cabinet
 
 Every generated printshop contains three almost-full chests. Beside the variant's specialist loot, the shared supply kit always includes clean paper, blank archive pages, ink balls and pads, metal type, and spare press components.
 
+Workshop walls now carry several different hanging posters (warning, woodcut, chronicle, forbidden notice, map, and type specimen). Extra dusty and crafting tables sit beside the investigation bench, each with laid paper, notes, or a finished print.
+
 The Faded Workshop Plaque is not filler decoration. Inspect it with the
 Magnifying Lens, then hold use with the Printer's Brush twice to clean both
 stages. During starter mode it contains the Printer's Instruction Sheet and
