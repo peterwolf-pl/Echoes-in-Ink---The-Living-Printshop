@@ -1,0 +1,15 @@
+{
+  "structures": [
+    {
+      "structure": "echoes_in_ink:abandoned_printshop",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 20260728,
+    "spacing": 32,
+    "separation": 12,
+    "spread_type": "linear"
+  }
+}

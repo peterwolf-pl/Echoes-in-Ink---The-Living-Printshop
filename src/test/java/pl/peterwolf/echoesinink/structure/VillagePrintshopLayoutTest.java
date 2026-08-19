@@ -55,7 +55,7 @@ class VillagePrintshopLayoutTest {
 	}
 
 	@Test
-	void printshopBiomesAreTheVanillaVillageBiomes() throws IOException {
+	void printshopBiomesIncludeVillagesAndWilderness() throws IOException {
 		String json = Files.readString(Path.of(
 			"src/main/resources/data/echoes_in_ink/tags/worldgen/biome/has_structure/abandoned_printshop.json"
 		));
@@ -64,6 +64,27 @@ class VillagePrintshopLayoutTest {
 		assertTrue(json.contains("village_savanna"));
 		assertTrue(json.contains("village_snowy"));
 		assertTrue(json.contains("village_taiga"));
+		assertTrue(json.contains("minecraft:forest"));
+		assertTrue(json.contains("minecraft:swamp"));
+		assertTrue(json.contains("#minecraft:is_forest"));
+	}
+
+	@Test
+	void wildernessStructureSetUsesASeparateRandomGrid() throws IOException {
+		String json = Files.readString(Path.of(
+			"src/main/resources/data/echoes_in_ink/worldgen/structure_set/abandoned_printshops_wild.json"
+		));
+		assertTrue(json.contains("\"salt\": 20260728"));
+		assertTrue(json.contains("\"spacing\": 32"));
+		assertTrue(json.contains("\"separation\": 12"));
+	}
+
+	@Test
+	void onlyRealVillageBiomesUseTheVillageEdgeLayout() {
+		assertTrue(VillagePrintshopLayout.isVillageBiome("desert"));
+		assertTrue(VillagePrintshopLayout.isVillageBiome("snowy_plains"));
+		assertFalse(VillagePrintshopLayout.isVillageBiome("forest"));
+		assertFalse(VillagePrintshopLayout.isVillageBiome("swamp"));
 	}
 
 	@Test

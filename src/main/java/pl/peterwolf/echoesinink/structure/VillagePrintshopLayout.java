@@ -18,6 +18,17 @@ public final class VillagePrintshopLayout {
 
 	private VillagePrintshopLayout() {}
 
+	/** Biomes that actually spawn a vanilla villager village. */
+	public static boolean isVillageBiome(String biomePath) {
+		if (biomePath == null) {
+			return false;
+		}
+		return switch (biomePath) {
+			case "plains", "meadow", "savanna", "taiga", "desert", "snowy_plains" -> true;
+			default -> false;
+		};
+	}
+
 	/** Plains, meadow, savanna, and taiga villages are the larger vanilla ones. */
 	public static boolean isLargeVillageBiome(String biomePath) {
 		if (biomePath == null) {

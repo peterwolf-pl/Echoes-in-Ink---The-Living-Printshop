@@ -11,16 +11,25 @@ import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.progression.WorkshopIdentity;
 import pl.peterwolf.echoesinink.progression.WorkshopVariantSelector;
 
 /**
- * Surface structure locked to the vanilla village grid. One workshop sits on
- * the village edge; larger village biomes also get a second workshop opposite.
+ * Surface printshop. Village-grid chunks in village biomes sit on the
+ * outskirts (two shops at larger villages). Other placements are scattered
+ * wilderness workshops.
  */
 public class AbandonedPrintshopStructure extends Structure {
 	public static final MapCodec<AbandonedPrintshopStructure> CODEC = simpleCodec(AbandonedPrintshopStructure::new);
+	private static final RandomSpreadStructurePlacement VILLAGE_GRID = new RandomSpreadStructurePlacement(
+		VillagePrintshopLayout.VILLAGE_SPACING,
+		VillagePrintshopLayout.VILLAGE_SEPARATION,
+		RandomSpreadType.LINEAR,
+		VillagePrintshopLayout.VILLAGE_SALT
+	);
 
 	public AbandonedPrintshopStructure(StructureSettings settings) {
 		super(settings);
@@ -37,26 +46,77 @@ public class AbandonedPrintshopStructure extends Structure {
 	private void generatePieces(StructurePiecesBuilder builder, GenerationContext context) {
 		ChunkPos chunkPos = context.chunkPos();
 		WorldgenRandom random = context.random();
-		int count = VillagePrintshopLayout.printshopCount(biomePath(context));
+		String biome = biomePath(context);
+		if (VillagePrintshopLayout.isVillageBiome(biome) && isVillageGridChunk(context)) {
+			addVillagePrintshops(builder, context, random, chunkPos, biome);
+			return;
+		}
+		addWildernessPrintshop(builder, random, chunkPos);
+	}
+
+	private static void addVillagePrintshops(
+		StructurePiecesBuilder builder,
+		GenerationContext context,
+		WorldgenRandom random,
+		ChunkPos chunkPos,
+		String biome
+	) {
+		int count = VillagePrintshopLayout.printshopCount(biome);
 		int centerX = chunkPos.getMiddleBlockX();
 		int centerZ = chunkPos.getMiddleBlockZ();
 		long seed = context.seed() ^ chunkPos.pack();
 		for (int index = 0; index < count; index++) {
 			int[] offset = VillagePrintshopLayout.originOffset(index, seed);
-			String workshopId = WorkshopIdentity.idForChunk(chunkPos, index);
-			WorkshopVariantSelector.Selection selection = WorkshopVariantSelector.select(
-				workshopId,
-				ModConfig.INSTANCE.enablePrintshopVariants
-			);
-			builder.addPiece(new AbandonedPrintshopPiece(
-				random,
-				centerX + offset[0],
-				centerZ + offset[1],
-				workshopId,
-				selection.variant(),
-				selection.layoutIndex()
-			));
+			addPrintshop(builder, random, chunkPos, index, centerX + offset[0], centerZ + offset[1]);
 		}
+	}
+
+	private static void addWildernessPrintshop(
+		StructurePiecesBuilder builder,
+		WorldgenRandom random,
+		ChunkPos chunkPos
+	) {
+		addPrintshop(
+			builder,
+			random,
+			chunkPos,
+			0,
+			chunkPos.getMinBlockX() + 2,
+			chunkPos.getMinBlockZ() + 2
+		);
+	}
+
+	private static void addPrintshop(
+		StructurePiecesBuilder builder,
+		WorldgenRandom random,
+		ChunkPos chunkPos,
+		int index,
+		int west,
+		int north
+	) {
+		String workshopId = WorkshopIdentity.idForChunk(chunkPos, index);
+		WorkshopVariantSelector.Selection selection = WorkshopVariantSelector.select(
+			workshopId,
+			ModConfig.INSTANCE.enablePrintshopVariants
+		);
+		builder.addPiece(new AbandonedPrintshopPiece(
+			random,
+			west,
+			north,
+			workshopId,
+			selection.variant(),
+			selection.layoutIndex()
+		));
+	}
+
+	private static boolean isVillageGridChunk(GenerationContext context) {
+		ChunkPos chunkPos = context.chunkPos();
+		ChunkPos villageChunk = VILLAGE_GRID.getPotentialStructureChunk(
+			context.seed(),
+			chunkPos.x(),
+			chunkPos.z()
+		);
+		return villageChunk.x() == chunkPos.x() && villageChunk.z() == chunkPos.z();
 	}
 
 	private static String biomePath(GenerationContext context) {
