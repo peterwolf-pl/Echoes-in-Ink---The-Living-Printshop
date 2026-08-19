@@ -1,0 +1,7 @@
+{
+  "parent": "echoes_in_ink:block/hanging_poster",
+  "textures": {
+    "particle": "echoes_in_ink:block/hanging_poster_chronicle",
+    "poster": "echoes_in_ink:block/hanging_poster_chronicle"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:charcoal",
+    "minecraft:clay_ball"
+  ],
+  "result": { "id": "echoes_in_ink:ink_ball", "count": 4 }
+}

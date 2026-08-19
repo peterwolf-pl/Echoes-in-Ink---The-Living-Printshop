@@ -38,7 +38,10 @@ public final class ClientEchoState {
 	public static void sync(String id, int tick, int beatIndex) {
 		EchoView view = ACTIVE.get(id);
 		if (view != null) {
-			view.tick = tick;
+			// Do not rewind a slightly-ahead client clock; that makes ghosts hitch.
+			if (tick > view.tick || view.tick - tick > 12) {
+				view.tick = tick;
+			}
 			view.beatIndex = beatIndex;
 		}
 	}

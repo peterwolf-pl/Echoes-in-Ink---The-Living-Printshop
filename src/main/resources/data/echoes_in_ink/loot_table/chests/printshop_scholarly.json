@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [{ "type": "minecraft:loot_table", "value": "echoes_in_ink:chests/printshop_supplies" }]
+    },
+    {
+      "rolls": { "type": "minecraft:uniform", "min": 3.0, "max": 5.0 },
+      "entries": [
+        { "type": "minecraft:item", "name": "echoes_in_ink:damaged_archive_page", "weight": 6,
+          "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1.0, "max": 3.0 } }] },
+        { "type": "minecraft:item", "name": "echoes_in_ink:blank_archive_page", "weight": 5,
+          "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 6.0, "max": 12.0 } }] },
+        { "type": "minecraft:item", "name": "echoes_in_ink:printers_notes", "weight": 5 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:workshop_map_fragment", "weight": 3 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:wooden_printing_matrix", "weight": 3 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:village_chronicle_matrix", "weight": 3 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:ink_ball", "weight": 4,
+          "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 4.0, "max": 10.0 } }] }
+      ]
+    }
+  ]
+}

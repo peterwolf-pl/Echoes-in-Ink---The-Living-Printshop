@@ -197,7 +197,7 @@ public class PrintingPressBlock extends BaseEntityBlock {
 	}
 
 	/** Action-bar feedback so the player always sees the next step. */
-	private static void hint(Player player, Component text) {
+	static void hint(Player player, Component text) {
 		if (player instanceof ServerPlayer serverPlayer) {
 			serverPlayer.sendOverlayMessage(text);
 		} else {
@@ -208,7 +208,7 @@ public class PrintingPressBlock extends BaseEntityBlock {
 	@Override
 	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
 		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof PrintingPressBlockEntity press) {
-			press.dropAll(level, pos);
+			press.dropAll(level, pos, player);
 		}
 		return super.playerWillDestroy(level, pos, state, player);
 	}

@@ -13,5 +13,13 @@
     "unlocked": {
       "trigger": "minecraft:impossible"
     }
+  },
+  "rewards": {
+    "recipes": [
+      "echoes_in_ink:press_screw",
+      "echoes_in_ink:press_handle",
+      "echoes_in_ink:press_platen",
+      "echoes_in_ink:press_carriage"
+    ]
   }
 }

@@ -6,7 +6,10 @@
 	"environment": "client",
 	"entrypoints": {
 		"fabric-client-gametest": [
-			"pl.peterwolf.echoesinink.gametest.PrintingPressClientGameTest"
+			"pl.peterwolf.echoesinink.gametest.InvestigationToolsClientGameTest",
+			"pl.peterwolf.echoesinink.gametest.PrintingPressClientGameTest",
+			"pl.peterwolf.echoesinink.gametest.PrintshopVariantClientGameTest",
+			"pl.peterwolf.echoesinink.gametest.StarterProgressionClientGameTest"
 		]
 	},
 	"depends": {

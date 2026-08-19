@@ -17,6 +17,7 @@ import pl.peterwolf.echoesinink.item.ModDataComponents;
 import pl.peterwolf.echoesinink.item.ModItems;
 import pl.peterwolf.echoesinink.networking.EchoPayloads;
 import pl.peterwolf.echoesinink.recipe.PrintingRecipes;
+import pl.peterwolf.echoesinink.progression.PrintshopStarterChestService;
 import pl.peterwolf.echoesinink.sound.ModSounds;
 import pl.peterwolf.echoesinink.structure.ModStructures;
 
@@ -42,6 +43,7 @@ public final class EchoesInInk implements ModInitializer {
 		ModCreativeTabs.init();
 		PrintingRecipes.init();
 		ModStructures.register();
+		PrintshopStarterChestService.init();
 		EchoPayloads.registerCommon();
 		EchoPayloads.registerServerReceivers();
 		EchoManager.init();

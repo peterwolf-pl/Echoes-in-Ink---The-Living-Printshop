@@ -1,8 +1,33 @@
 {
   "variants": {
-    "facing=north": { "model": "echoes_in_ink:block/hanging_poster" },
-    "facing=south": { "model": "echoes_in_ink:block/hanging_poster", "y": 180 },
-    "facing=west":  { "model": "echoes_in_ink:block/hanging_poster", "y": 270 },
-    "facing=east":  { "model": "echoes_in_ink:block/hanging_poster", "y": 90 }
+    "facing=north,kind=warning": { "model": "echoes_in_ink:block/hanging_poster" },
+    "facing=south,kind=warning": { "model": "echoes_in_ink:block/hanging_poster", "y": 180 },
+    "facing=west,kind=warning":  { "model": "echoes_in_ink:block/hanging_poster", "y": 270 },
+    "facing=east,kind=warning":  { "model": "echoes_in_ink:block/hanging_poster", "y": 90 },
+
+    "facing=north,kind=woodcut": { "model": "echoes_in_ink:block/hanging_poster_woodcut" },
+    "facing=south,kind=woodcut": { "model": "echoes_in_ink:block/hanging_poster_woodcut", "y": 180 },
+    "facing=west,kind=woodcut":  { "model": "echoes_in_ink:block/hanging_poster_woodcut", "y": 270 },
+    "facing=east,kind=woodcut":  { "model": "echoes_in_ink:block/hanging_poster_woodcut", "y": 90 },
+
+    "facing=north,kind=chronicle": { "model": "echoes_in_ink:block/hanging_poster_chronicle" },
+    "facing=south,kind=chronicle": { "model": "echoes_in_ink:block/hanging_poster_chronicle", "y": 180 },
+    "facing=west,kind=chronicle":  { "model": "echoes_in_ink:block/hanging_poster_chronicle", "y": 270 },
+    "facing=east,kind=chronicle":  { "model": "echoes_in_ink:block/hanging_poster_chronicle", "y": 90 },
+
+    "facing=north,kind=notice": { "model": "echoes_in_ink:block/hanging_poster_notice" },
+    "facing=south,kind=notice": { "model": "echoes_in_ink:block/hanging_poster_notice", "y": 180 },
+    "facing=west,kind=notice":  { "model": "echoes_in_ink:block/hanging_poster_notice", "y": 270 },
+    "facing=east,kind=notice":  { "model": "echoes_in_ink:block/hanging_poster_notice", "y": 90 },
+
+    "facing=north,kind=map": { "model": "echoes_in_ink:block/hanging_poster_map" },
+    "facing=south,kind=map": { "model": "echoes_in_ink:block/hanging_poster_map", "y": 180 },
+    "facing=west,kind=map":  { "model": "echoes_in_ink:block/hanging_poster_map", "y": 270 },
+    "facing=east,kind=map":  { "model": "echoes_in_ink:block/hanging_poster_map", "y": 90 },
+
+    "facing=north,kind=specimen": { "model": "echoes_in_ink:block/hanging_poster_specimen" },
+    "facing=south,kind=specimen": { "model": "echoes_in_ink:block/hanging_poster_specimen", "y": 180 },
+    "facing=west,kind=specimen":  { "model": "echoes_in_ink:block/hanging_poster_specimen", "y": 270 },
+    "facing=east,kind=specimen":  { "model": "echoes_in_ink:block/hanging_poster_specimen", "y": 90 }
   }
 }

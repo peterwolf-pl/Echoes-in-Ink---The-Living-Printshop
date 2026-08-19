@@ -1,10 +1,14 @@
 package pl.peterwolf.echoesinink.item;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -22,15 +26,17 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
+import pl.peterwolf.echoesinink.block.FadedWorkshopPlaqueBlock;
 import pl.peterwolf.echoesinink.block.Investigatable;
+import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
 import pl.peterwolf.echoesinink.config.ModConfig;
 
 /**
  * Cleans historical debris with a timed use action (server-authoritative).
  */
 public class PrintersBrushItem extends Item {
+	private static final Map<UUID, CleaningTarget> CLEANING_TARGETS = new ConcurrentHashMap<>();
+
 	public PrintersBrushItem(Properties properties) {
 		super(properties);
 	}
@@ -43,6 +49,20 @@ public class PrintersBrushItem extends Item {
 			BlockPos pos = context.getClickedPos();
 			BlockState state = level.getBlockState(pos);
 			if (state.getBlock() instanceof Investigatable investigatable && investigatable.canClean(state)) {
+				// Plaque: refuse to start brush hold until lens-inspected.
+				if (!level.isClientSide()
+					&& state.getBlock() instanceof FadedWorkshopPlaqueBlock
+					&& level.getBlockEntity(pos) instanceof InvestigationBlockEntity inv
+					&& !inv.isLensInspected()) {
+					if (player instanceof ServerPlayer serverPlayer) {
+						serverPlayer.sendSystemMessage(
+							Component.translatable("investigation.echoes_in_ink.need_lens_first"),
+							true
+						);
+					}
+					return InteractionResult.FAIL;
+				}
+				CLEANING_TARGETS.put(player.getUUID(), new CleaningTarget(level.dimension(), pos.immutable()));
 				player.startUsingItem(context.getHand());
 				return InteractionResult.CONSUME;
 			}
@@ -67,16 +87,22 @@ public class PrintersBrushItem extends Item {
 			return;
 		}
 
-		HitResult hit = player.pick(5.0D, 0.0F, false);
-		if (!(hit instanceof BlockHitResult blockHit) || hit.getType() != HitResult.Type.BLOCK) {
-			entity.releaseUsingItem();
+		CleaningTarget target = CLEANING_TARGETS.get(player.getUUID());
+		if (target == null
+			|| !target.dimension().equals(level.dimension())
+			|| !level.isLoaded(target.pos())
+			|| player.distanceToSqr(
+				target.pos().getX() + 0.5,
+				target.pos().getY() + 0.5,
+				target.pos().getZ() + 0.5
+			) > 36.0D) {
+			stopCleaning(entity);
 			return;
 		}
-
-		BlockPos pos = blockHit.getBlockPos();
+		BlockPos pos = target.pos();
 		BlockState state = level.getBlockState(pos);
 		if (!(state.getBlock() instanceof Investigatable investigatable) || !investigatable.canClean(state)) {
-			entity.releaseUsingItem();
+			stopCleaning(entity);
 			return;
 		}
 
@@ -113,9 +139,26 @@ public class PrintersBrushItem extends Item {
 					serverPlayer.sendSystemMessage(Component.translatable("item.echoes_in_ink.printers_brush.cleaned"), true);
 				}
 			}
-			entity.releaseUsingItem();
+			stopCleaning(entity);
 		}
 	}
+
+	@Override
+	public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
+		if (entity instanceof Player player) {
+			CLEANING_TARGETS.remove(player.getUUID());
+		}
+		return super.releaseUsing(stack, level, entity, timeLeft);
+	}
+
+	private static void stopCleaning(LivingEntity entity) {
+		if (entity instanceof Player player) {
+			CLEANING_TARGETS.remove(player.getUUID());
+		}
+		entity.releaseUsingItem();
+	}
+
+	private record CleaningTarget(ResourceKey<Level> dimension, BlockPos pos) {}
 
 	@Override
 	public void appendHoverText(

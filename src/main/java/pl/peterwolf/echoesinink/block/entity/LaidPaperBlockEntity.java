@@ -14,7 +14,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import pl.peterwolf.echoesinink.item.ModItems;
 
 /**
- * Stores the exact laid page/print so client rendering can match the press sheet.
+ * Stores the exact laid workshop item (page, print, matrix, or press part).
  */
 public class LaidPaperBlockEntity extends BlockEntity {
 	private ItemStack page = ItemStack.EMPTY;
@@ -40,6 +40,7 @@ public class LaidPaperBlockEntity extends BlockEntity {
 		if (!page.isEmpty()) {
 			return page.copy();
 		}
+		// Should not happen after a normal place; keep a safe blank fallback.
 		return new ItemStack(ModItems.BLANK_ARCHIVE_PAGE);
 	}
 

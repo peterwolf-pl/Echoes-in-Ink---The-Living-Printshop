@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_material": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [{ "items": ["minecraft:charcoal", "minecraft:clay_ball"] }] }
+    },
+    "has_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": { "recipe": "echoes_in_ink:ink_ball" }
+    }
+  },
+  "requirements": [["has_material", "has_recipe"]],
+  "rewards": { "recipes": ["echoes_in_ink:ink_ball"] }
+}

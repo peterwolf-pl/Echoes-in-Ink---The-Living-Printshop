@@ -7,7 +7,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import pl.peterwolf.echoesinink.item.ModItems;
+import pl.peterwolf.echoesinink.config.ModConfig;
 
 /**
  * Weighted server-side investigation loot. Never called from the client.
@@ -20,6 +22,7 @@ public final class InvestigationLoot {
 		SHELF,
 		PRESS,
 		FLOOR,
+		FLOOR_HIDDEN,
 		PLAQUE
 	}
 
@@ -52,6 +55,51 @@ public final class InvestigationLoot {
 		return nothing();
 	}
 
+	/** First brush stroke: a few scraps fall out of the pile. */
+	public static List<ItemStack> dismantlePartial(RandomSource random) {
+		List<ItemStack> stacks = new ArrayList<>();
+		stacks.add(new ItemStack(Items.PAPER, 2 + random.nextInt(3)));
+		stacks.add(new ItemStack(ModItems.METAL_TYPE_PIECE, 1 + random.nextInt(2)));
+		if (random.nextBoolean()) {
+			stacks.add(new ItemStack(ModItems.BLANK_ARCHIVE_PAGE, 1));
+		}
+		return List.copyOf(stacks);
+	}
+
+	/**
+	 * Final brush stroke: the remaining pile becomes printing supplies and
+	 * spare press hardware. Always yields paper, ink, type, and at least one
+	 * press part.
+	 */
+	public static List<ItemStack> dismantleComplete(RandomSource random) {
+		List<ItemStack> stacks = new ArrayList<>();
+		stacks.add(new ItemStack(Items.PAPER, 6 + random.nextInt(7)));
+		stacks.add(new ItemStack(ModItems.BLANK_ARCHIVE_PAGE, 3 + random.nextInt(4)));
+		stacks.add(new ItemStack(ModItems.INK_BALL, 3 + random.nextInt(4)));
+		stacks.add(new ItemStack(ModItems.INK_PAD, 1 + random.nextInt(3)));
+		stacks.add(new ItemStack(ModItems.METAL_TYPE_PIECE, 3 + random.nextInt(6)));
+		stacks.add(new ItemStack(ModItems.CHARCOAL_RUBBING_PAPER, 1 + random.nextInt(3)));
+		if (random.nextBoolean()) {
+			stacks.add(new ItemStack(ModItems.WOODEN_PRINTING_MATRIX, 1));
+		}
+		if (random.nextInt(3) == 0) {
+			stacks.add(new ItemStack(ModItems.DAMAGED_ARCHIVE_PAGE, 1));
+		}
+		Item[] parts = {
+			ModItems.PRESS_SCREW,
+			ModItems.PRESS_HANDLE,
+			ModItems.PRESS_PLATEN,
+			ModItems.PRESS_CARRIAGE
+		};
+		int first = random.nextInt(parts.length);
+		stacks.add(new ItemStack(parts[first], 1));
+		if (random.nextBoolean()) {
+			int second = (first + 1 + random.nextInt(parts.length - 1)) % parts.length;
+			stacks.add(new ItemStack(parts[second], 1));
+		}
+		return List.copyOf(stacks);
+	}
+
 	private static Result nothing() {
 		return new Result(
 			"nothing",
@@ -68,8 +116,7 @@ public final class InvestigationLoot {
 		switch (profile) {
 			case DEBRIS -> {
 				list.add(new Entry("metal_type", 30, ModItems.METAL_TYPE_PIECE, 1, "investigation.echoes_in_ink.metal_type"));
-				list.add(new Entry("matrix_fragment", 15, ModItems.WOODEN_PRINTING_MATRIX, 1, "investigation.echoes_in_ink.matrix_fragment"));
-				list.add(new Entry("press_part", 10, ModItems.PRESS_HANDLE, 1, "investigation.echoes_in_ink.press_part"));
+				list.add(new Entry("wooden_matrix", 15, ModItems.WOODEN_PRINTING_MATRIX, 1, "investigation.echoes_in_ink.matrix_fragment"));
 				list.add(new Entry("damaged_page", 5, ModItems.DAMAGED_ARCHIVE_PAGE, 1, "investigation.echoes_in_ink.damaged_page"));
 			}
 			case TABLE -> {
@@ -80,23 +127,33 @@ public final class InvestigationLoot {
 			}
 			case CABINET -> {
 				list.add(new Entry("metal_type", 40, ModItems.METAL_TYPE_PIECE, 3, "investigation.echoes_in_ink.metal_type"));
-				list.add(new Entry("matrix_fragment", 20, ModItems.WOODEN_PRINTING_MATRIX, 1, "investigation.echoes_in_ink.matrix_fragment"));
+				list.add(new Entry("matrix_fragment", 20, ModItems.LEAD_TYPE_SET, 1, "investigation.echoes_in_ink.matrix_fragment"));
 				list.add(new Entry("hidden_compartment", 10, ModItems.METAL_TYPE_PIECE, 5, "investigation.echoes_in_ink.hidden"));
 			}
 			case SHELF -> {
 				list.add(new Entry("damaged_page", 35, ModItems.DAMAGED_ARCHIVE_PAGE, 1, "investigation.echoes_in_ink.damaged_page"));
 				list.add(new Entry("blank_page", 20, ModItems.BLANK_ARCHIVE_PAGE, 2, "investigation.echoes_in_ink.blank_page"));
-				list.add(new Entry("hidden_compartment", 8, ModItems.RESTORED_CHRONICLE_PAGE, 1, "investigation.echoes_in_ink.hidden"));
+				list.add(new Entry("printers_notes", 8, ModItems.PRINTERS_NOTES, 1, "investigation.echoes_in_ink.hidden"));
 			}
 			case PRESS -> {
-				list.add(new Entry("press_screw", 20, ModItems.PRESS_SCREW, 1, "investigation.echoes_in_ink.press_part"));
-				list.add(new Entry("press_platen", 15, ModItems.PRESS_PLATEN, 1, "investigation.echoes_in_ink.press_part"));
-				list.add(new Entry("press_carriage", 15, ModItems.PRESS_CARRIAGE, 1, "investigation.echoes_in_ink.press_part"));
-				list.add(new Entry("press_handle", 20, ModItems.PRESS_HANDLE, 1, "investigation.echoes_in_ink.press_part"));
+				list.add(new Entry("metal_type", 30, ModItems.METAL_TYPE_PIECE, 2, "investigation.echoes_in_ink.metal_type"));
+				list.add(new Entry("wooden_matrix", 20, ModItems.WOODEN_PRINTING_MATRIX, 1, "investigation.echoes_in_ink.matrix_fragment"));
+				list.add(new Entry("ink_ball", 15, ModItems.INK_BALL, 2, "investigation.echoes_in_ink.ink"));
+				if (ModConfig.INSTANCE.allowSparePressPartsInLaterRuins) {
+					list.add(new Entry("press_screw", 1, ModItems.PRESS_SCREW, 1, "investigation.echoes_in_ink.press_part"));
+					list.add(new Entry("press_platen", 1, ModItems.PRESS_PLATEN, 1, "investigation.echoes_in_ink.press_part"));
+					list.add(new Entry("press_carriage", 1, ModItems.PRESS_CARRIAGE, 1, "investigation.echoes_in_ink.press_part"));
+					list.add(new Entry("press_handle", 1, ModItems.PRESS_HANDLE, 1, "investigation.echoes_in_ink.press_part"));
+				}
 			}
 			case FLOOR -> {
 				list.add(new Entry("metal_type", 25, ModItems.METAL_TYPE_PIECE, 1, "investigation.echoes_in_ink.metal_type"));
 				list.add(new Entry("ink_pad", 15, ModItems.INK_PAD, 1, "investigation.echoes_in_ink.ink"));
+			}
+			case FLOOR_HIDDEN -> {
+				list.add(new Entry("wooden_matrix", 30, ModItems.WOODEN_PRINTING_MATRIX, 1, "investigation.echoes_in_ink.matrix_fragment"));
+				list.add(new Entry("ink_pad", 25, ModItems.INK_PAD, 2, "investigation.echoes_in_ink.ink"));
+				list.add(new Entry("printers_notes", 20, ModItems.PRINTERS_NOTES, 1, "investigation.echoes_in_ink.hidden"));
 			}
 			case PLAQUE -> {
 				list.add(new Entry("historical_clue", 50, null, 0, "investigation.echoes_in_ink.plaque_clue"));

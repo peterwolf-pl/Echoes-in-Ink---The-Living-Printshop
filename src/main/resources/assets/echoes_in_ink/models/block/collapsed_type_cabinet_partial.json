@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "echoes_in_ink:block/collapsed_type_cabinet_partial"
-  }
+  "parent": "echoes_in_ink:block/collapsed_type_cabinet_body"
 }

@@ -11,13 +11,57 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import pl.peterwolf.echoesinink.block.HangingPosterBlock;
 import pl.peterwolf.echoesinink.block.LaidPaperBlock;
 import pl.peterwolf.echoesinink.block.ModBlocks;
+import pl.peterwolf.echoesinink.block.PosterKind;
 import pl.peterwolf.echoesinink.sound.ModSounds;
 
-/** Shared “lay this page on a flat top surface” interaction. */
+/**
+ * Shared “lay this item on a flat top surface” interaction.
+ * Used for pages, prints, matrices, and press parts (stored in {@link LaidPaperBlock}).
+ */
 public final class PrintPlacement {
 	private PrintPlacement() {}
+
+	/** Hang a readable print on a solid vertical face. */
+	public static InteractionResult tryHangOnWall(UseOnContext context) {
+		Direction face = context.getClickedFace();
+		if (face.getAxis().isVertical()) {
+			return InteractionResult.PASS;
+		}
+
+		Level level = context.getLevel();
+		BlockPos placePos = context.getClickedPos().relative(face);
+		Player player = context.getPlayer();
+		ItemStack stack = context.getItemInHand();
+
+		if (!level.getBlockState(placePos).canBeReplaced()) {
+			return InteractionResult.FAIL;
+		}
+		if (!level.getBlockState(context.getClickedPos()).isFaceSturdy(level, context.getClickedPos(), face)) {
+			return InteractionResult.FAIL;
+		}
+		if (level.isClientSide()) {
+			return InteractionResult.SUCCESS;
+		}
+
+		var state = ModBlocks.HANGING_POSTER.defaultBlockState()
+			.setValue(HangingPosterBlock.FACING, face)
+			.setValue(HangingPosterBlock.KIND, PosterKind.fromItem(stack.getItem()));
+		if (!level.setBlock(placePos, state, 3)) {
+			return InteractionResult.FAIL;
+		}
+		level.playSound(null, placePos, ModSounds.PRESS_LOAD, SoundSource.BLOCKS, 0.6F, 0.9F);
+		level.gameEvent(GameEvent.BLOCK_PLACE, placePos, GameEvent.Context.of(player, state));
+		if (player == null || !player.getAbilities().instabuild) {
+			stack.shrink(1);
+		}
+		if (player instanceof ServerPlayer serverPlayer) {
+			serverPlayer.sendOverlayMessage(Component.translatable("block.echoes_in_ink.hanging_poster.placed"));
+		}
+		return InteractionResult.SUCCESS_SERVER;
+	}
 
 	public static InteractionResult tryLayOnTop(UseOnContext context) {
 		if (context.getClickedFace() != Direction.UP) {

@@ -21,8 +21,15 @@ public record PrintingRecipe(
 			&& !paperStack.isEmpty()
 			&& !inkStack.isEmpty()
 			&& matrixStack.getItem() == matrix
-			&& paperStack.getItem() == paper
+			&& paperMatches(paperStack.getItem())
 			&& inkStack.getItem() == ink;
+	}
+
+	private boolean paperMatches(Item offered) {
+		if (offered == paper) {
+			return true;
+		}
+		return PrintingRecipes.isBlankPrintPaper(paper) && PrintingRecipes.isBlankPrintPaper(offered);
 	}
 
 	public ItemStack createOutput() {

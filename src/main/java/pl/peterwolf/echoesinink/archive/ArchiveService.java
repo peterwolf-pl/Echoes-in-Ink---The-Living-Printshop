@@ -37,6 +37,13 @@ public final class ArchiveService {
 		if (!archive.unlock(entryId)) {
 			return false;
 		}
+		ArchiveEntries.byId(entryId).ifPresent(definition -> {
+			if (definition.category() == ArchiveCategory.PRINTED_WORKS) {
+				archive.recordPrintedWork(entryId);
+			} else if (definition.category() == ArchiveCategory.UNRESOLVED_CLUES) {
+				archive.recordUnresolvedClue(entryId);
+			}
+		});
 		set(player, archive);
 		player.sendOverlayMessage(Component.translatable("archive.echoes_in_ink.unlocked",
 			Component.translatable("archive.echoes_in_ink.entry." + entryId + ".title")));
@@ -47,6 +54,29 @@ public final class ArchiveService {
 		// Map common entries to advancements
 		grantLinkedAdvancements(player, entryId, archive);
 		return true;
+	}
+
+	public static void recordWorkshop(ServerPlayer player, String workshopId, String variantId) {
+		mutate(player, archive -> archive.recordWorkshop(workshopId, variantId));
+	}
+
+	public static void recordRecoveredMaterial(ServerPlayer player, String itemId) {
+		mutate(player, archive -> archive.recordRecoveredMaterial(itemId));
+	}
+
+	public static void recordAvailableRecipe(ServerPlayer player, String recipeId) {
+		mutate(player, archive -> archive.recordAvailableRecipe(recipeId));
+	}
+
+	public static void recordPrintedWork(ServerPlayer player, String itemId) {
+		mutate(player, archive -> archive.recordPrintedWork(itemId));
+	}
+
+	private static void mutate(ServerPlayer player, java.util.function.Predicate<PlayerArchive> mutation) {
+		PlayerArchive archive = get(player);
+		if (mutation.test(archive)) {
+			set(player, archive);
+		}
 	}
 
 	public static void reset(ServerPlayer player) {

@@ -14,6 +14,7 @@ public class PrintingPressRenderState extends BlockEntityRenderState {
 	public float inkingProgress;
 	public boolean matrixInked;
 	public boolean metalTypeMatrix;
+	public boolean woodenMatrix;
 	public boolean hasScrew;
 	public boolean hasHandle;
 	public boolean hasPlaten;
@@ -22,6 +23,7 @@ public class PrintingPressRenderState extends BlockEntityRenderState {
 	@Nullable public ItemStackRenderState matrixRenderState;
 	@Nullable public ItemStackRenderState inkRenderState;
 	@Nullable public ItemStackRenderState inkLayerRenderState;
+	@Nullable public ItemStackRenderState woodBedRenderState;
 	@Nullable public ItemStackRenderState sheetRenderState;
 	@Nullable public ItemStackRenderState screwRenderState;
 	@Nullable public ItemStackRenderState handleRenderState;

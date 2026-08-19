@@ -5,12 +5,12 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import pl.peterwolf.echoesinink.client.animation.EchoGhostAnimator;
 import pl.peterwolf.echoesinink.config.ModConfig;
-import pl.peterwolf.echoesinink.echo.EchoScript;
 
 /**
- * Client-side dust / ghost actor particles for active echoes.
- * No real entities — only short-lived particles.
+ * Client-side dust and ghost-worker animation for active echoes.
+ * Figures are particle silhouettes, never entities.
  */
 public final class ClientEchoEffects {
 	private ClientEchoEffects() {}
@@ -27,59 +27,122 @@ public final class ClientEchoEffects {
 		for (ClientEchoState.EchoView view : ClientEchoState.active().values()) {
 			float p = view.progress();
 			double cx = view.center.getX() + 0.5;
-			double cy = view.center.getY() + 0.1;
+			double cy = view.center.getY();
 			double cz = view.center.getZ() + 0.5;
+			float cycle = view.tick * 0.42F;
 
-			if (!reduced && level.getGameTime() % 3 == 0) {
-				int n = 3;
-				for (int i = 0; i < n; i++) {
-					level.addParticle(
-						ParticleTypes.ASH,
-						cx + (Math.random() - 0.5) * 3.0,
-						cy + Math.random() * 2.0,
-						cz + (Math.random() - 0.5) * 3.0,
-						0, 0.01, 0
-					);
-				}
-			}
-
-			// Ghostly "workers" as end-rod / soul particle orbits (no entities)
-			if (p >= 0.18F && p < 0.85F) {
-				double t = view.tick * 0.08;
-				// Printer near "type cabinet" offset
-				double x1 = cx - 1.5 + Mth.sin((float) t) * 0.15;
-				double z1 = cz - 1.2;
-				double y1 = cy + 1.0 + Mth.sin((float) t * 2.0F) * 0.05;
-				level.addParticle(ParticleTypes.END_ROD, x1, y1, z1, 0, 0.01, 0);
-				level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, x1, y1 - 0.4, z1, 0, 0.001, 0);
-
-				if (p >= 0.32F) {
-					// Second worker walking toward press (lerp path)
-					float walk = Mth.clamp((p - 0.32F) / 0.2F, 0.0F, 1.0F);
-					double x2 = cx + 1.8 - walk * 1.5;
-					double z2 = cz + 1.5 - walk * 1.2;
-					double y2 = cy + 1.0;
-					level.addParticle(ParticleTypes.END_ROD, x2, y2, z2, 0, 0.01, 0);
-					// "page" sparkle
-					if (level.getGameTime() % 4 == 0) {
-						level.addParticle(ParticleTypes.ENCHANT, x2, y2 + 0.3, z2, 0, 0.02, 0);
-					}
-				}
-			}
-
-			// Ghost press activity near center
-			if (p >= 0.45F && p < 0.7F && level.getGameTime() % 2 == 0) {
-				level.addParticle(ParticleTypes.CRIT, cx, cy + 1.2, cz, 0, 0.05, 0);
-			}
-
-			// Hide action near floor
-			if (p >= 0.72F && p < 0.82F && level.getGameTime() % 3 == 0) {
+			if (!reduced && level.getGameTime() % 2 == 0) {
 				level.addParticle(
-					ParticleTypes.SMOKE,
-					cx + 1.2, cy + 0.2, cz - 0.8,
-					0, 0.02, 0
+					ParticleTypes.ASH,
+					cx + (level.getRandom().nextDouble() - 0.5) * 3.2,
+					cy + 0.4 + level.getRandom().nextDouble() * 1.8,
+					cz + (level.getRandom().nextDouble() - 0.5) * 3.2,
+					0.0, 0.01, 0.0
 				);
 			}
+
+			drawPrinter(level, view, cx, cy, cz, cycle, p, reduced);
+			drawHelper(level, view, cx, cy, cz, cycle, p, reduced);
+			drawPressWork(level, cx, cy, cz, p);
 		}
+	}
+
+	private static void drawPrinter(
+		Level level,
+		ClientEchoState.EchoView view,
+		double cx,
+		double cy,
+		double cz,
+		float cycle,
+		float p,
+		boolean reduced
+	) {
+		if (p < 0.18F || p >= 0.96F) {
+			return;
+		}
+		float appear = fade(p, 0.18F, 0.24F, 0.85F, 0.95F);
+		float hide = Mth.clamp((p - 0.72F) / 0.13F, 0.0F, 1.0F);
+		boolean walking = p >= 0.45F && p < 0.72F;
+		double x = cx - 1.55;
+		double z = cz - 1.15;
+		float yaw = EchoGhostAnimator.yawTowards(1.4, 1.0);
+		if (p >= 0.45F && p < 0.72F) {
+			float step = Mth.clamp((p - 0.45F) / 0.16F, 0.0F, 1.0F);
+			x = Mth.lerp(step, cx - 1.55, cx - 0.35);
+			z = Mth.lerp(step, cz - 1.15, cz - 0.15);
+		} else if (hide > 0.0F) {
+			x = Mth.lerp(hide, cx - 0.35, cx + 1.15);
+			z = Mth.lerp(hide, cz - 0.15, cz - 0.85);
+			yaw = EchoGhostAnimator.yawTowards(1.5, -0.7);
+			walking = true;
+		}
+		EchoGhostAnimator.draw(
+			level, x, cy, z, yaw, cycle,
+			hide * 0.85F, appear, walking, false, reduced
+		);
+	}
+
+	private static void drawHelper(
+		Level level,
+		ClientEchoState.EchoView view,
+		double cx,
+		double cy,
+		double cz,
+		float cycle,
+		float p,
+		boolean reduced
+	) {
+		if (p < 0.32F || p >= 0.96F) {
+			return;
+		}
+		float appear = fade(p, 0.32F, 0.38F, 0.85F, 0.95F);
+		float hide = Mth.clamp((p - 0.72F) / 0.13F, 0.0F, 1.0F);
+		double startX = cx + 1.85;
+		double startZ = cz + 1.55;
+		double pressX = cx + 0.45;
+		double pressZ = cz + 0.35;
+		float walk = Mth.clamp((p - 0.32F) / 0.20F, 0.0F, 1.0F);
+		double x = Mth.lerp(walk, startX, pressX);
+		double z = Mth.lerp(walk, startZ, pressZ);
+		float yaw = EchoGhostAnimator.yawTowards(pressX - startX, pressZ - startZ);
+		boolean walking = walk < 1.0F && hide <= 0.0F;
+		boolean carrying = p < 0.72F;
+		if (hide > 0.0F) {
+			x = Mth.lerp(hide, pressX, cx + 1.15);
+			z = Mth.lerp(hide, pressZ, cz - 0.85);
+			yaw = EchoGhostAnimator.yawTowards(0.7, -1.2);
+			walking = true;
+			carrying = false;
+		}
+		EchoGhostAnimator.draw(
+			level, x, cy, z, yaw, cycle * 1.15F,
+			hide * 0.85F, appear, walking, carrying, reduced
+		);
+	}
+
+	private static void drawPressWork(Level level, double cx, double cy, double cz, float p) {
+		if (p < 0.45F || p >= 0.72F || level.getGameTime() % 2 != 0) {
+			return;
+		}
+		level.addParticle(ParticleTypes.CRIT, cx, cy + 1.25, cz, 0.0, 0.04, 0.0);
+		if (p >= 0.62F && p < 0.70F) {
+			level.addParticle(ParticleTypes.SMOKE, cx + 0.2, cy + 0.9, cz, 0.0, 0.03, 0.0);
+		}
+	}
+
+	private static float fade(float p, float inStart, float inEnd, float outStart, float outEnd) {
+		if (p < inStart) {
+			return 0.0F;
+		}
+		if (p < inEnd) {
+			return (p - inStart) / (inEnd - inStart);
+		}
+		if (p < outStart) {
+			return 1.0F;
+		}
+		if (p < outEnd) {
+			return 1.0F - (p - outStart) / (outEnd - outStart);
+		}
+		return 0.0F;
 	}
 }

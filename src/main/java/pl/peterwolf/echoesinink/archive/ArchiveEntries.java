@@ -18,11 +18,15 @@ public final class ArchiveEntries {
 	public static final Def MATRIX_WOODEN = entry("matrix_wooden", ArchiveCategory.PRINTING_MATRICES);
 	public static final Def MATRIX_TYPE = entry("matrix_type", ArchiveCategory.PRINTING_MATRICES);
 	public static final Def MATRIX_RUBBING = entry("matrix_rubbing", ArchiveCategory.PRINTING_MATRICES);
+	public static final Def MATRIX_VILLAGE_CHRONICLE = entry("matrix_village_chronicle", ArchiveCategory.PRINTING_MATRICES);
+	public static final Def MATRIX_FORBIDDEN_NOTICE = entry("matrix_forbidden_notice", ArchiveCategory.PRINTING_MATRICES);
 	public static final Def WORK_INSTRUCTION = entry("work_instruction", ArchiveCategory.PRINTED_WORKS);
 	public static final Def WORK_CHRONICLE = entry("work_chronicle", ArchiveCategory.PRINTED_WORKS);
 	public static final Def WORK_WOODCUT = entry("work_woodcut", ArchiveCategory.PRINTED_WORKS);
 	public static final Def WORK_POSTER = entry("work_poster", ArchiveCategory.PRINTED_WORKS);
 	public static final Def WORK_MAP = entry("work_map", ArchiveCategory.PRINTED_WORKS);
+	public static final Def WORK_VILLAGE_CHRONICLE = entry("work_village_chronicle", ArchiveCategory.PRINTED_WORKS);
+	public static final Def WORK_FORBIDDEN_NOTICE = entry("work_forbidden_notice", ArchiveCategory.PRINTED_WORKS);
 	public static final Def ECHO_LAST_PRINT = entry("echo_last_print", ArchiveCategory.HISTORICAL_ECHOES);
 	public static final Def CLUE_DUST = entry("clue_dust", ArchiveCategory.UNRESOLVED_CLUES);
 	public static final Def CLUE_HIDDEN = entry("clue_hidden", ArchiveCategory.UNRESOLVED_CLUES);
@@ -39,8 +43,9 @@ public final class ArchiveEntries {
 	private static final List<Def> ALL = List.of(
 		WORKSHOP_ASHEN, SITE_INK_CACHE,
 		PART_SCREW, PART_HANDLE, PART_PLATEN, PART_CARRIAGE,
-		MATRIX_WOODEN, MATRIX_TYPE, MATRIX_RUBBING,
+		MATRIX_WOODEN, MATRIX_TYPE, MATRIX_RUBBING, MATRIX_VILLAGE_CHRONICLE, MATRIX_FORBIDDEN_NOTICE,
 		WORK_INSTRUCTION, WORK_CHRONICLE, WORK_WOODCUT, WORK_POSTER, WORK_MAP,
+		WORK_VILLAGE_CHRONICLE, WORK_FORBIDDEN_NOTICE,
 		ECHO_LAST_PRINT,
 		CLUE_DUST, CLUE_HIDDEN, CLUE_PLAQUE,
 		CLUE_CHRONICLE_BIOME, CLUE_CHRONICLE_BEARING, CLUE_CHRONICLE_MAP

@@ -2,6 +2,158 @@
 
 All notable changes to **Echoes in Ink** are documented here.
 
+## [Unreleased]
+
+### Changed
+
+- Fully cleaning Printing Debris now dismantles the pile: scraps fall out on
+  the first brush stroke, then the rest becomes paper, ink, type, and spare
+  press parts and the block disappears.
+- Every generated printshop now places three almost-full chests — specialist,
+  storage, and hidden — stocked with clean paper, ink, type, and spare press
+  components.
+- Later workshops yield substantially more blank archive paper and ink from
+  the archive desk and ink station.
+- Switched the Fabric mod icon to the illustrated press artwork from the
+  repository `icon.png`.
+- Hung six distinct workshop posters in every generated printshop — warning,
+  woodcut, chronicle, notice, map, and type-specimen sheets — and added extra
+  work tables with laid papers, notes, and prints.
+- Abandoned printshops generate beside vanilla villages and also at random
+  wilderness sites. Every village gets one outskirts workshop; larger plains,
+  meadow, savanna, and taiga villages also get a second shop on the opposite
+  side. Forests, swamps, and other workshop biomes keep scattered ruins.
+- The printing press now accepts vanilla paper as interchangeable stock with
+  Blank Archive Pages. Restoring a chronicle still requires a Damaged Archive
+  Page.
+- Breaking a printing press returns the press frame to the player's inventory
+  along with the installed parts, instead of dropping the assembled press block.
+- Hung generated posters flush on the intended wall. Facing stays parallel to
+  that wall; placeBlock remapping is inverted so the sheet sits on the wall
+  face instead of one block into the room.
+- Rebuilt echo ghost workers as walking particle silhouettes — compose type,
+  carry a page to the press, hide, then fade — without hitching on sync.
+- Wooden matrices on the press now take ink like metal type: a thick woodcut
+  block with raised black ink pads that fill in as the ball or pad wipes.
+- Hung more mixed posters on every generated printshop wall.
+
+### Fixed
+
+- Made generated Press Frames become functional Printing Presses when the first
+  press component is installed, then accept all remaining components normally.
+- Recovered press parts already laid above a frame by the broken interaction,
+  including installing the next held component in the same click.
+- Restored cosmetic sweeping of stained decorative floorboards with the
+  Workshop Broom without restoring per-floor investigation loot.
+- Allowed the Magnifying Lens and Printer's Brush to receive held-item clicks
+  on the Faded Workshop Plaque instead of being intercepted by its empty-hand
+  hint.
+- Kept the Printer's Brush locked to the originally clicked thin plaque during
+  its timed use, while retaining server-side distance and state validation.
+- Expanded lens inspection to identify laid prints, readable posters, archive
+  pages, matrices/type formes, press components, and other workshop objects;
+  readable finished prints also display their complete text.
+
+## [1.1.2] — 2026-08-04
+
+### Fixed
+
+- Added a deterministic physical starter kit to the first opened chest in each
+  confirmed printshop before the first press operation: all four press parts,
+  Workshop Broom, Printer's Brush, Magnifying Lens, and Printer's Archive.
+- Kept the specialist chest loot and unpacked it before inserting the guaranteed
+  kit; full-chest overflow is delivered to the opening player instead of being
+  lost.
+- Made the guarantee work when reopening an already-looted chest in an existing
+  world. The one-time workshop claim is persisted in world saved data and is
+  shared by multiplayer players.
+
+### Added
+
+- Added the Workshop Broom as an optional cobweb-cleaning tool with durability,
+  EN/PL descriptions, item model, and pixel-art texture.
+- Added integrated starter-chest coverage for exact tool/part delivery,
+  one-claim-per-workshop behavior, and the post-handle specialist transition.
+
+### Changed
+
+- Rebuilt the Faded Workshop Plaque as a thin, directional wall plaque with a
+  worn brass press emblem and three visibly different cleaning textures.
+- Added explicit plaque guidance: inspect it with the Magnifying Lens, then hold
+  use with the Printer's Brush twice. Its starter reward remains the instruction
+  sheet and map fragment; later plaques provide historical clues.
+- Expanded the variant visual test with a front-clearance assertion and a
+  dedicated close-up screenshot for every plaque orientation.
+
+## [1.1.1] — 2026-08-04
+
+### Fixed
+
+- Kept deterministic starter rewards active across additional printshops until
+  a complete press actually pulls its handle, preventing an abandoned first
+  ruin from stranding the world without press components.
+- Added automatic semantic-role migration for pre-1.1 printshops. Already
+  searched legacy roles are compensated on the next eligible investigation;
+  completely exhausted ruins recover on one more brush interaction with any
+  investigated printshop furnishing.
+- Added integrated coverage for real block cleaning, inventory delivery,
+  legacy binding, first press operation, and the later-workshop transition.
+
+### Changed
+
+- Restored a busier abandoned atmosphere with at least four cobwebs, two
+  populated laid prints/pages, and two wall posters in every generated variant.
+- Added a localized description and an explicit gameplay-purpose line to all
+  31 custom items and all 11 custom block items in English and Polish.
+- Clarified the Faded Workshop Plaque lens result and tooltip: it is a clue
+  location that yields the starter instructions and map fragment before the
+  first successful press run.
+- Expanded variant ClientGameTests with decoration counts and exterior/interior
+  screenshots for each printshop type.
+
+## [1.1.0] — 2026-08-02
+
+### Progression rebalance — Stage 1
+
+- Added a world-persistent starter printshop claim shared by multiplayer groups.
+- Bound the screw, platen, carriage, and handle to four distinct investigation locations.
+- Guaranteed a basic matrix, damaged page, at least five blank pages, configurable ink for five impressions, a readable instruction sheet, and a follow-up clue.
+- Added stable later-workshop specialist reward allocation keyed by workshop ID, variant, and investigation role.
+- Removed Restored Chronicle Pages and mandatory press parts from generic chest loot.
+- Reduced generic press-part rewards to rare optional spares controlled by configuration.
+- Added migration-safe workshop identity/role fields to investigation block entities and carried block data.
+- Connected the existing Fabric datagen entrypoint to a strict `runDatagen` Loom run configuration.
+- Added JUnit coverage for complete unique starter sets, starter operating supplies,
+  later reward priorities, deterministic allocation, floor-count contracts, and generic loot skips.
+
+### Progression rebalance — Stage 2
+
+- Converted ordinary ink-stained floorboards to non-investigatable decoration while retaining their legacy state property for existing-world loading.
+- Added uncommon Loose Ink-Stained Floorboards and one high-value Hidden Floor Compartment role.
+- Connected `suspiciousFloorboardsPerWorkshop` to generation with a sanitized range of three through five total targets.
+- Added distinct localized Magnifying Lens messages, enchant particles, and a subtle chime for suspicious floors.
+- Added block models, item definitions, loot tables, EN/PL names, and automated configured-count coverage.
+
+### Progression rebalance — Stage 3
+
+- Added stable Rural Woodcut, Town Type Foundry, Scholarly Archive, and Burned Clandestine structure selection.
+- Added two deterministic layout subvariants per major type and persisted variant/layout fields in structure NBT with rural migration defaults.
+- Differentiated footprints, entrances, room divisions, roof-collapse shapes, cellar/crawlspace arrangements, machine remains, storytelling props, and construction palettes.
+- Added four specialist optional chest tables; required starter items remain on deterministic semantic nodes.
+- Connected `enablePrintshopVariants` to generation, with a rural compatibility fallback.
+- Added tests for stable selection/distribution, stored-identity round trips, migration defaults, and exact required-role placement in every procedural builder.
+
+### Progression rebalance — Stage 4
+
+- Added data-pack assembly recipes for the Village Chronicle Matrix and Forbidden Notice Metal Forme.
+- Added two reusable-form press recipes with readable Village Chronicle and Forbidden Notice outputs, Archive entries, and story leads.
+- Added a renewable four-Ink-Ball recipe from charcoal and clay while preserving one-item-per-impression consumption.
+- Added Press Screw, Handle, Platen, and Carriage replacement recipes revealed after the first handle pull for multiplayer recovery.
+- Expanded the migration-safe, owner-only Printer's Archive attachment with a press checklist, workshop IDs/variants, recovered material, available recipe, printed-work, and unresolved-clue tracking.
+- Fixed collected prints losing their Archive identity after inventory insertion reduced the transfer stack to zero.
+- Added JVM contracts for matrix definitions/recipes, Archive copy/tracking, and carried investigation state.
+- Added integrated ClientGameTest coverage for the complete starter-only assembly and Restored Chronicle print loop, specialist recipes, replacement tracking, and break/place reroll protection.
+
 ## [1.0.5] — 2026-08-02
 
 ### Changed
