@@ -1,10 +1,15 @@
 package pl.peterwolf.echoesinink.block.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +24,7 @@ import pl.peterwolf.echoesinink.block.InvestigationData;
 import pl.peterwolf.echoesinink.block.InvestigationLoot;
 import pl.peterwolf.echoesinink.block.InvestigationState;
 import pl.peterwolf.echoesinink.block.InvestigatableBlock;
+import pl.peterwolf.echoesinink.block.PrintingDebrisBlock;
 import pl.peterwolf.echoesinink.config.ModConfig;
 import pl.peterwolf.echoesinink.item.ModItems;
 import pl.peterwolf.echoesinink.progression.InvestigationRole;
@@ -32,8 +38,9 @@ import pl.peterwolf.echoesinink.recipe.PrintingRecipes;
 
 /**
  * Persists investigation progress and ensures loot is allocated at most once.
- * Structure-bound roles use deterministic progression rewards; ordinary placed
- * debris continues to use optional weighted loot.
+ * Structure-bound roles use deterministic progression rewards. Printing debris
+ * always dismantles into paper, ink, type, and spare press parts, then is
+ * removed on the final brush stroke.
  */
 public class InvestigationBlockEntity extends BlockEntity {
 	private boolean lootGenerated;
@@ -156,6 +163,10 @@ public class InvestigationBlockEntity extends BlockEntity {
 			return false;
 		}
 
+		if (block instanceof PrintingDebrisBlock) {
+			return cleanDebris(level, player, block, state, current);
+		}
+
 		InvestigationState next = current.next();
 		level.setBlock(worldPosition, state.setValue(InvestigatableBlock.INVESTIGATION, next), 3);
 		setChanged();
@@ -169,6 +180,68 @@ public class InvestigationBlockEntity extends BlockEntity {
 		} else if (next == InvestigationState.FULLY_INVESTIGATED && lootGenerated) {
 			player.sendSystemMessage(Component.translatable("investigation.echoes_in_ink.already_searched"));
 		}
+		return true;
+	}
+
+	/**
+	 * Printing debris falls apart while brushed. The first stroke sheds scraps;
+	 * the second grants any role reward, dumps the remaining materials, and
+	 * removes the pile.
+	 */
+	private boolean cleanDebris(
+		ServerLevel level,
+		Player player,
+		InvestigatableBlock block,
+		BlockState state,
+		InvestigationState current
+	) {
+		InvestigationState next = current.next();
+		if (next == InvestigationState.PARTIALLY_CLEANED) {
+			level.setBlock(worldPosition, state.setValue(InvestigatableBlock.INVESTIGATION, next), 3);
+			setChanged();
+			deliverReward(
+				level,
+				player,
+				new RewardResult(
+					"debris_partial",
+					InvestigationLoot.dismantlePartial(level.getRandom()),
+					Component.translatable("investigation.echoes_in_ink.debris_partial")
+				)
+			);
+			return true;
+		}
+
+		if (lootGenerated) {
+			player.sendSystemMessage(Component.translatable("investigation.echoes_in_ink.already_searched"));
+			return true;
+		}
+
+		RewardResult role = createReward(level, block);
+		List<ItemStack> stacks = new ArrayList<>(role.stacks());
+		stacks.addAll(InvestigationLoot.dismantleComplete(level.getRandom()));
+		boolean roleBound = role.id().startsWith("starter:") || role.id().startsWith("later:");
+		RewardResult result = new RewardResult(
+			roleBound ? role.id() : "debris_dismantle",
+			List.copyOf(stacks),
+			roleBound
+				? role.message()
+				: Component.translatable("investigation.echoes_in_ink.debris_dismantled")
+		);
+		lootGenerated = true;
+		lastResultId = result.id();
+		setChanged();
+		deliverReward(level, player, result);
+		level.playSound(null, worldPosition, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 0.8F, 0.9F);
+		level.sendParticles(
+			new BlockParticleOption(ParticleTypes.BLOCK, state),
+			worldPosition.getX() + 0.5,
+			worldPosition.getY() + 0.35,
+			worldPosition.getZ() + 0.5,
+			18,
+			0.3, 0.2, 0.3,
+			0.06
+		);
+		level.removeBlock(worldPosition, false);
 		return true;
 	}
 
@@ -265,6 +338,14 @@ public class InvestigationBlockEntity extends BlockEntity {
 					Component.translatable("investigation.echoes_in_ink." + prefix + "_reward")
 				);
 			}
+		}
+
+		if (block instanceof PrintingDebrisBlock || block.lootProfile() == InvestigationLoot.Profile.DEBRIS) {
+			return new RewardResult(
+				"debris_dismantle",
+				List.of(),
+				Component.translatable("investigation.echoes_in_ink.debris_dismantled")
+			);
 		}
 
 		InvestigationLoot.Result random = InvestigationLoot.roll(level, block.lootProfile());

@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import pl.peterwolf.echoesinink.item.ModItems;
 import pl.peterwolf.echoesinink.config.ModConfig;
 
@@ -52,6 +53,51 @@ public final class InvestigationLoot {
 			}
 		}
 		return nothing();
+	}
+
+	/** First brush stroke: a few scraps fall out of the pile. */
+	public static List<ItemStack> dismantlePartial(RandomSource random) {
+		List<ItemStack> stacks = new ArrayList<>();
+		stacks.add(new ItemStack(Items.PAPER, 2 + random.nextInt(3)));
+		stacks.add(new ItemStack(ModItems.METAL_TYPE_PIECE, 1 + random.nextInt(2)));
+		if (random.nextBoolean()) {
+			stacks.add(new ItemStack(ModItems.BLANK_ARCHIVE_PAGE, 1));
+		}
+		return List.copyOf(stacks);
+	}
+
+	/**
+	 * Final brush stroke: the remaining pile becomes printing supplies and
+	 * spare press hardware. Always yields paper, ink, type, and at least one
+	 * press part.
+	 */
+	public static List<ItemStack> dismantleComplete(RandomSource random) {
+		List<ItemStack> stacks = new ArrayList<>();
+		stacks.add(new ItemStack(Items.PAPER, 6 + random.nextInt(7)));
+		stacks.add(new ItemStack(ModItems.BLANK_ARCHIVE_PAGE, 3 + random.nextInt(4)));
+		stacks.add(new ItemStack(ModItems.INK_BALL, 3 + random.nextInt(4)));
+		stacks.add(new ItemStack(ModItems.INK_PAD, 1 + random.nextInt(3)));
+		stacks.add(new ItemStack(ModItems.METAL_TYPE_PIECE, 3 + random.nextInt(6)));
+		stacks.add(new ItemStack(ModItems.CHARCOAL_RUBBING_PAPER, 1 + random.nextInt(3)));
+		if (random.nextBoolean()) {
+			stacks.add(new ItemStack(ModItems.WOODEN_PRINTING_MATRIX, 1));
+		}
+		if (random.nextInt(3) == 0) {
+			stacks.add(new ItemStack(ModItems.DAMAGED_ARCHIVE_PAGE, 1));
+		}
+		Item[] parts = {
+			ModItems.PRESS_SCREW,
+			ModItems.PRESS_HANDLE,
+			ModItems.PRESS_PLATEN,
+			ModItems.PRESS_CARRIAGE
+		};
+		int first = random.nextInt(parts.length);
+		stacks.add(new ItemStack(parts[first], 1));
+		if (random.nextBoolean()) {
+			int second = (first + 1 + random.nextInt(parts.length - 1)) % parts.length;
+			stacks.add(new ItemStack(parts[second], 1));
+		}
+		return List.copyOf(stacks);
 	}
 
 	private static Result nothing() {

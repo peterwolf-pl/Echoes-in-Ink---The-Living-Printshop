@@ -197,7 +197,7 @@ public class PrintingPressBlock extends BaseEntityBlock {
 	}
 
 	/** Action-bar feedback so the player always sees the next step. */
-	private static void hint(Player player, Component text) {
+	static void hint(Player player, Component text) {
 		if (player instanceof ServerPlayer serverPlayer) {
 			serverPlayer.sendOverlayMessage(text);
 		} else {

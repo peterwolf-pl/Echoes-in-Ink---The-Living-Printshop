@@ -96,6 +96,14 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 
 	// ── Assembly ───────────────────────────────────────────────────────────
 
+	public static boolean isPressPart(ItemStack stack) {
+		var item = stack.getItem();
+		return item == ModItems.PRESS_SCREW
+			|| item == ModItems.PRESS_HANDLE
+			|| item == ModItems.PRESS_PLATEN
+			|| item == ModItems.PRESS_CARRIAGE;
+	}
+
 	public boolean tryInstallPart(Player player, ItemStack stack) {
 		if (level == null || level.isClientSide() || stack.isEmpty()) {
 			return false;

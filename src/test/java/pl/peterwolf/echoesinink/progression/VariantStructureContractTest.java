@@ -39,6 +39,7 @@ class VariantStructureContractTest {
 				String token = "InvestigationRole." + role.name();
 				assertEquals(1, occurrences(builder, token), name + " / " + role.id());
 			}
+			assertEquals(1, occurrences(builder, "placeWorkshopChests("), name + " workshop chests");
 		}
 	}
 

@@ -155,14 +155,21 @@ Typical sequence:
 
 ## Exploration and investigation
 
-Printshops contain investigatable machine remains, archive shelves, type cabinets, printing tables, plaques, debris, and hidden storage.
+Printshops contain investigatable machine remains, archive shelves, type cabinets, printing tables, plaques, debris, and hidden storage. Cleaning Printing Debris with the Printer's Brush takes the pile apart: scraps come free on the first stroke, then the remainder becomes paper, ink, type, and spare press parts and the block is removed.
+
+Every generated printshop contains three almost-full chests. Beside the variant's specialist loot, the shared supply kit always includes clean paper, blank archive pages, ink balls and pads, metal type, and spare press components.
 
 The Faded Workshop Plaque is not filler decoration. Inspect it with the
 Magnifying Lens, then hold use with the Printer's Brush twice to clean both
 stages. During starter mode it contains the Printer's Instruction Sheet and
 Workshop Map Fragment; later it provides a stable historical clue. The optional
-Workshop Broom removes decorative cobwebs; it does not replace the Printer's
-Brush during investigations.
+Workshop Broom removes decorative cobwebs and sweeps stained decorative
+floorboards through their visual cleanup stages; it does not replace the
+Printer's Brush during investigations or create floor loot.
+
+The Magnifying Lens can also inspect laid pages, finished prints, matrices,
+type formes, press parts, and hanging posters. It identifies the exact displayed
+item, and readable finished prints show their complete text in chat.
 
 Every custom item and block item has two tooltip lines: a description and an
 explicit gameplay purpose identifying required components, crafting parts,

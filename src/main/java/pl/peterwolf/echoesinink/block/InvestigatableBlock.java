@@ -4,6 +4,8 @@ import com.mojang.serialization.MapCodec;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -18,9 +20,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
 import pl.peterwolf.echoesinink.item.ModDataComponents;
+import pl.peterwolf.echoesinink.item.ModItems;
 
 /**
  * Workshop block with persistent investigation state and once-only loot.
@@ -81,6 +85,23 @@ public class InvestigatableBlock extends BaseEntityBlock implements Investigatab
 		}
 		level.setBlock(pos, state.setValue(INVESTIGATION, state.getValue(INVESTIGATION).next()), Block.UPDATE_ALL);
 		return true;
+	}
+
+	/** Let investigation tools handle right-click before any empty-hand block action. */
+	@Override
+	protected InteractionResult useItemOn(
+		ItemStack stack,
+		BlockState state,
+		Level level,
+		BlockPos pos,
+		Player player,
+		InteractionHand hand,
+		BlockHitResult hit
+	) {
+		if (stack.is(ModItems.MAGNIFYING_LENS) || stack.is(ModItems.PRINTERS_BRUSH)) {
+			return InteractionResult.PASS;
+		}
+		return super.useItemOn(stack, state, level, pos, player, hand, hit);
 	}
 
 	/** Preserve investigation when the block is broken. */

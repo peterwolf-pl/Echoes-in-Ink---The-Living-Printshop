@@ -2,6 +2,38 @@
 
 All notable changes to **Echoes in Ink** are documented here.
 
+## [Unreleased]
+
+### Changed
+
+- Fully cleaning Printing Debris now dismantles the pile: scraps fall out on
+  the first brush stroke, then the rest becomes paper, ink, type, and spare
+  press parts and the block disappears.
+- Every generated printshop now places three almost-full chests — specialist,
+  storage, and hidden — stocked with clean paper, ink, type, and spare press
+  components.
+- Later workshops yield substantially more blank archive paper and ink from
+  the archive desk and ink station.
+- Switched the Fabric mod icon to the illustrated press artwork from the
+  repository `icon.png`.
+
+### Fixed
+
+- Made generated Press Frames become functional Printing Presses when the first
+  press component is installed, then accept all remaining components normally.
+- Recovered press parts already laid above a frame by the broken interaction,
+  including installing the next held component in the same click.
+- Restored cosmetic sweeping of stained decorative floorboards with the
+  Workshop Broom without restoring per-floor investigation loot.
+- Allowed the Magnifying Lens and Printer's Brush to receive held-item clicks
+  on the Faded Workshop Plaque instead of being intercepted by its empty-hand
+  hint.
+- Kept the Printer's Brush locked to the originally clicked thin plaque during
+  its timed use, while retaining server-side distance and state validation.
+- Expanded lens inspection to identify laid prints, readable posters, archive
+  pages, matrices/type formes, press components, and other workshop objects;
+  readable finished prints also display their complete text.
+
 ## [1.1.2] — 2026-08-04
 
 ### Fixed

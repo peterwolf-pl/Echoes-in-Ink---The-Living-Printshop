@@ -1,17 +1,23 @@
 {
   "type": "minecraft:chest",
-  "pools": [{
-    "rolls": { "type": "minecraft:uniform", "min": 3.0, "max": 6.0 },
-    "entries": [
-      { "type": "minecraft:item", "name": "echoes_in_ink:printers_notes", "weight": 5 },
-      { "type": "minecraft:item", "name": "echoes_in_ink:missing_headline_type", "weight": 4 },
-      { "type": "minecraft:item", "name": "echoes_in_ink:iron_chase", "weight": 3 },
-      { "type": "minecraft:item", "name": "echoes_in_ink:charcoal_rubbing_paper", "weight": 6,
-        "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2.0, "max": 5.0 } }] },
-      { "type": "minecraft:item", "name": "echoes_in_ink:ink_pad", "weight": 4,
-        "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2.0, "max": 5.0 } }] },
-      { "type": "minecraft:item", "name": "echoes_in_ink:printed_warning_poster", "weight": 2 },
-      { "type": "minecraft:item", "name": "echoes_in_ink:damaged_archive_page", "weight": 3 }
-    ]
-  }]
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [{ "type": "minecraft:loot_table", "value": "echoes_in_ink:chests/printshop_supplies" }]
+    },
+    {
+      "rolls": { "type": "minecraft:uniform", "min": 3.0, "max": 5.0 },
+      "entries": [
+        { "type": "minecraft:item", "name": "echoes_in_ink:printers_notes", "weight": 5 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:missing_headline_type", "weight": 4 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:iron_chase", "weight": 3 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:charcoal_rubbing_paper", "weight": 6,
+          "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 3.0, "max": 8.0 } }] },
+        { "type": "minecraft:item", "name": "echoes_in_ink:ink_pad", "weight": 4,
+          "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 4.0, "max": 8.0 } }] },
+        { "type": "minecraft:item", "name": "echoes_in_ink:printed_warning_poster", "weight": 2 },
+        { "type": "minecraft:item", "name": "echoes_in_ink:damaged_archive_page", "weight": 3 }
+      ]
+    }
+  ]
 }

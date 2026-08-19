@@ -144,6 +144,7 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 		int hangingPrints = 0;
 		int laidPrints = 0;
 		int populatedLaidPrints = 0;
+		int chests = 0;
 		Block signature = signatureBlock(variant);
 		boolean signatureFound = false;
 		BlockPos plaquePos = null;
@@ -162,6 +163,8 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 					}
 					if (block == Blocks.COBWEB) {
 						cobwebs++;
+					} else if (block == Blocks.CHEST) {
+						chests++;
 					} else if (block == ModBlocks.HANGING_POSTER) {
 						hangingPrints++;
 					} else if (block == ModBlocks.LAID_PAPER) {
@@ -205,6 +208,9 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 					+ level.getBlockState(plaquePos.relative(plaqueFacing))
 			);
 		}
+		if (chests != 3) {
+			throw new AssertionError(variant.id() + " expected 3 workshop chests, got " + chests);
+		}
 		if (cobwebs < 4 || hangingPrints < 2 || laidPrints < 2 || populatedLaidPrints != laidPrints) {
 			throw new AssertionError(
 				variant.id() + " atmosphere: cobwebs=" + cobwebs
@@ -214,8 +220,8 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 			);
 		}
 		EchoesInInk.LOGGER.info(
-			"VARIANT_GAMETEST_OK variant={} layout={} roles={} suspiciousFloors={} cobwebs={} hangingPrints={} laidPrints={}",
-			variant.id(), layout, roles, expectedFloors, cobwebs, hangingPrints, laidPrints
+			"VARIANT_GAMETEST_OK variant={} layout={} roles={} suspiciousFloors={} chests={} cobwebs={} hangingPrints={} laidPrints={}",
+			variant.id(), layout, roles, expectedFloors, chests, cobwebs, hangingPrints, laidPrints
 		);
 		return new PlaqueView(plaquePos, plaqueFacing);
 	}

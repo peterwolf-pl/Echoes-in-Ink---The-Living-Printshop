@@ -184,7 +184,12 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeHangingPrint(level, box, mx(6, width), 2, 9, Direction.NORTH);
 		placeHangingPrint(level, box, mx(11, width), 2, 1, Direction.SOUTH);
 		placeCobwebs(level, box, new int[][] {{1, 4, 2}, {5, 2, 5}, {7, 3, 8}, {10, 4, 9}});
-		createChest(level, box, random, mx(10, width), 1, 7, RURAL_LOOT);
+		placeWorkshopChests(
+			level, box, random, RURAL_LOOT,
+			mx(10, width), 1, 7,
+			mx(11, width), 1, 8,
+			mx(10, width), -2, 2
+		);
 	}
 
 	private void buildTown(WorldGenLevel level, BoundingBox box, RandomSource random) {
@@ -232,7 +237,12 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeHangingPrint(level, box, mx(2, width), 3, 1, Direction.SOUTH);
 		placeHangingPrint(level, box, mx(15, width), 2, 6, layoutIndex == 0 ? Direction.WEST : Direction.EAST);
 		placeCobwebs(level, box, new int[][] {{1, 4, 1}, {7, 4, 10}, {15, 4, 11}, {12, 3, 2}});
-		createChest(level, box, random, mx(14, width), 1, 10, TOWN_LOOT);
+		placeWorkshopChests(
+			level, box, random, TOWN_LOOT,
+			mx(14, width), 1, 10,
+			mx(1, width), 1, 6,
+			mx(13, width), -2, 10
+		);
 	}
 
 	private void buildScholarly(WorldGenLevel level, BoundingBox box, RandomSource random) {
@@ -282,7 +292,12 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeHangingPrint(level, box, 13, 2, mz(2, depth), Direction.WEST);
 		placeHangingPrint(level, box, 1, 3, mz(13, depth), Direction.EAST);
 		placeCobwebs(level, box, new int[][] {{2, 4, mz(2, depth)}, {6, 3, mz(11, depth)}, {12, 4, mz(12, depth)}, {9, 4, mz(4, depth)}});
-		createChest(level, box, random, 4, 1, mz(12, depth), SCHOLARLY_LOOT);
+		placeWorkshopChests(
+			level, box, random, SCHOLARLY_LOOT,
+			4, 1, mz(12, depth),
+			12, 1, mz(12, depth),
+			5, -2, mz(12, depth)
+		);
 	}
 
 	private void buildBurned(WorldGenLevel level, BoundingBox box, RandomSource random) {
@@ -323,7 +338,12 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeHangingPrint(level, box, mx(4, width), 2, 1, Direction.SOUTH);
 		placeHangingPrint(level, box, mx(7, width), 3, depth - 2, Direction.NORTH);
 		placeCobwebs(level, box, new int[][] {{1, 4, 2}, {8, 3, 9}, {11, 4, 10}, {5, 3, 4}});
-		createChest(level, box, random, mx(11, width), -2, 8, BURNED_LOOT);
+		placeWorkshopChests(
+			level, box, random, BURNED_LOOT,
+			mx(11, width), -2, 8,
+			mx(2, width), 1, 3,
+			mx(12, width), 1, 2
+		);
 	}
 
 	private void prepareSite(WorldGenLevel level, BoundingBox box, int width, int depth, BlockState foundation) {
@@ -522,6 +542,27 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 			ModBlocks.HANGING_POSTER.defaultBlockState().setValue(HangingPosterBlock.FACING, facing),
 			x, y, z, box
 		);
+	}
+
+	/** Specialist chest plus two almost-full supply caches in every printshop. */
+	private void placeWorkshopChests(
+		WorldGenLevel level,
+		BoundingBox box,
+		RandomSource random,
+		ResourceKey<LootTable> specialist,
+		int specialistX,
+		int specialistY,
+		int specialistZ,
+		int storageX,
+		int storageY,
+		int storageZ,
+		int hiddenX,
+		int hiddenY,
+		int hiddenZ
+	) {
+		createChest(level, box, random, specialistX, specialistY, specialistZ, specialist);
+		createChest(level, box, random, storageX, storageY, storageZ, STORAGE_LOOT);
+		createChest(level, box, random, hiddenX, hiddenY, hiddenZ, HIDDEN_LOOT);
 	}
 
 	private void placeCobwebs(WorldGenLevel level, BoundingBox box, int[][] positions) {

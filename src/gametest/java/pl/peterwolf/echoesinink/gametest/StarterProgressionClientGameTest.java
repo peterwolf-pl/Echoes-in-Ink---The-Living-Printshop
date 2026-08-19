@@ -10,17 +10,22 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.archive.ArchiveEntries;
 import pl.peterwolf.echoesinink.archive.ArchiveService;
 import pl.peterwolf.echoesinink.block.InvestigationData;
 import pl.peterwolf.echoesinink.block.InvestigationState;
+import pl.peterwolf.echoesinink.block.LaidPaperBlock;
 import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.block.PressPhase;
-import pl.peterwolf.echoesinink.block.PrintingPressBlock;
 import pl.peterwolf.echoesinink.block.InvestigatableBlock;
 import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
 import pl.peterwolf.echoesinink.block.entity.PrintingPressBlockEntity;
@@ -40,6 +45,8 @@ import pl.peterwolf.echoesinink.recipe.PrintingRecipes;
 public final class StarterProgressionClientGameTest implements FabricClientGameTest {
 	private static final BlockPos PRESS_POS = new BlockPos(0, 4, 0);
 	private static final BlockPos REPLACED_FLOOR_POS = new BlockPos(3, 4, 0);
+	private static final BlockPos LEGACY_PRESS_POS = new BlockPos(4, 4, 0);
+	private static final BlockPos BROOM_FLOOR_POS = new BlockPos(4, 4, -2);
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -59,20 +66,22 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 				}
 				level.setBlockAndUpdate(
 					PRESS_POS,
-					ModBlocks.PRINTING_PRESS.defaultBlockState().setValue(PrintingPressBlock.FACING, Direction.NORTH)
+					ModBlocks.PRESS_FRAME.defaultBlockState()
 				);
 				verifyStarterChest(level, player);
 				verifyFullySearchedLegacyRecovery(level, player);
+				verifyMisplacedPartRecovery(level, player);
+				verifyFloorSweeping(level, player);
 				player.getInventory().clearContent();
 				harvestStarterWorkshop(level, player);
 				assertInventoryContainsStarterParts(player);
 
-				PrintingPressBlockEntity press = requirePress(level);
 				Map<RewardKind, Integer> starter = starterInventory();
-				install(press, player, starter, RewardKind.PRESS_SCREW);
-				install(press, player, starter, RewardKind.PRESS_HANDLE);
-				install(press, player, starter, RewardKind.PRESS_PLATEN);
-				install(press, player, starter, RewardKind.PRESS_CARRIAGE);
+				install(level, player, starter, RewardKind.PRESS_SCREW);
+				install(level, player, starter, RewardKind.PRESS_HANDLE);
+				install(level, player, starter, RewardKind.PRESS_PLATEN);
+				install(level, player, starter, RewardKind.PRESS_CARRIAGE);
+				PrintingPressBlockEntity press = requirePress(level);
 				if (!press.isFullyAssembled() || press.phase() != PressPhase.IDLE) {
 					throw new AssertionError("Starter rewards did not assemble the complete press");
 				}
@@ -199,11 +208,22 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 				throw new AssertionError("Starter investigation node missing at " + pos);
 			}
 			investigation.configureWorkshop("starter_reward_path", WorkshopVariant.RURAL_WOODCUT, roles[i]);
+			if (roles[i] == InvestigationRole.PLAQUE_CLUE) {
+				investigation.markLensInspected(player);
+			}
 			investigation.clean(level, player);
 			investigation.clean(level, player);
 			if (!investigation.isLootGenerated() || !investigation.lastResultId().startsWith("starter:")) {
 				throw new AssertionError("Real cleaning path missed starter reward for " + roles[i]);
 			}
+			if (blocks[i] == ModBlocks.PRINTING_DEBRIS && !level.getBlockState(pos).isAir()) {
+				throw new AssertionError("Printing debris did not dismantle after the final brush stroke at " + pos);
+			}
+		}
+		if (player.getInventory().countItem(Items.PAPER) < 6
+			|| player.getInventory().countItem(ModItems.INK_BALL) < 3
+			|| player.getInventory().countItem(ModItems.METAL_TYPE_PIECE) < 3) {
+			throw new AssertionError("Cleaned printing debris did not break down into paper, ink, and type");
 		}
 	}
 
@@ -297,15 +317,75 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 	}
 
 	private static void install(
-		PrintingPressBlockEntity press,
+		net.minecraft.server.level.ServerLevel level,
 		ServerPlayer player,
 		Map<RewardKind, Integer> starter,
 		RewardKind kind
 	) {
 		ItemStack stack = stack(starter, kind);
-		if (!press.tryInstallPart(player, stack)) {
+		if (!useItemOn(level, player, PRESS_POS, Direction.NORTH, stack).consumesAction()) {
 			throw new AssertionError("Press rejected starter part " + kind);
 		}
+	}
+
+	private static void verifyMisplacedPartRecovery(
+		net.minecraft.server.level.ServerLevel level,
+		ServerPlayer player
+	) {
+		level.setBlockAndUpdate(LEGACY_PRESS_POS, ModBlocks.PRESS_FRAME.defaultBlockState());
+		ItemStack screw = new ItemStack(ModItems.PRESS_SCREW);
+		if (!LaidPaperBlock.placePage(level, LEGACY_PRESS_POS.above(), Direction.NORTH, screw, player)) {
+			throw new AssertionError("Could not reproduce a press part laid above the frame");
+		}
+		InteractionResult result = useItemOn(
+			level,
+			player,
+			LEGACY_PRESS_POS.above(),
+			Direction.UP,
+			new ItemStack(ModItems.PRESS_HANDLE)
+		);
+		if (!result.consumesAction()
+			|| !level.getBlockState(LEGACY_PRESS_POS.above()).isAir()
+			|| !(level.getBlockEntity(LEGACY_PRESS_POS) instanceof PrintingPressBlockEntity press)
+			|| !press.hasScrew()
+			|| !press.hasHandle()) {
+			throw new AssertionError("Existing laid press part was not recovered into assembly");
+		}
+	}
+
+	private static void verifyFloorSweeping(
+		net.minecraft.server.level.ServerLevel level,
+		ServerPlayer player
+	) {
+		level.setBlockAndUpdate(BROOM_FLOOR_POS, ModBlocks.INK_STAINED_FLOORBOARDS.defaultBlockState());
+		ItemStack broom = new ItemStack(ModItems.WORKSHOP_BROOM);
+		useItemOn(level, player, BROOM_FLOOR_POS, Direction.UP, broom);
+		if (level.getBlockState(BROOM_FLOOR_POS).getValue(InvestigatableBlock.INVESTIGATION)
+			!= InvestigationState.PARTIALLY_CLEANED) {
+			throw new AssertionError("Workshop broom did not sweep decorative floorboards");
+		}
+		useItemOn(level, player, BROOM_FLOOR_POS, Direction.UP, broom);
+		if (level.getBlockState(BROOM_FLOOR_POS).getValue(InvestigatableBlock.INVESTIGATION)
+			!= InvestigationState.FULLY_INVESTIGATED) {
+			throw new AssertionError("Workshop broom did not finish sweeping decorative floorboards");
+		}
+	}
+
+	private static InteractionResult useItemOn(
+		net.minecraft.server.level.ServerLevel level,
+		ServerPlayer player,
+		BlockPos pos,
+		Direction face,
+		ItemStack stack
+	) {
+		player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+		return player.gameMode.useItemOn(
+			player,
+			level,
+			stack,
+			InteractionHand.MAIN_HAND,
+			new BlockHitResult(Vec3.atCenterOf(pos), face, pos, false)
+		);
 	}
 
 	private static ItemStack stack(Map<RewardKind, Integer> starter, RewardKind kind) {

@@ -1,12 +1,21 @@
 package pl.peterwolf.echoesinink.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import pl.peterwolf.echoesinink.block.entity.PrintingPressBlockEntity;
 
 /**
  * Investigation wreck of the Historical Screw Printing Press — same silhouette
@@ -33,6 +42,56 @@ public class PressFrameBlock extends InvestigatableBlock {
 
 	public PressFrameBlock(Properties properties) {
 		super(properties, InvestigationLoot.Profile.PRESS);
+	}
+
+	@Override
+	protected InteractionResult useItemOn(
+		ItemStack stack,
+		BlockState state,
+		Level level,
+		BlockPos pos,
+		Player player,
+		InteractionHand hand,
+		BlockHitResult hit
+	) {
+		if (!PrintingPressBlockEntity.isPressPart(stack)) {
+			return super.useItemOn(stack, state, level, pos, player, hand, hit);
+		}
+		if (level.isClientSide()) {
+			return InteractionResult.SUCCESS;
+		}
+		return convertAndInstall(level, pos, player, stack)
+			? InteractionResult.SUCCESS_SERVER
+			: InteractionResult.FAIL;
+	}
+
+	/**
+	 * Turns a recovered workshop frame into the functional press controller and
+	 * installs the first component. Natural printshops contain the frame, so this
+	 * is the normal survival assembly path rather than a command-only shortcut.
+	 */
+	static boolean convertAndInstall(Level level, BlockPos pos, Player player, ItemStack stack) {
+		if (level.isClientSide() || !PrintingPressBlockEntity.isPressPart(stack)) {
+			return false;
+		}
+
+		BlockState state = level.getBlockState(pos);
+		if (state.is(ModBlocks.PRESS_FRAME)) {
+			Direction facing = player.getDirection().getOpposite();
+			BlockState pressState = ModBlocks.PRINTING_PRESS.defaultBlockState()
+				.setValue(PrintingPressBlock.FACING, facing);
+			if (!level.setBlock(pos, pressState, Block.UPDATE_ALL)) {
+				return false;
+			}
+		}
+
+		if (!(level.getBlockEntity(pos) instanceof PrintingPressBlockEntity press)
+			|| !press.tryInstallPart(player, stack)) {
+			return false;
+		}
+		PrintingPressBlock.hint(player, Component.translatable("press.echoes_in_ink.part_installed"));
+		PrintingPressBlock.hint(player, press.nextStepMessage());
+		return true;
 	}
 
 	@Override

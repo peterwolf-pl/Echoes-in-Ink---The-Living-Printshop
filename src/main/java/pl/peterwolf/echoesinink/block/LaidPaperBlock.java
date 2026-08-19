@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +29,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import pl.peterwolf.echoesinink.block.entity.LaidPaperBlockEntity;
+import pl.peterwolf.echoesinink.block.entity.PrintingPressBlockEntity;
 import pl.peterwolf.echoesinink.item.ModItems;
 import pl.peterwolf.echoesinink.item.ReadablePrintItem;
 import pl.peterwolf.echoesinink.item.RestoredChroniclePageItem;
@@ -108,6 +110,25 @@ public class LaidPaperBlock extends BaseEntityBlock {
 	}
 
 	@Override
+	protected InteractionResult useItemOn(
+		ItemStack stack,
+		BlockState state,
+		Level level,
+		BlockPos pos,
+		Player player,
+		InteractionHand hand,
+		BlockHitResult hit
+	) {
+		if (stack.is(ModItems.MAGNIFYING_LENS)) {
+			return InteractionResult.PASS;
+		}
+		InteractionResult recovered = recoverMisplacedPressPart(level, pos, player, stack);
+		return recovered != null
+			? recovered
+			: super.useItemOn(stack, state, level, pos, player, hand, hit);
+	}
+
+	@Override
 	protected InteractionResult useWithoutItem(
 		BlockState state,
 		Level level,
@@ -115,6 +136,10 @@ public class LaidPaperBlock extends BaseEntityBlock {
 		Player player,
 		BlockHitResult hit
 	) {
+		InteractionResult recovered = recoverMisplacedPressPart(level, pos, player, ItemStack.EMPTY);
+		if (recovered != null) {
+			return recovered;
+		}
 		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
@@ -130,11 +155,56 @@ public class LaidPaperBlock extends BaseEntityBlock {
 				serverPlayer.sendOverlayMessage(
 					net.minecraft.network.chat.Component.translatable("print.echoes_in_ink.reading")
 				);
-			} else {
+			} else if (page.is(ModItems.BLANK_ARCHIVE_PAGE)) {
 				serverPlayer.sendOverlayMessage(
 					net.minecraft.network.chat.Component.translatable("block.echoes_in_ink.laid_paper.blank_hint")
 				);
+			} else {
+				serverPlayer.sendOverlayMessage(
+					net.minecraft.network.chat.Component.translatable(
+						"block.echoes_in_ink.laid_paper.item_hint",
+						page.getHoverName()
+					)
+				);
 			}
+		}
+		return InteractionResult.SUCCESS_SERVER;
+	}
+
+	/** Recover worlds affected by press parts being laid above a generated frame. */
+	@Nullable
+	private static InteractionResult recoverMisplacedPressPart(
+		Level level,
+		BlockPos pos,
+		Player player,
+		ItemStack heldStack
+	) {
+		if (!level.getBlockState(pos.below()).is(ModBlocks.PRESS_FRAME)
+			|| !(level.getBlockEntity(pos) instanceof LaidPaperBlockEntity laid)
+			|| !PrintingPressBlockEntity.isPressPart(laid.page())) {
+			return null;
+		}
+		if (level.isClientSide()) {
+			return InteractionResult.SUCCESS;
+		}
+
+		ItemStack misplacedPart = laid.asDrop();
+		laid.setPage(ItemStack.EMPTY);
+		level.removeBlock(pos, false);
+		if (!PressFrameBlock.convertAndInstall(level, pos.below(), player, misplacedPart)) {
+			if (!player.getInventory().add(misplacedPart)) {
+				player.drop(misplacedPart, false);
+			}
+			return InteractionResult.FAIL;
+		}
+
+		if (PrintingPressBlockEntity.isPressPart(heldStack)
+			&& level.getBlockEntity(pos.below()) instanceof PrintingPressBlockEntity press
+			&& press.tryInstallPart(player, heldStack)) {
+			PrintingPressBlock.hint(player, net.minecraft.network.chat.Component.translatable(
+				"press.echoes_in_ink.part_installed"
+			));
+			PrintingPressBlock.hint(player, press.nextStepMessage());
 		}
 		return InteractionResult.SUCCESS_SERVER;
 	}

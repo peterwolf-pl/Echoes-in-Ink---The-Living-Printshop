@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
+import pl.peterwolf.echoesinink.block.entity.LaidPaperBlockEntity;
 import pl.peterwolf.echoesinink.config.ModConfig;
 
 /**
@@ -91,18 +92,19 @@ public class MagnifyingLensItem extends Item {
 			return InteractionResult.CONSUME;
 		}
 
+		BlockPos pos = context.getClickedPos();
+		BlockState state = level.getBlockState(pos);
+		// Unlock the exact plaque even if the informational message is on cooldown.
+		if (level.getBlockEntity(pos) instanceof InvestigationBlockEntity investigation) {
+			investigation.markLensInspected(serverPlayer);
+		}
+
 		long now = level.getGameTime();
 		int cooldown = Math.max(0, ModConfig.INSTANCE.lensInspectCooldownTicks);
 		Long last = LAST_INSPECT_TICK.get(serverPlayer.getUUID());
 		if (last == null || now - last >= cooldown) {
 			LAST_INSPECT_TICK.put(serverPlayer.getUUID(), now);
-
-			BlockPos pos = context.getClickedPos();
-			BlockState state = level.getBlockState(pos);
-			if (level.getBlockEntity(pos) instanceof InvestigationBlockEntity investigation) {
-				investigation.markLensInspected(serverPlayer);
-			}
-			Component result = inspect(state);
+			Component result = inspectTarget(level, pos, state, serverPlayer);
 			serverPlayer.sendSystemMessage(result, true);
 			if (state.is(ModBlocks.LOOSE_INK_STAINED_FLOORBOARDS)
 				|| state.is(ModBlocks.HIDDEN_FLOOR_COMPARTMENT)) {
@@ -123,6 +125,82 @@ public class MagnifyingLensItem extends Item {
 			}
 		}
 		return InteractionResult.CONSUME;
+	}
+
+	private static Component inspectTarget(Level level, BlockPos pos, BlockState state, ServerPlayer player) {
+		if (state.is(ModBlocks.LAID_PAPER)
+			&& level.getBlockEntity(pos) instanceof LaidPaperBlockEntity laid) {
+			return inspectLaidItem(laid.page(), player);
+		}
+		if (state.is(ModBlocks.HANGING_POSTER)) {
+			if (ModItems.PRINTED_WARNING_POSTER instanceof ReadablePrintItem readable) {
+				readable.showPrint(player);
+			}
+			return Component.translatable(
+				"item.echoes_in_ink.magnifying_lens.find.poster",
+				new ItemStack(ModItems.PRINTED_WARNING_POSTER).getHoverName()
+			);
+		}
+		return inspect(state);
+	}
+
+	private static Component inspectLaidItem(ItemStack displayed, ServerPlayer player) {
+		if (displayed.isEmpty()) {
+			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.paper");
+		}
+		if (displayed.getItem() instanceof ReadablePrintItem readable) {
+			readable.showPrint(player);
+			return Component.translatable(
+				"item.echoes_in_ink.magnifying_lens.find.print",
+				displayed.getHoverName()
+			);
+		}
+		if (displayed.is(ModItems.RESTORED_CHRONICLE_PAGE)) {
+			return Component.translatable(
+				"item.echoes_in_ink.magnifying_lens.find.chronicle",
+				displayed.getHoverName()
+			);
+		}
+		if (isMatrixOrType(displayed)) {
+			return Component.translatable(
+				"item.echoes_in_ink.magnifying_lens.find.matrix_item",
+				displayed.getHoverName()
+			);
+		}
+		if (displayed.is(ModItems.BLANK_ARCHIVE_PAGE) || displayed.is(ModItems.DAMAGED_ARCHIVE_PAGE)) {
+			return Component.translatable(
+				"item.echoes_in_ink.magnifying_lens.find.page_item",
+				displayed.getHoverName()
+			);
+		}
+		if (isPressPart(displayed)) {
+			return Component.translatable(
+				"item.echoes_in_ink.magnifying_lens.find.press_part",
+				displayed.getHoverName()
+			);
+		}
+		return Component.translatable(
+			"item.echoes_in_ink.magnifying_lens.find.workshop_item",
+			displayed.getHoverName()
+		);
+	}
+
+	private static boolean isMatrixOrType(ItemStack stack) {
+		return stack.is(ModItems.WOODEN_PRINTING_MATRIX)
+			|| stack.is(ModItems.METAL_TYPE_PIECE)
+			|| stack.is(ModItems.CHARCOAL_RUBBING)
+			|| stack.is(ModItems.VILLAGE_CHRONICLE_MATRIX)
+			|| stack.is(ModItems.LEAD_TYPE_SET)
+			|| stack.is(ModItems.IRON_CHASE)
+			|| stack.is(ModItems.MISSING_HEADLINE_TYPE)
+			|| stack.is(ModItems.FORBIDDEN_NOTICE_FORME);
+	}
+
+	private static boolean isPressPart(ItemStack stack) {
+		return stack.is(ModItems.PRESS_SCREW)
+			|| stack.is(ModItems.PRESS_HANDLE)
+			|| stack.is(ModItems.PRESS_PLATEN)
+			|| stack.is(ModItems.PRESS_CARRIAGE);
 	}
 
 	static Component inspect(BlockState state) {
@@ -160,9 +238,6 @@ public class MagnifyingLensItem extends Item {
 		}
 		if (block == ModBlocks.LAID_PAPER) {
 			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.paper");
-		}
-		if (block == ModBlocks.HANGING_POSTER) {
-			return Component.translatable("item.echoes_in_ink.magnifying_lens.find.poster");
 		}
 		return Component.translatable("item.echoes_in_ink.magnifying_lens.find.nothing");
 	}
