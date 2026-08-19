@@ -208,7 +208,7 @@ public class PrintingPressBlock extends BaseEntityBlock {
 	@Override
 	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
 		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof PrintingPressBlockEntity press) {
-			press.dropAll(level, pos);
+			press.dropAll(level, pos, player);
 		}
 		return super.playerWillDestroy(level, pos, state, player);
 	}

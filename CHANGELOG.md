@@ -26,6 +26,16 @@ All notable changes to **Echoes in Ink** are documented here.
 - The printing press now accepts vanilla paper as interchangeable stock with
   Blank Archive Pages. Restoring a chronicle still requires a Damaged Archive
   Page.
+- Breaking a printing press returns the press frame to the player's inventory
+  along with the installed parts, instead of dropping the assembled press block.
+- Hung generated posters flush on the intended wall. Facing stays parallel to
+  that wall; placeBlock remapping is inverted so the sheet sits on the wall
+  face instead of one block into the room.
+- Rebuilt echo ghost workers as walking particle silhouettes — compose type,
+  carry a page to the press, hide, then fade — without hitching on sync.
+- Wooden matrices on the press now take ink like metal type: a thick woodcut
+  block with raised black ink pads that fill in as the ball or pad wipes.
+- Hung more mixed posters on every generated printshop wall.
 
 ### Fixed
 

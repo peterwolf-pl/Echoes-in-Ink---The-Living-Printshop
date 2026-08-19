@@ -29,6 +29,7 @@ import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 import pl.peterwolf.echoesinink.archive.ArchiveEntries;
 import pl.peterwolf.echoesinink.archive.ArchiveService;
+import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.block.PressPhase;
 import pl.peterwolf.echoesinink.block.PrintingPressBlock;
 import pl.peterwolf.echoesinink.config.ModConfig;
@@ -609,26 +610,44 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 	private boolean dropped;
 
 	public void dropAll(Level level, BlockPos pos) {
+		dropAll(level, pos, null);
+	}
+
+	public void dropAll(Level level, BlockPos pos, @Nullable Player player) {
 		if (dropped) {
 			return;
 		}
 		dropped = true;
+		if (player != null && player.getAbilities().instabuild) {
+			hasScrew = hasHandle = hasPlaten = hasCarriage = false;
+			matrixInked = false;
+			clearContent();
+			return;
+		}
 		Containers.dropContents(level, pos, this);
+		giveOrDropBroken(level, pos, player, new ItemStack(ModBlocks.PRESS_FRAME));
 		if (hasScrew) {
-			Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(ModItems.PRESS_SCREW));
+			giveOrDropBroken(level, pos, player, new ItemStack(ModItems.PRESS_SCREW));
 		}
 		if (hasHandle) {
-			Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(ModItems.PRESS_HANDLE));
+			giveOrDropBroken(level, pos, player, new ItemStack(ModItems.PRESS_HANDLE));
 		}
 		if (hasPlaten) {
-			Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(ModItems.PRESS_PLATEN));
+			giveOrDropBroken(level, pos, player, new ItemStack(ModItems.PRESS_PLATEN));
 		}
 		if (hasCarriage) {
-			Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(ModItems.PRESS_CARRIAGE));
+			giveOrDropBroken(level, pos, player, new ItemStack(ModItems.PRESS_CARRIAGE));
 		}
 		hasScrew = hasHandle = hasPlaten = hasCarriage = false;
 		matrixInked = false;
 		clearContent();
+	}
+
+	private static void giveOrDropBroken(Level level, BlockPos pos, @Nullable Player player, ItemStack stack) {
+		if (player != null && player.getInventory().add(stack)) {
+			return;
+		}
+		Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
 	}
 
 	public Component statusMessage() {

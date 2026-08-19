@@ -211,7 +211,7 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 		if (chests != 3) {
 			throw new AssertionError(variant.id() + " expected 3 workshop chests, got " + chests);
 		}
-		if (cobwebs < 4 || hangingPrints < 5 || laidPrints < 5 || populatedLaidPrints != laidPrints) {
+		if (cobwebs < 4 || hangingPrints < 10 || laidPrints < 5 || populatedLaidPrints != laidPrints) {
 			throw new AssertionError(
 				variant.id() + " atmosphere: cobwebs=" + cobwebs
 					+ ", hangingPrints=" + hangingPrints

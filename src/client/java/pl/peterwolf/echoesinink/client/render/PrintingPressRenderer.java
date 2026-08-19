@@ -39,6 +39,10 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 	private static final float METAL_TYPE_MATRIX_X_SCALE = 0.70F;
 	private static final float METAL_TYPE_MATRIX_Y_SCALE = 0.18F;
 	private static final float METAL_TYPE_MATRIX_Z_SCALE = 0.62F;
+	private static final float WOODEN_MATRIX_Y = WORKTABLE_RISE + 0.328F;
+	private static final float WOODEN_MATRIX_X_SCALE = 0.66F;
+	private static final float WOODEN_MATRIX_Y_SCALE = 0.14F;
+	private static final float WOODEN_MATRIX_Z_SCALE = 0.58F;
 	private static final float INPUT_SHEET_CENTER_Y = WORKTABLE_RISE + 0.366F;
 	private static final float OUTPUT_SHEET_CENTER_Y = WORKTABLE_RISE + 0.3225F;
 	private static final float IMPRESSION_TEXT_Y = WORKTABLE_RISE + 0.348F;
@@ -73,6 +77,8 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		{0.0F, 0.16F, 0.12F, 0.035F},
 		{0.18F, 0.16F, 0.12F, 0.035F}
 	};
+	/** Raised woodcut faces that take ink the same way metal type caps do. */
+	private static final float[][] WOODEN_MATRIX_INK_CAPS = METAL_TYPE_CAPS;
 
 	private final ItemModelResolver itemModelResolver;
 	private final Font font;
@@ -122,6 +128,9 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		int seed = be.getBlockPos().hashCode();
 		ItemStack matrix = be.getItem(PrintingPressBlockEntity.SLOT_MATRIX);
 		state.metalTypeMatrix = matrix.is(ModItems.METAL_TYPE_PIECE);
+		state.woodenMatrix = matrix.is(ModItems.WOODEN_PRINTING_MATRIX)
+			|| matrix.is(ModItems.VILLAGE_CHRONICLE_MATRIX)
+			|| matrix.is(ModItems.CHARCOAL_RUBBING);
 		state.matrixRenderState = resolveItem(matrix, level, seed + 1);
 		state.inkRenderState = resolveItem(
 			be.getItem(PrintingPressBlockEntity.SLOT_INK), level, seed + 2
@@ -129,6 +138,9 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		state.inkLayerRenderState = state.matrixRenderState == null
 			? null
 			: resolveItem(new ItemStack(Blocks.CONCRETE.black()), level, seed + 8);
+		state.woodBedRenderState = state.woodenMatrix
+			? resolveItem(new ItemStack(Blocks.SPRUCE_PLANKS), level, seed + 9)
+			: null;
 		ItemStack sheet = !state.output.isEmpty()
 			? state.output
 			: be.getItem(PrintingPressBlockEntity.SLOT_PAPER);
@@ -175,6 +187,12 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 				submitMetalTypeMatrix(
 					poseStack, collector, state, state.matrixRenderState,
 					state.inkLayerRenderState, carriageZ, inkCoverage
+				);
+			} else if (state.woodenMatrix) {
+				submitWoodenMatrix(
+					poseStack, collector, state, state.matrixRenderState,
+					state.woodBedRenderState, state.inkLayerRenderState,
+					carriageZ, inkCoverage
 				);
 			} else {
 				submitFlatItem(poseStack, collector, state, state.matrixRenderState,
@@ -289,21 +307,66 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		draw(poseStack, collector, state, matrix);
 
 		if (inkLayer != null && inkCoverage > 0.0F) {
-			int capCount = Mth.clamp(Mth.ceil(inkCoverage * METAL_TYPE_CAPS.length), 0, METAL_TYPE_CAPS.length);
-			for (int index = 0; index < capCount; index++) {
-				float[] cap = METAL_TYPE_CAPS[index];
-				float centerX = (cap[0] + cap[1]) / 32.0F - 0.5F;
-				float centerZ = (cap[2] + cap[3]) / 32.0F - 0.5F;
-				float width = (cap[1] - cap[0]) / 16.0F;
-				float depth = (cap[3] - cap[2]) / 16.0F;
-				poseStack.pushPose();
-				poseStack.translate(centerX, 0.0125F, centerZ);
-				poseStack.scale(width, 0.025F, depth);
-				draw(poseStack, collector, state, inkLayer);
-				poseStack.popPose();
-			}
+			submitInkCaps(poseStack, collector, state, inkLayer, METAL_TYPE_CAPS, inkCoverage, 0.0125F, 0.025F);
 		}
 		poseStack.popPose();
+	}
+
+	private void submitWoodenMatrix(
+		PoseStack poseStack,
+		SubmitNodeCollector collector,
+		PrintingPressRenderState state,
+		ItemStackRenderState matrix,
+		@Nullable ItemStackRenderState woodBed,
+		@Nullable ItemStackRenderState inkLayer,
+		float carriageZ,
+		float inkCoverage
+	) {
+		poseStack.pushPose();
+		poseStack.translate(0.0F, WOODEN_MATRIX_Y, carriageZ);
+		poseStack.scale(
+			WOODEN_MATRIX_X_SCALE,
+			WOODEN_MATRIX_Y_SCALE,
+			WOODEN_MATRIX_Z_SCALE
+		);
+		if (woodBed != null) {
+			draw(poseStack, collector, state, woodBed);
+		}
+		poseStack.pushPose();
+		poseStack.translate(0.0F, 0.52F, 0.0F);
+		poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		poseStack.scale(0.92F, 0.92F, 0.92F);
+		draw(poseStack, collector, state, matrix);
+		poseStack.popPose();
+		if (inkLayer != null && inkCoverage > 0.0F) {
+			submitInkCaps(poseStack, collector, state, inkLayer, WOODEN_MATRIX_INK_CAPS, inkCoverage, 0.62F, 0.10F);
+		}
+		poseStack.popPose();
+	}
+
+	private void submitInkCaps(
+		PoseStack poseStack,
+		SubmitNodeCollector collector,
+		PrintingPressRenderState state,
+		ItemStackRenderState inkLayer,
+		float[][] caps,
+		float inkCoverage,
+		float localY,
+		float localHeight
+	) {
+		int capCount = Mth.clamp(Mth.ceil(inkCoverage * caps.length), 0, caps.length);
+		for (int index = 0; index < capCount; index++) {
+			float[] cap = caps[index];
+			float centerX = (cap[0] + cap[1]) / 32.0F - 0.5F;
+			float centerZ = (cap[2] + cap[3]) / 32.0F - 0.5F;
+			float width = (cap[1] - cap[0]) / 16.0F;
+			float depth = (cap[3] - cap[2]) / 16.0F;
+			poseStack.pushPose();
+			poseStack.translate(centerX, localY, centerZ);
+			poseStack.scale(width, localHeight, depth);
+			draw(poseStack, collector, state, inkLayer);
+			poseStack.popPose();
+		}
 	}
 
 	private void submitFlatMatrixInk(
@@ -317,14 +380,13 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		if (inkLayer == null || inkCoverage <= 0.0F) {
 			return;
 		}
-		int markCount = Mth.clamp(Mth.ceil(inkCoverage * FLAT_MATRIX_INK_MARKS.length), 0,
-			FLAT_MATRIX_INK_MARKS.length);
+		int markCount = Mth.clamp(Mth.ceil(inkCoverage * FLAT_MATRIX_INK_MARKS.length), 0, FLAT_MATRIX_INK_MARKS.length);
 		for (int index = 0; index < markCount; index++) {
 			float[] mark = FLAT_MATRIX_INK_MARKS[index];
 			submitItem(
 				poseStack, collector, state, inkLayer,
-				mark[0], MATRIX_CENTER_Y + 0.012F, carriageZ + mark[1],
-				mark[2], 0.006F, mark[3]
+				mark[0], MATRIX_CENTER_Y + 0.028F, carriageZ + mark[1],
+				mark[2], 0.012F, mark[3]
 			);
 		}
 	}
@@ -336,6 +398,23 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		ItemStackRenderState inkTool,
 		float carriageZ
 	) {
+		float[] tool = inkingToolOffset(state, carriageZ);
+		float strokes = Mth.clamp(state.inkingProgress, 0.0F, 0.9999F) * 4.0F;
+		int pass = Math.min(3, Mth.floor(strokes));
+		float passProgress = strokes - pass;
+		float smoothPass = passProgress * passProgress * (3.0F - 2.0F * passProgress);
+		float sweep = (pass & 1) == 0 ? smoothPass : 1.0F - smoothPass;
+
+		poseStack.pushPose();
+		poseStack.translate(tool[0], MATRIX_CENTER_Y + 0.10F + tool[2], tool[1]);
+		poseStack.mulPose(Axis.YP.rotationDegrees(18.0F * Mth.sin(state.inkingProgress * Mth.TWO_PI)));
+		poseStack.mulPose(Axis.ZP.rotationDegrees(-10.0F + 20.0F * sweep));
+		poseStack.scale(0.22F, 0.22F, 0.22F);
+		draw(poseStack, collector, state, inkTool);
+		poseStack.popPose();
+	}
+
+	private static float[] inkingToolOffset(PrintingPressRenderState state, float carriageZ) {
 		float strokes = Mth.clamp(state.inkingProgress, 0.0F, 0.9999F) * 4.0F;
 		int pass = Math.min(3, Mth.floor(strokes));
 		float passProgress = strokes - pass;
@@ -344,14 +423,7 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		float x = Mth.lerp(sweep, -0.27F, 0.27F);
 		float z = carriageZ + Mth.lerp(pass / 3.0F, -0.17F, 0.17F);
 		float lift = 0.025F + Mth.sin(passProgress * Mth.PI) * 0.035F;
-
-		poseStack.pushPose();
-		poseStack.translate(x, METAL_TYPE_MATRIX_Y + 0.115F + lift, z);
-		poseStack.mulPose(Axis.YP.rotationDegrees(18.0F * Mth.sin(state.inkingProgress * Mth.TWO_PI)));
-		poseStack.mulPose(Axis.ZP.rotationDegrees(-10.0F + 20.0F * sweep));
-		poseStack.scale(0.22F, 0.22F, 0.22F);
-		draw(poseStack, collector, state, inkTool);
-		poseStack.popPose();
+		return new float[] {x, z, lift};
 	}
 
 	private static float inkCoverage(PrintingPressRenderState state) {

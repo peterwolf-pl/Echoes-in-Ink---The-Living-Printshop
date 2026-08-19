@@ -193,6 +193,12 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeHangingPrint(level, box, mx(8, width), 2, 9, Direction.NORTH, PosterKind.NOTICE);
 		placeHangingPrint(level, box, mx(1, width), 3, 5, Direction.EAST, PosterKind.MAP);
 		placeHangingPrint(level, box, mx(11, width), 3, 4, Direction.WEST, PosterKind.SPECIMEN);
+		placeHangingPrint(level, box, mx(5, width), 3, 1, Direction.SOUTH, PosterKind.WOODCUT);
+		placeHangingPrint(level, box, mx(9, width), 2, 1, Direction.SOUTH, PosterKind.NOTICE);
+		placeHangingPrint(level, box, mx(4, width), 3, 9, Direction.NORTH, PosterKind.MAP);
+		placeHangingPrint(level, box, mx(1, width), 2, 7, Direction.EAST, PosterKind.CHRONICLE);
+		placeHangingPrint(level, box, mx(11, width), 2, 7, Direction.WEST, PosterKind.WARNING);
+		placeHangingPrint(level, box, mx(2, width), 2, 9, Direction.NORTH, PosterKind.SPECIMEN);
 		placeCobwebs(level, box, new int[][] {{1, 4, 2}, {5, 2, 5}, {7, 3, 8}, {10, 4, 9}});
 		placeWorkshopChests(
 			level, box, random, RURAL_LOOT,
@@ -254,6 +260,12 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeHangingPrint(level, box, mx(6, width), 2, 11, Direction.NORTH, PosterKind.NOTICE);
 		placeHangingPrint(level, box, mx(1, width), 2, 7, Direction.EAST, PosterKind.MAP);
 		placeHangingPrint(level, box, mx(10, width), 3, 1, Direction.SOUTH, PosterKind.SPECIMEN);
+		placeHangingPrint(level, box, mx(4, width), 2, 1, Direction.SOUTH, PosterKind.NOTICE);
+		placeHangingPrint(level, box, mx(13, width), 3, 1, Direction.SOUTH, PosterKind.MAP);
+		placeHangingPrint(level, box, mx(12, width), 2, 11, Direction.NORTH, PosterKind.WOODCUT);
+		placeHangingPrint(level, box, mx(1, width), 3, 4, Direction.EAST, PosterKind.WARNING);
+		placeHangingPrint(level, box, mx(15, width), 3, 9, Direction.WEST, PosterKind.SPECIMEN);
+		placeHangingPrint(level, box, mx(8, width), 3, 11, Direction.NORTH, PosterKind.CHRONICLE);
 		placeCobwebs(level, box, new int[][] {{1, 4, 1}, {7, 4, 10}, {15, 4, 11}, {12, 3, 2}});
 		placeWorkshopChests(
 			level, box, random, TOWN_LOOT,
@@ -318,6 +330,12 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeHangingPrint(level, box, 1, 3, mz(9, depth), Direction.EAST, PosterKind.NOTICE);
 		placeHangingPrint(level, box, 7, 2, mz(1, depth), Direction.SOUTH, PosterKind.MAP);
 		placeHangingPrint(level, box, 8, 3, mz(13, depth), Direction.NORTH, PosterKind.SPECIMEN);
+		placeHangingPrint(level, box, 13, 2, mz(10, depth), Direction.WEST, PosterKind.MAP);
+		placeHangingPrint(level, box, 1, 3, mz(4, depth), Direction.EAST, PosterKind.SPECIMEN);
+		placeHangingPrint(level, box, 4, 3, mz(1, depth), Direction.SOUTH, PosterKind.WARNING);
+		placeHangingPrint(level, box, 11, 2, mz(1, depth), Direction.SOUTH, PosterKind.WOODCUT);
+		placeHangingPrint(level, box, 5, 3, mz(13, depth), Direction.NORTH, PosterKind.CHRONICLE);
+		placeHangingPrint(level, box, 11, 3, mz(13, depth), Direction.NORTH, PosterKind.NOTICE);
 		placeCobwebs(level, box, new int[][] {{2, 4, mz(2, depth)}, {6, 3, mz(11, depth)}, {12, 4, mz(12, depth)}, {9, 4, mz(4, depth)}});
 		placeWorkshopChests(
 			level, box, random, SCHOLARLY_LOOT,
@@ -373,6 +391,12 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeHangingPrint(level, box, mx(12, width), 2, 6, Direction.WEST, PosterKind.NOTICE);
 		placeHangingPrint(level, box, mx(9, width), 2, 1, Direction.SOUTH, PosterKind.MAP);
 		placeHangingPrint(level, box, mx(3, width), 3, depth - 2, Direction.NORTH, PosterKind.SPECIMEN);
+		placeHangingPrint(level, box, mx(2, width), 3, 1, Direction.SOUTH, PosterKind.NOTICE);
+		placeHangingPrint(level, box, mx(11, width), 2, 1, Direction.SOUTH, PosterKind.WOODCUT);
+		placeHangingPrint(level, box, mx(5, width), 2, depth - 2, Direction.NORTH, PosterKind.MAP);
+		placeHangingPrint(level, box, mx(10, width), 3, depth - 2, Direction.NORTH, PosterKind.CHRONICLE);
+		placeHangingPrint(level, box, mx(1, width), 3, 8, Direction.EAST, PosterKind.WARNING);
+		placeHangingPrint(level, box, mx(12, width), 3, 3, Direction.WEST, PosterKind.SPECIMEN);
 		placeCobwebs(level, box, new int[][] {{1, 4, 2}, {8, 3, 9}, {11, 4, 10}, {5, 3, 4}});
 		placeWorkshopChests(
 			level, box, random, BURNED_LOOT,
@@ -574,13 +598,50 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		Direction facing,
 		PosterKind kind
 	) {
+		Direction worldFacing = posterWorldFacingOnIntendedWall(level, box, x, y, z, facing);
+		if (worldFacing == null) {
+			return;
+		}
 		placeBlock(
 			level,
 			ModBlocks.HANGING_POSTER.defaultBlockState()
-				.setValue(HangingPosterBlock.FACING, facing)
+				.setValue(HangingPosterBlock.FACING, PosterFacing.invertPieceFacing(worldFacing, getMirror(), getRotation()))
 				.setValue(HangingPosterBlock.KIND, kind),
 			x, y, z, box
 		);
+	}
+
+	/**
+	 * World facing that keeps the sheet parallel to the intended wall and flush
+	 * against it. Never switches to a perpendicular neighbor.
+	 */
+	private Direction posterWorldFacingOnIntendedWall(
+		WorldGenLevel level,
+		BoundingBox box,
+		int x,
+		int y,
+		int z,
+		Direction intendedFacing
+	) {
+		int supportX = x - intendedFacing.getStepX();
+		int supportZ = z - intendedFacing.getStepZ();
+		BlockPos supportPos = getWorldPos(supportX, y, supportZ);
+		BlockPos posterPos = getWorldPos(x, y, z);
+		if (!box.isInside(supportPos) || !box.isInside(posterPos)) {
+			return null;
+		}
+		Direction worldFacing = Direction.getApproximateNearest(
+			posterPos.getX() - supportPos.getX(),
+			0,
+			posterPos.getZ() - supportPos.getZ()
+		);
+		if (worldFacing.getAxis().isVertical()) {
+			return null;
+		}
+		if (!level.getBlockState(supportPos).isFaceSturdy(level, supportPos, worldFacing)) {
+			return null;
+		}
+		return worldFacing;
 	}
 
 	/** Specialist chest plus two almost-full supply caches in every printshop. */

@@ -35,10 +35,12 @@ class PrintshopAtmosphereContractTest {
 				: source.indexOf("private void build", start + 1);
 			assertTrue(start >= 0 && end > start, name);
 			String builder = source.substring(start, end);
-			assertTrue(count(builder, "placeHangingPrint(") >= 6, name + " posters");
+			assertTrue(count(builder, "placeHangingPrint(") >= 10, name + " posters");
 			assertTrue(count(builder, "placeLaidPrint(") >= 5, name + " laid papers");
 			assertTrue(count(builder, "DUSTY_PRINTING_TABLE") >= 2, name + " tables");
 		}
+		assertTrue(source.contains("posterWorldFacingOnIntendedWall"));
+		assertTrue(source.contains("PosterFacing.invertPieceFacing"));
 	}
 
 	private static int count(String source, String token) {
