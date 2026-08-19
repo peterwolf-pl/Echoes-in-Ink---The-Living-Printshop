@@ -121,7 +121,8 @@ public class LaidPaperRenderer implements BlockEntityRenderer<LaidPaperBlockEnti
 			return true;
 		}
 		// Sheets / notes / pages
-		return item == ModItems.BLANK_ARCHIVE_PAGE
+		return item == net.minecraft.world.item.Items.PAPER
+			|| item == ModItems.BLANK_ARCHIVE_PAGE
 			|| item == ModItems.DAMAGED_ARCHIVE_PAGE
 			|| item == ModItems.PRINTERS_NOTES
 			|| item == ModItems.PRINTERS_INSTRUCTION_SHEET

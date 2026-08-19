@@ -17,6 +17,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -188,7 +189,8 @@ public class TypeCabinetBlockEntity extends InvestigationBlockEntity implements 
 
 	public static boolean canStore(ItemStack stack) {
 		var item = stack.getItem();
-		return item == ModItems.BLANK_ARCHIVE_PAGE
+		return item == Items.PAPER
+			|| item == ModItems.BLANK_ARCHIVE_PAGE
 			|| item == ModItems.DAMAGED_ARCHIVE_PAGE
 			|| item == ModItems.WOODEN_PRINTING_MATRIX
 			|| item == ModItems.VILLAGE_CHRONICLE_MATRIX

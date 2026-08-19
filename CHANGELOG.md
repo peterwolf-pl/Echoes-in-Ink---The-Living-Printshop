@@ -19,6 +19,12 @@ All notable changes to **Echoes in Ink** are documented here.
 - Hung six distinct workshop posters in every generated printshop — warning,
   woodcut, chronicle, notice, map, and type-specimen sheets — and added extra
   work tables with laid papers, notes, and prints.
+- Locked abandoned printshops to the vanilla village grid. Every village gets
+  one workshop on its outskirts; larger plains, meadow, savanna, and taiga
+  villages also get a second workshop on the opposite side.
+- The printing press now accepts vanilla paper as interchangeable stock with
+  Blank Archive Pages. Restoring a chronicle still requires a Damaged Archive
+  Page.
 
 ### Fixed
 

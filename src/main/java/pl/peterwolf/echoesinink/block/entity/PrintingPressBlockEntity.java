@@ -321,8 +321,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 	}
 
 	private static boolean isPaperItem(ItemStack stack) {
-		var item = stack.getItem();
-		return item == ModItems.BLANK_ARCHIVE_PAGE || item == ModItems.DAMAGED_ARCHIVE_PAGE;
+		return PrintingRecipes.isPressPaper(stack.getItem());
 	}
 
 	// ── Empty-hand machine actions ─────────────────────────────────────────

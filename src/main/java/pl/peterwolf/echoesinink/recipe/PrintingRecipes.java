@@ -3,7 +3,9 @@ package pl.peterwolf.echoesinink.recipe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.item.ModItems;
 
@@ -49,6 +51,15 @@ public final class PrintingRecipes {
 			recipes = List.copyOf(list);
 		}
 		return recipes;
+	}
+
+	/** Blank archive paper and vanilla paper are interchangeable press stock. */
+	public static boolean isBlankPrintPaper(Item item) {
+		return item == ModItems.BLANK_ARCHIVE_PAGE || item == Items.PAPER;
+	}
+
+	public static boolean isPressPaper(Item item) {
+		return isBlankPrintPaper(item) || item == ModItems.DAMAGED_ARCHIVE_PAGE;
 	}
 
 	public static Optional<PrintingRecipe> findMatch(ItemStack matrix, ItemStack paper, ItemStack ink) {

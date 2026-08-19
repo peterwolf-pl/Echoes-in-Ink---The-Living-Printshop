@@ -16,7 +16,12 @@ public record WorkshopIdentity(String workshopId, WorkshopVariant variant, int l
 
 	/** Stable id shared by fresh generation and migration of pre-1.1 workshops. */
 	public static String idForChunk(ChunkPos chunkPos) {
-		int hash = chunkPos.x() * 73856093 ^ chunkPos.z() * 19349663;
+		return idForChunk(chunkPos, 0);
+	}
+
+	/** Distinct id for a second printshop sharing a village chunk. */
+	public static String idForChunk(ChunkPos chunkPos, int index) {
+		int hash = chunkPos.x() * 73856093 ^ chunkPos.z() * 19349663 ^ index * 83492791;
 		return "printshop_" + Integer.toHexString(hash);
 	}
 }

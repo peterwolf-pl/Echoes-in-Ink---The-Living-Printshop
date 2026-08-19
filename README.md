@@ -108,6 +108,12 @@ differ. Every variant also contains several cobwebs, laid papers/prints on work
 surfaces, and wall posters. `enablePrintshopVariants=false` preserves the rural
 layout selection for compatibility.
 
+Abandoned printshops generate on the same chunk grid as vanilla villages, then
+sit on the outskirts rather than on the well. Every village gets one workshop;
+plains, meadow, savanna, and taiga villages — the larger vanilla types — also
+get a second workshop on the opposite side. `/echoesinink locate_printshop`
+still finds the village-aligned start.
+
 ### Matrix, ink, and archive progression
 
 Later investigation can reconstruct two reusable specialist forms through
@@ -217,7 +223,9 @@ Progression settings currently connected to gameplay include
 `allowSparePressPartsInLaterRuins`, plus the clamped
 `suspiciousFloorboardsPerWorkshop` target and `enablePrintshopVariants`.
 
-Structure spacing is currently controlled by the structure-set data file. The numeric spacing fields in the config document the intended values but do not replace the world-generation JSON.
+Printshop placement uses the vanilla village structure-set salt, spacing 34,
+and separation 8. The numeric spacing fields in the config document those
+values but do not rewrite the world-generation JSON.
 
 ## Project documentation
 

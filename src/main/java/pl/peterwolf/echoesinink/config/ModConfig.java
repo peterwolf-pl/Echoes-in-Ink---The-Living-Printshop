@@ -27,9 +27,9 @@ public final class ModConfig {
 	public int lensInspectCooldownTicks = 20;
 
 	// ── Structure generation (Phase 3) ─────────────────────────────────────
-	/** Relative weight / spacing hint for abandoned printshop generation. Higher = rarer. */
-	public int printshopSpacingChunks = 32;
-	public int printshopSeparationChunks = 12;
+	/** Documented village-grid spacing. Datapack structure-set JSON is authoritative. */
+	public int printshopSpacingChunks = 34;
+	public int printshopSeparationChunks = 8;
 	public boolean enablePrintshopGeneration = true;
 	/** Use all four stable visual/functional variants; false preserves a rural layout. */
 	public boolean enablePrintshopVariants = true;

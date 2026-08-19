@@ -2,7 +2,10 @@ package pl.peterwolf.echoesinink.structure;
 
 import com.mojang.serialization.MapCodec;
 import java.util.Optional;
+import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -13,7 +16,8 @@ import pl.peterwolf.echoesinink.progression.WorkshopIdentity;
 import pl.peterwolf.echoesinink.progression.WorkshopVariantSelector;
 
 /**
- * Surface structure: a single abandoned print workshop with storage cellar.
+ * Surface structure locked to the vanilla village grid. One workshop sits on
+ * the village edge; larger village biomes also get a second workshop opposite.
  */
 public class AbandonedPrintshopStructure extends Structure {
 	public static final MapCodec<AbandonedPrintshopStructure> CODEC = simpleCodec(AbandonedPrintshopStructure::new);
@@ -33,22 +37,37 @@ public class AbandonedPrintshopStructure extends Structure {
 	private void generatePieces(StructurePiecesBuilder builder, GenerationContext context) {
 		ChunkPos chunkPos = context.chunkPos();
 		WorldgenRandom random = context.random();
-		int west = chunkPos.getMinBlockX() + 2;
-		int north = chunkPos.getMinBlockZ() + 2;
-		// Stable workshop id from chunk coords (for archive progression later).
-		String workshopId = WorkshopIdentity.idForChunk(chunkPos);
-		WorkshopVariantSelector.Selection selection = WorkshopVariantSelector.select(
-			workshopId,
-			ModConfig.INSTANCE.enablePrintshopVariants
+		int count = VillagePrintshopLayout.printshopCount(biomePath(context));
+		int centerX = chunkPos.getMiddleBlockX();
+		int centerZ = chunkPos.getMiddleBlockZ();
+		long seed = context.seed() ^ chunkPos.pack();
+		for (int index = 0; index < count; index++) {
+			int[] offset = VillagePrintshopLayout.originOffset(index, seed);
+			String workshopId = WorkshopIdentity.idForChunk(chunkPos, index);
+			WorkshopVariantSelector.Selection selection = WorkshopVariantSelector.select(
+				workshopId,
+				ModConfig.INSTANCE.enablePrintshopVariants
+			);
+			builder.addPiece(new AbandonedPrintshopPiece(
+				random,
+				centerX + offset[0],
+				centerZ + offset[1],
+				workshopId,
+				selection.variant(),
+				selection.layoutIndex()
+			));
+		}
+	}
+
+	private static String biomePath(GenerationContext context) {
+		ChunkPos chunkPos = context.chunkPos();
+		Holder<Biome> biome = context.biomeSource().getNoiseBiome(
+			QuartPos.fromBlock(chunkPos.getMiddleBlockX()),
+			QuartPos.fromBlock(64),
+			QuartPos.fromBlock(chunkPos.getMiddleBlockZ()),
+			context.randomState().sampler()
 		);
-		builder.addPiece(new AbandonedPrintshopPiece(
-			random,
-			west,
-			north,
-			workshopId,
-			selection.variant(),
-			selection.layoutIndex()
-		));
+		return biome.unwrapKey().map(key -> key.identifier().getPath()).orElse("");
 	}
 
 	@Override

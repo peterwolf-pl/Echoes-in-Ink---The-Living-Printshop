@@ -155,7 +155,8 @@ public class LaidPaperBlock extends BaseEntityBlock {
 				serverPlayer.sendOverlayMessage(
 					net.minecraft.network.chat.Component.translatable("print.echoes_in_ink.reading")
 				);
-			} else if (page.is(ModItems.BLANK_ARCHIVE_PAGE)) {
+			} else if (page.is(ModItems.BLANK_ARCHIVE_PAGE)
+				|| page.is(net.minecraft.world.item.Items.PAPER)) {
 				serverPlayer.sendOverlayMessage(
 					net.minecraft.network.chat.Component.translatable("block.echoes_in_ink.laid_paper.blank_hint")
 				);

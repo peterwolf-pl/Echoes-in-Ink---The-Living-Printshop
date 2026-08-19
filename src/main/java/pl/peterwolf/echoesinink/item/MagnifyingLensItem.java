@@ -168,7 +168,9 @@ public class MagnifyingLensItem extends Item {
 				displayed.getHoverName()
 			);
 		}
-		if (displayed.is(ModItems.BLANK_ARCHIVE_PAGE) || displayed.is(ModItems.DAMAGED_ARCHIVE_PAGE)) {
+		if (displayed.is(ModItems.BLANK_ARCHIVE_PAGE)
+			|| displayed.is(net.minecraft.world.item.Items.PAPER)
+			|| displayed.is(ModItems.DAMAGED_ARCHIVE_PAGE)) {
 			return Component.translatable(
 				"item.echoes_in_ink.magnifying_lens.find.page_item",
 				displayed.getHoverName()
