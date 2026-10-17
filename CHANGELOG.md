@@ -4,6 +4,20 @@ All notable changes to **Echoes in Ink** are documented here.
 
 ## [Unreleased]
 
+## [1.1.4] — 2026-09-19
+
+### Changed
+
+- Port to Minecraft 26.3 (Wilderness Bound): Fabric Loader 0.19.5, Loom 1.17, Fabric API 0.160.7+26.3, Gradle 9.5.1.
+
+## [1.1.3] — 2026-08-29
+
+### Added
+
+- Every generated printshop now places a workshop tool crate (barrel) with a
+  Workshop Broom, Printer's Brush, Magnifying Lens, and Printer's Archive.
+  The broom sits on the lid; the lens and brush lie beside it.
+
 ### Changed
 
 - Fully cleaning Printing Debris now dismantles the pile: scraps fall out on
@@ -53,6 +67,8 @@ All notable changes to **Echoes in Ink** are documented here.
 - Expanded lens inspection to identify laid prints, readable posters, archive
   pages, matrices/type formes, press components, and other workshop objects;
   readable finished prints also display their complete text.
+- Opening a printshop barrel now grants the same physical starter kit as a
+  chest, so already-generated empty workshop crates can still supply tools.
 
 ## [1.1.2] — 2026-08-04
 

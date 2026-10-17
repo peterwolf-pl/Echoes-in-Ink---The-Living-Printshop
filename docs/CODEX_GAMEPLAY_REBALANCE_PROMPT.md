@@ -336,7 +336,7 @@ Clearly distinguish implemented behavior from planned behavior until the code an
 ## Delivery requirements
 
 1. Inspect the current repository before editing.
-2. Preserve the existing Fabric 26.2, Java 25+, and server-authoritative architecture.
+2. Preserve the existing Fabric 26.3, Java 25+, and server-authoritative architecture.
 3. Avoid unrelated refactors.
 4. Keep backward compatibility with existing worlds where practical.
 5. Add migration-safe defaults for newly stored data.

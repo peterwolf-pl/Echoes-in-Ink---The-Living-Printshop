@@ -6,11 +6,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.StairBlock;
@@ -52,6 +54,7 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 	public static final ResourceKey<LootTable> TOWN_LOOT = loot("chests/printshop_town");
 	public static final ResourceKey<LootTable> SCHOLARLY_LOOT = loot("chests/printshop_scholarly");
 	public static final ResourceKey<LootTable> BURNED_LOOT = loot("chests/printshop_burned");
+	public static final ResourceKey<LootTable> TOOLS_LOOT = loot("chests/printshop_tools");
 
 	private final String workshopId;
 	private final WorkshopVariant variant;
@@ -174,7 +177,6 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeSuspiciousFloors(level, box, width, new int[][] {{3, 2}, {7, 8}, {2, 6}, {10, 6}});
 
 		placeBlock(level, Blocks.LOOM.defaultBlockState(), mx(10, width), 1, 2, box);
-		placeBlock(level, Blocks.BARREL.defaultBlockState(), mx(11, width), 1, 5, box);
 		placeBlock(level, Blocks.HAY_BLOCK.defaultBlockState(), mx(10, width), 1, 8, box);
 		placeBlock(level, Blocks.CARPET.white().defaultBlockState(), mx(3, width), 1, 6, box);
 		placeBlock(level, ModBlocks.CARVED_WOODEN_MATRIX.defaultBlockState(), mx(2, width), 2, 3, box);
@@ -183,10 +185,16 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeBlock(level, ModBlocks.DUSTY_PRINTING_TABLE.defaultBlockState(), mx(3, width), 1, 8, box);
 		placeBlock(level, Blocks.CRAFTING_TABLE.defaultBlockState(), mx(8, width), 1, 8, box);
 		placeLaidPrint(level, box, mx(6, width), 2, 8, Direction.EAST, ModItems.DECORATIVE_WOODCUT);
-		placeLaidPrint(level, box, mx(11, width), 2, 5, Direction.NORTH, ModItems.DAMAGED_ARCHIVE_PAGE);
+		placeLaidPrint(level, box, mx(10, width), 2, 8, Direction.NORTH, ModItems.DAMAGED_ARCHIVE_PAGE);
 		placeLaidPrint(level, box, mx(3, width), 2, 8, Direction.WEST, ModItems.BLANK_ARCHIVE_PAGE);
 		placeLaidPrint(level, box, mx(8, width), 2, 8, Direction.SOUTH, ModItems.PRINTERS_INSTRUCTION_SHEET);
 		placeLaidPrint(level, box, mx(10, width), 2, 2, Direction.EAST, ModItems.CHARCOAL_RUBBING_PAPER);
+		placeToolCrate(
+			level, box, random,
+			mx(11, width), 1, 5,
+			mx(11, width), 1, 4,
+			mx(11, width), 1, 6
+		);
 		placeHangingPrint(level, box, mx(6, width), 2, 9, Direction.NORTH, PosterKind.WARNING);
 		placeHangingPrint(level, box, mx(11, width), 2, 1, Direction.SOUTH, PosterKind.WOODCUT);
 		placeHangingPrint(level, box, mx(3, width), 3, 1, Direction.SOUTH, PosterKind.CHRONICLE);
@@ -254,6 +262,12 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeLaidPrint(level, box, mx(8, width), 2, 11, Direction.NORTH, ModItems.VILLAGE_CHRONICLE_PRINT);
 		placeLaidPrint(level, box, mx(6, width), 2, 9, Direction.EAST, ModItems.PRINTERS_NOTES);
 		placeLaidPrint(level, box, mx(11, width), 2, 3, Direction.WEST, ModItems.PRINTERS_INSTRUCTION_SHEET);
+		placeToolCrate(
+			level, box, random,
+			mx(15, width), 1, 8,
+			mx(15, width), 1, 7,
+			mx(15, width), 1, 9
+		);
 		placeHangingPrint(level, box, entranceX + 2, 2, 1, Direction.SOUTH, PosterKind.WARNING);
 		placeHangingPrint(level, box, mx(2, width), 3, 1, Direction.SOUTH, PosterKind.WOODCUT);
 		placeHangingPrint(level, box, mx(15, width), 2, 6, layoutIndex == 0 ? Direction.WEST : Direction.EAST, PosterKind.CHRONICLE);
@@ -315,15 +329,20 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		}
 		placeBlock(level, Blocks.LECTERN.defaultBlockState(), 6, 1, mz(5, depth), box);
 		placeBlock(level, Blocks.CARTOGRAPHY_TABLE.defaultBlockState(), 10, 1, mz(8, depth), box);
-		placeBlock(level, Blocks.BARREL.defaultBlockState(), 12, 1, mz(10, depth), box);
 		placeBlock(level, Blocks.CARPET.white().defaultBlockState(), 8, 1, mz(7, depth), box);
 		placeBlock(level, ModBlocks.DUSTY_PRINTING_TABLE.defaultBlockState(), 8, 1, mz(12, depth), box);
 		placeBlock(level, Blocks.CRAFTING_TABLE.defaultBlockState(), 5, 1, mz(3, depth), box);
 		placeLaidPrint(level, box, 10, 2, mz(8, depth), Direction.EAST, ModItems.DECORATIVE_WOODCUT);
-		placeLaidPrint(level, box, 12, 2, mz(10, depth), Direction.NORTH, ModItems.DAMAGED_ARCHIVE_PAGE);
+		placeLaidPrint(level, box, 6, 2, mz(5, depth), Direction.NORTH, ModItems.DAMAGED_ARCHIVE_PAGE);
 		placeLaidPrint(level, box, 8, 2, mz(12, depth), Direction.WEST, ModItems.PRINTERS_INSTRUCTION_SHEET);
 		placeLaidPrint(level, box, 5, 2, mz(3, depth), Direction.SOUTH, ModItems.VILLAGE_CHRONICLE_PRINT);
 		placeLaidPrint(level, box, 1, 3, mz(6, depth), Direction.EAST, ModItems.BLANK_ARCHIVE_PAGE);
+		placeToolCrate(
+			level, box, random,
+			12, 1, mz(10, depth),
+			11, 1, mz(10, depth),
+			12, 1, mz(9, depth)
+		);
 		placeHangingPrint(level, box, 13, 2, mz(2, depth), Direction.WEST, PosterKind.WARNING);
 		placeHangingPrint(level, box, 1, 3, mz(13, depth), Direction.EAST, PosterKind.WOODCUT);
 		placeHangingPrint(level, box, 13, 3, mz(6, depth), Direction.WEST, PosterKind.CHRONICLE);
@@ -377,14 +396,19 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		placeBlock(level, Blocks.IRON_BARS.defaultBlockState(), mx(11, width), 1, 7, box);
 		placeBlock(level, Blocks.CARPET.black().defaultBlockState(), mx(6, width), 1, 6, box);
 		placeBlock(level, Blocks.CARTOGRAPHY_TABLE.defaultBlockState(), mx(2, width), 1, 8, box);
-		placeBlock(level, Blocks.BARREL.defaultBlockState(), mx(11, width), 1, 4, box);
 		placeBlock(level, ModBlocks.DUSTY_PRINTING_TABLE.defaultBlockState(), mx(6, width), 1, 3, box);
 		placeBlock(level, Blocks.CRAFTING_TABLE.defaultBlockState(), mx(8, width), 1, 8, box);
 		placeLaidPrint(level, box, mx(2, width), 2, 8, Direction.WEST, ModItems.DAMAGED_ARCHIVE_PAGE);
-		placeLaidPrint(level, box, mx(11, width), 2, 4, Direction.NORTH, ModItems.DECORATIVE_WOODCUT);
+		placeLaidPrint(level, box, mx(4, width), 1, 2, Direction.NORTH, ModItems.DECORATIVE_WOODCUT);
 		placeLaidPrint(level, box, mx(6, width), 2, 3, Direction.EAST, ModItems.FORBIDDEN_NOTICE_PRINT);
 		placeLaidPrint(level, box, mx(8, width), 2, 8, Direction.SOUTH, ModItems.WORKSHOP_MAP_FRAGMENT);
 		placeLaidPrint(level, box, mx(9, width), 2, 3, Direction.WEST, ModItems.PRINTERS_NOTES);
+		placeToolCrate(
+			level, box, random,
+			mx(11, width), 1, 4,
+			mx(11, width), 1, 3,
+			mx(11, width), 1, 5
+		);
 		placeHangingPrint(level, box, mx(4, width), 2, 1, Direction.SOUTH, PosterKind.WARNING);
 		placeHangingPrint(level, box, mx(7, width), 3, depth - 2, Direction.NORTH, PosterKind.WOODCUT);
 		placeHangingPrint(level, box, mx(1, width), 2, 5, Direction.EAST, PosterKind.CHRONICLE);
@@ -663,6 +687,35 @@ public class AbandonedPrintshopPiece extends ScatteredFeaturePiece {
 		createChest(level, box, random, specialistX, specialistY, specialistZ, specialist);
 		createChest(level, box, random, storageX, storageY, storageZ, STORAGE_LOOT);
 		createChest(level, box, random, hiddenX, hiddenY, hiddenZ, HIDDEN_LOOT);
+	}
+
+	/** Workshop tool crate: broom on the lid, lens and brush beside it, same tools inside. */
+	private void placeToolCrate(
+		WorldGenLevel level,
+		BoundingBox box,
+		RandomSource random,
+		int crateX,
+		int crateY,
+		int crateZ,
+		int lensX,
+		int lensY,
+		int lensZ,
+		int brushX,
+		int brushY,
+		int brushZ
+	) {
+		placeBlock(
+			level,
+			Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP),
+			crateX, crateY, crateZ, box
+		);
+		BlockPos cratePos = getWorldPos(crateX, crateY, crateZ);
+		if (box.isInside(cratePos) && level.getBlockEntity(cratePos) instanceof RandomizableContainer container) {
+			container.setLootTable(TOOLS_LOOT, random.nextLong());
+		}
+		placeLaidPrint(level, box, crateX, crateY + 1, crateZ, Direction.NORTH, ModItems.WORKSHOP_BROOM);
+		placeLaidPrint(level, box, lensX, lensY, lensZ, Direction.EAST, ModItems.MAGNIFYING_LENS);
+		placeLaidPrint(level, box, brushX, brushY, brushZ, Direction.WEST, ModItems.PRINTERS_BRUSH);
 	}
 
 	private void placeCobwebs(WorldGenLevel level, BoundingBox box, int[][] positions) {

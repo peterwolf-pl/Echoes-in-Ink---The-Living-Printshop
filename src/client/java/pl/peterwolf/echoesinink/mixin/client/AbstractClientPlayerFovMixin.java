@@ -14,8 +14,8 @@ import pl.peterwolf.echoesinink.item.ModItems;
  */
 @Mixin(AbstractClientPlayer.class)
 public abstract class AbstractClientPlayerFovMixin {
-	@Inject(method = "getFieldOfViewModifier", at = @At("RETURN"), cancellable = true)
-	private void echoesInInk$magnifyingLensFov(CallbackInfoReturnable<Float> cir) {
+	@Inject(method = "getFieldOfViewModifier(ZF)F", at = @At("RETURN"), cancellable = true)
+	private void echoesInInk$magnifyingLensFov(boolean firstPerson, float fovScale, CallbackInfoReturnable<Float> cir) {
 		AbstractClientPlayer self = (AbstractClientPlayer) (Object) this;
 		if (!self.isUsingItem()) {
 			return;

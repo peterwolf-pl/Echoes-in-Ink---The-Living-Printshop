@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -56,7 +57,7 @@ public class CharcoalRubbingPaperItem extends Item {
 		ItemStack rubbing = new ItemStack(ModItems.CHARCOAL_RUBBING);
 		rubbing.set(ModDataComponents.RUBBING_PATTERN, pattern);
 		if (!player.getInventory().add(rubbing)) {
-			player.drop(rubbing, false);
+			player.drop(rubbing, false, Prediction.SERVER_ONLY);
 		}
 
 		level.playSound(null, pos, SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 0.7F, 0.9F);

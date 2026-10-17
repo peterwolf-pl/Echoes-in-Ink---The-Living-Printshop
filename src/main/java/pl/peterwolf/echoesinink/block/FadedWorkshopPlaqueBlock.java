@@ -1,6 +1,5 @@
 package pl.peterwolf.echoesinink.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -24,7 +23,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /** Thin wall-mounted maker plaque with a clear investigation instruction. */
 public final class FadedWorkshopPlaqueBlock extends InvestigatableBlock {
 	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
-	public static final MapCodec<FadedWorkshopPlaqueBlock> CODEC = simpleCodec(FadedWorkshopPlaqueBlock::new);
 
 	private static final VoxelShape NORTH = Block.box(2, 2, 14, 14, 14, 16);
 	private static final VoxelShape SOUTH = Block.box(2, 2, 0, 14, 14, 2);
@@ -36,10 +34,6 @@ public final class FadedWorkshopPlaqueBlock extends InvestigatableBlock {
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
-	@Override
-	protected MapCodec<FadedWorkshopPlaqueBlock> codec() {
-		return CODEC;
-	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

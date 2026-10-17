@@ -6,6 +6,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
@@ -93,7 +94,7 @@ public final class ChronicleClueService {
 			}
 			ItemStack map = createCacheMap(level, target);
 			if (!player.getInventory().add(map)) {
-				player.drop(map, false);
+				player.drop(map, false, Prediction.SERVER_ONLY);
 			}
 			ArchiveService.unlock(player, ArchiveEntries.CLUE_CHRONICLE_MAP);
 			ArchiveService.unlock(player, ArchiveEntries.WORK_MAP);

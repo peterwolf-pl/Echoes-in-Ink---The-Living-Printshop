@@ -121,11 +121,10 @@ public class AbandonedPrintshopStructure extends Structure {
 
 	private static String biomePath(GenerationContext context) {
 		ChunkPos chunkPos = context.chunkPos();
-		Holder<Biome> biome = context.biomeSource().getNoiseBiome(
+		Holder<Biome> biome = context.biomeResolver().getNoiseBiome(
 			QuartPos.fromBlock(chunkPos.getMiddleBlockX()),
 			QuartPos.fromBlock(64),
-			QuartPos.fromBlock(chunkPos.getMiddleBlockZ()),
-			context.randomState().sampler()
+			QuartPos.fromBlock(chunkPos.getMiddleBlockZ())
 		);
 		return biome.unwrapKey().map(key -> key.identifier().getPath()).orElse("");
 	}

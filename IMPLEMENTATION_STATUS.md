@@ -1,8 +1,8 @@
 # Implementation Status
 
-**Last updated:** 2026-08-04
+**Last updated:** 2026-09-19
 
-**Version:** 1.1.2
+**Version:** 1.1.4
 
 **Current phase:** Physical starter supplies and plaque clarity complete
 
@@ -35,8 +35,8 @@
 
 ## Release artifact
 
-The verified 1.1.2 release artifact is
-`build/libs/echoes-in-ink-1.1.2.jar`. Final ZIP integrity validation is
+The verified 1.1.4 release artifact is
+`build/libs/echoes-in-ink-1.1.4.jar`. Final ZIP integrity validation is
 recorded in `TESTING.md`.
 
 ## Rebalance status

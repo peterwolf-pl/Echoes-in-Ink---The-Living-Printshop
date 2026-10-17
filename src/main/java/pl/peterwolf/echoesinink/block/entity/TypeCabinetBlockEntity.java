@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -127,7 +128,7 @@ public class TypeCabinetBlockEntity extends InvestigationBlockEntity implements 
 		ItemStack give = existing.copy();
 		drawers.set(slot, ItemStack.EMPTY);
 		if (!player.getInventory().add(give)) {
-			player.drop(give, false);
+			player.drop(give, false, Prediction.SERVER_ONLY);
 		}
 		level.playSound(null, worldPosition, ModSounds.PRESS_COLLECT, SoundSource.BLOCKS, 0.4F, 1.0F);
 		setChanged();

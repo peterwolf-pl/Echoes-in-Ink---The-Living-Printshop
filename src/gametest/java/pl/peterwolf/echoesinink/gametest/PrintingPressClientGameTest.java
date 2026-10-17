@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.block.PressPhase;
@@ -44,7 +44,7 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 			.setUseConsistentSettings(true)
 			.create()) {
 			TestServerContext serverContext = singleplayer.getServer();
-			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getConnection().waitForChunksRender();
 
 			serverContext.runOnServer(server -> {
 				ServerPlayer player = requirePlayer(server.getPlayerList().getPlayers());
@@ -69,8 +69,8 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 			serverContext.runCommand("gamemode spectator @a");
 			serverContext.runCommand("tp @a 0.5 4.3 -1.5 0 25");
 			context.waitTicks(10);
-			singleplayer.getClientLevel().waitForChunksRender();
-			context.getInput().pressKey(GLFW.GLFW_KEY_F1);
+			singleplayer.getConnection().waitForChunksRender();
+			context.getInput().pressKey(InputConstants.KEY_F1);
 			context.waitTicks(2);
 
 			serverContext.runOnServer(server -> {
@@ -205,7 +205,7 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 
 			serverContext.runCommand("tp @a 0.5 4.3 -1.5 0 25");
 			context.waitTicks(10);
-			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getConnection().waitForChunksRender();
 
 			takeScreenshot(context, OUTPUT_SCREENSHOT_NAME);
 
@@ -234,20 +234,20 @@ public final class PrintingPressClientGameTest implements FabricClientGameTest {
 			// camera angles instead of validating only the paper-covered output state.
 			serverContext.runCommand("tp @a -0.8 4.3 -1.5 -30 25");
 			context.waitTicks(8);
-			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getConnection().waitForChunksRender();
 			takeScreenshot(context, "printing_press_empty_carriage_left");
 
 			serverContext.runCommand("tp @a 0.5 4.3 -1.5 0 25");
 			context.waitTicks(8);
-			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getConnection().waitForChunksRender();
 			takeScreenshot(context, "printing_press_empty_carriage_center");
 
 			serverContext.runCommand("tp @a 1.8 4.3 -1.5 30 25");
 			context.waitTicks(8);
-			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getConnection().waitForChunksRender();
 			takeScreenshot(context, "printing_press_empty_carriage_right");
 
-			context.getInput().pressKey(GLFW.GLFW_KEY_F1);
+			context.getInput().pressKey(InputConstants.KEY_F1);
 		}
 	}
 

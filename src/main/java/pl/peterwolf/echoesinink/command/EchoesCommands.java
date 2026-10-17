@@ -16,6 +16,7 @@ import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -119,7 +120,7 @@ public final class EchoesCommands {
 
 	private static void give(ServerPlayer player, ItemStack stack) {
 		if (!player.getInventory().add(stack)) {
-			player.drop(stack, false);
+			player.drop(stack, false, Prediction.SERVER_ONLY);
 		}
 	}
 

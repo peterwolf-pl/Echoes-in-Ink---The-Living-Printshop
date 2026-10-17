@@ -2,7 +2,7 @@
 
 **Mod:** Echoes in Ink: The Living Printshop  
 **Theme:** Echoes of the Past  
-**Target:** Minecraft Java 26.2 · Fabric · Java 25+  
+**Target:** Minecraft Java 26.3 · Fabric · Java 25+  
 **Version:** 1.0.0
 
 ## MVP gate

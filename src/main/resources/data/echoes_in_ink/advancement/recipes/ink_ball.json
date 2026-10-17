@@ -7,7 +7,7 @@
     },
     "has_recipe": {
       "trigger": "minecraft:recipe_unlocked",
-      "conditions": { "recipe": "echoes_in_ink:ink_ball" }
+      "conditions": { "recipes": "echoes_in_ink:ink_ball" }
     }
   },
   "requirements": [["has_material", "has_recipe"]],

@@ -37,6 +37,7 @@ class PrintshopAtmosphereContractTest {
 			String builder = source.substring(start, end);
 			assertTrue(count(builder, "placeHangingPrint(") >= 10, name + " posters");
 			assertTrue(count(builder, "placeLaidPrint(") >= 5, name + " laid papers");
+			assertTrue(count(builder, "placeToolCrate(") == 1, name + " tool crate");
 			assertTrue(count(builder, "DUSTY_PRINTING_TABLE") >= 2, name + " tables");
 		}
 		assertTrue(source.contains("posterWorldFacingOnIntendedWall"));

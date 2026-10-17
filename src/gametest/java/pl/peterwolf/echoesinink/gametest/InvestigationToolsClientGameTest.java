@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.block.HangingPosterBlock;
 import pl.peterwolf.echoesinink.block.InvestigatableBlock;
@@ -39,7 +39,7 @@ public final class InvestigationToolsClientGameTest implements FabricClientGameT
 			.setUseConsistentSettings(true)
 			.create()) {
 			TestServerContext serverContext = singleplayer.getServer();
-			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getConnection().waitForChunksRender();
 
 			serverContext.runOnServer(server -> {
 				ServerPlayer player = requirePlayer(server.getPlayerList().getPlayers());
@@ -67,7 +67,7 @@ public final class InvestigationToolsClientGameTest implements FabricClientGameT
 			context.getInput().lookAt(PLAQUE_POS);
 			context.waitTicks(2);
 			takeScreenshot(context, "investigation_plaque_lens_inspected");
-			context.getInput().holdMouse(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+			context.getInput().holdMouse(InputConstants.MOUSE_BUTTON_RIGHT);
 			context.waitTicks(3);
 			serverContext.runOnServer(server -> assertBrushUsing(
 				requirePlayer(server.getPlayerList().getPlayers())
@@ -75,7 +75,7 @@ public final class InvestigationToolsClientGameTest implements FabricClientGameT
 			// Deliberately look away: the thin plaque must remain the held-use target.
 			context.getInput().lookAt(180.0F, -60.0F);
 			context.waitTicks(42);
-			context.getInput().releaseMouse(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+			context.getInput().releaseMouse(InputConstants.MOUSE_BUTTON_RIGHT);
 			context.waitTicks(2);
 			context.getInput().lookAt(PLAQUE_POS);
 			context.waitTicks(2);
@@ -92,14 +92,14 @@ public final class InvestigationToolsClientGameTest implements FabricClientGameT
 
 			context.waitTicks(2);
 			context.getInput().lookAt(PLAQUE_POS);
-			context.getInput().holdMouse(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+			context.getInput().holdMouse(InputConstants.MOUSE_BUTTON_RIGHT);
 			context.waitTicks(3);
 			serverContext.runOnServer(server -> assertBrushUsing(
 				requirePlayer(server.getPlayerList().getPlayers())
 			));
 			context.getInput().lookAt(180.0F, -60.0F);
 			context.waitTicks(42);
-			context.getInput().releaseMouse(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+			context.getInput().releaseMouse(InputConstants.MOUSE_BUTTON_RIGHT);
 			context.waitTicks(2);
 			context.getInput().lookAt(PLAQUE_POS);
 			context.waitTicks(2);

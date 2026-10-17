@@ -1,6 +1,5 @@
 package pl.peterwolf.echoesinink.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -36,7 +35,6 @@ import pl.peterwolf.echoesinink.block.entity.PrintingPressBlockEntity;
  * Historical screw printing press — physical world interaction (not a furnace GUI).
  */
 public class PrintingPressBlock extends BaseEntityBlock {
-	public static final MapCodec<PrintingPressBlock> CODEC = simpleCodec(PrintingPressBlock::new);
 	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 	public static final EnumProperty<PressPhase> PHASE = EnumProperty.create("phase", PressPhase.class,
 		PressPhase.INCOMPLETE, PressPhase.IDLE, PressPhase.CARRIAGE_IN, PressPhase.PRESSING,
@@ -67,10 +65,6 @@ public class PrintingPressBlock extends BaseEntityBlock {
 			.setValue(PHASE, PressPhase.INCOMPLETE));
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

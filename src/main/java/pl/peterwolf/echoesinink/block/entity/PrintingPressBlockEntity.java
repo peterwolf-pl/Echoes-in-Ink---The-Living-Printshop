@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import org.jetbrains.annotations.Nullable;
 import pl.peterwolf.echoesinink.archive.ArchiveEntries;
 import pl.peterwolf.echoesinink.archive.ArchiveService;
@@ -303,7 +304,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 			return;
 		}
 		if (!player.getInventory().add(stack)) {
-			player.drop(stack, false);
+			player.drop(stack, false, Prediction.SERVER_ONLY);
 		}
 	}
 
@@ -484,7 +485,7 @@ public class PrintingPressBlockEntity extends BlockEntity implements WorldlyCont
 		ItemStack printedResult = give.copy();
 		items.set(SLOT_OUTPUT, ItemStack.EMPTY);
 		if (!player.getInventory().add(give)) {
-			player.drop(give, false);
+			player.drop(give, false, Prediction.SERVER_ONLY);
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			// Inventory insertion may consume the source stack to count zero. Keep a

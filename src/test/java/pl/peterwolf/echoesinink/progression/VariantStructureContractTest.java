@@ -40,6 +40,7 @@ class VariantStructureContractTest {
 				assertEquals(1, occurrences(builder, token), name + " / " + role.id());
 			}
 			assertEquals(1, occurrences(builder, "placeWorkshopChests("), name + " workshop chests");
+			assertEquals(1, occurrences(builder, "placeToolCrate("), name + " tool crate");
 		}
 	}
 

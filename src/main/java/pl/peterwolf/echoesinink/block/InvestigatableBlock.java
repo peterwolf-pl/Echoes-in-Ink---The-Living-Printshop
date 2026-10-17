@@ -1,6 +1,5 @@
 package pl.peterwolf.echoesinink.block;
 
-import com.mojang.serialization.MapCodec;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -35,12 +34,10 @@ public class InvestigatableBlock extends BaseEntityBlock implements Investigatab
 		EnumProperty.create("investigation", InvestigationState.class);
 
 	private final InvestigationLoot.Profile lootProfile;
-	private final MapCodec<InvestigatableBlock> codec;
 
 	public InvestigatableBlock(Properties properties, InvestigationLoot.Profile lootProfile) {
 		super(properties);
 		this.lootProfile = lootProfile;
-		this.codec = simpleCodec(props -> new InvestigatableBlock(props, lootProfile));
 		registerDefaultState(stateDefinition.any().setValue(INVESTIGATION, InvestigationState.UNTOUCHED));
 	}
 
@@ -48,10 +45,6 @@ public class InvestigatableBlock extends BaseEntityBlock implements Investigatab
 		return lootProfile;
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return codec;
-	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

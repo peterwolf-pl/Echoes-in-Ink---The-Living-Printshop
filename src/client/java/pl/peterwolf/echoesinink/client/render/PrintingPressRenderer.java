@@ -170,7 +170,7 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 	) {
 		poseStack.pushPose();
 		poseStack.translate(0.5F, 0.0F, 0.5F);
-		poseStack.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
+		poseStack.rotateDegrees(Axis.YP, -state.facing.toYRot());
 
 		float carriageZ = carriageOffset(state);
 		float platenY = platenOffset(state);
@@ -235,7 +235,7 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		if (state.screwRenderState != null) {
 			poseStack.pushPose();
 			poseStack.translate(0.0F, WORKTABLE_RISE + 0.88F + platenY, 0.0F);
-			poseStack.mulPose(Axis.YP.rotationDegrees(handleAngle * 1.8F));
+			poseStack.rotateDegrees(Axis.YP, handleAngle * 1.8F);
 			poseStack.scale(0.3F, 0.72F, 0.3F);
 			draw(poseStack, collector, state, state.screwRenderState);
 			poseStack.popPose();
@@ -244,7 +244,7 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		if (state.handleRenderState != null) {
 			poseStack.pushPose();
 			poseStack.translate(0.0F, HANDLE_MOUNT_Y + platenY, 0.0F);
-			poseStack.mulPose(Axis.YP.rotationDegrees(handleAngle));
+			poseStack.rotateDegrees(Axis.YP, handleAngle);
 			// The extended spindle and iron socket stay above the upper timber even
 			// at full pressure, while the two-block bar projects beyond both sides.
 			poseStack.scale(1.0F, 0.3F, 0.3F);
@@ -282,7 +282,7 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 	) {
 		poseStack.pushPose();
 		poseStack.translate(x, y, z);
-		poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		poseStack.rotateDegrees(Axis.XP, 90.0F);
 		poseStack.scale(scale, scale, scale);
 		draw(poseStack, collector, state, itemRenderState);
 		poseStack.popPose();
@@ -334,7 +334,7 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 		}
 		poseStack.pushPose();
 		poseStack.translate(0.0F, 0.52F, 0.0F);
-		poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		poseStack.rotateDegrees(Axis.XP, 90.0F);
 		poseStack.scale(0.92F, 0.92F, 0.92F);
 		draw(poseStack, collector, state, matrix);
 		poseStack.popPose();
@@ -407,8 +407,8 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 
 		poseStack.pushPose();
 		poseStack.translate(tool[0], MATRIX_CENTER_Y + 0.10F + tool[2], tool[1]);
-		poseStack.mulPose(Axis.YP.rotationDegrees(18.0F * Mth.sin(state.inkingProgress * Mth.TWO_PI)));
-		poseStack.mulPose(Axis.ZP.rotationDegrees(-10.0F + 20.0F * sweep));
+		poseStack.rotateDegrees(Axis.YP, 18.0F * Mth.sin(state.inkingProgress * Mth.TWO_PI));
+		poseStack.rotateDegrees(Axis.ZP, -10.0F + 20.0F * sweep);
 		poseStack.scale(0.22F, 0.22F, 0.22F);
 		draw(poseStack, collector, state, inkTool);
 		poseStack.popPose();
@@ -464,7 +464,7 @@ public class PrintingPressRenderer implements BlockEntityRenderer<PrintingPressB
 
 		poseStack.pushPose();
 		poseStack.translate(0.0F, IMPRESSION_TEXT_Y, carriageZ + IMPRESSION_TEXT_Z_OFFSET);
-		poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		poseStack.rotateDegrees(Axis.XP, 90.0F);
 		poseStack.scale(textScale, textScale, textScale);
 
 		for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {

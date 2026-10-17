@@ -1,26 +1,26 @@
 # Echoes in Ink: The Living Printshop
 
-Fabric mod for **Minecraft Java Edition 26.2** - ModJam 2026 theme **Echoes of the Past**.
+Fabric mod for **Minecraft Java Edition 26.3** - ModJam 2026 theme **Echoes of the Past**.
 
 Discover abandoned historical print workshops, restore lost printing technology, reconstruct damaged texts, and experience temporary visual and audio echoes of the people who once worked there.
 
 **Author:** Peter Wolf  
 **Mod ID:** `echoes_in_ink`  
-**Version:** 1.1.2
+**Version:** 1.1.4
 
 **Licence:** MPL-2.0
 
 ## Requirements
 
-- Minecraft **26.2**
-- Fabric Loader 0.19.3 or newer
-- Fabric API matching Minecraft 26.2
+- Minecraft **26.3**
+- Fabric Loader 0.19.5 or newer
+- Fabric API matching Minecraft 26.3
 - Java 25 or newer
 
 ## Installation
 
-1. Install Fabric Loader for Minecraft 26.2.
-2. Install Fabric API for Minecraft 26.2.
+1. Install Fabric Loader for Minecraft 26.3.
+2. Install Fabric API for Minecraft 26.3.
 3. Place the mod JAR in the `mods` directory.
 4. Launch Minecraft or the dedicated Fabric server.
 
@@ -43,13 +43,17 @@ handle, so leaving an earlier ruin cannot permanently remove required parts.
 After that real press run, newly investigated printshops switch to their stable
 specialist profiles.
 
-Before that first press operation, opening a chest inside a confirmed printshop
-adds one deterministic physical kit for that workshop: Workshop Broom,
-Printer's Brush, Magnifying Lens, Printer's Archive, Press Screw, Press Handle,
-Press Platen, and Press Carriage. This does not replace the variant's specialist
-loot. Reopen an already-looted printshop chest in an existing world to receive
-the kit; no new world is required. If the chest is full, overflow goes to the
-opening player instead of disappearing.
+Each generated printshop also has a workshop tool crate. The broom sits on the
+lid; the magnifying lens and Printer's Brush lie beside it. Opening the crate
+yields those tools plus the Printer's Archive.
+
+Before that first press operation, opening a chest or the tool crate inside a
+confirmed printshop adds one deterministic physical kit for that workshop:
+Workshop Broom, Printer's Brush, Magnifying Lens, Printer's Archive, Press
+Screw, Press Handle, Press Platen, and Press Carriage. This does not replace
+the variant's specialist loot. Reopen an already-looted printshop chest in an
+existing world to receive the kit; no new world is required. If the container
+is full, overflow goes to the opening player instead of disappearing.
 
 Printshops generated before 1.1 are upgraded when an unbound investigation
 node is next cleaned. Their old furniture is assigned deterministic semantic
@@ -164,7 +168,7 @@ Typical sequence:
 
 Printshops contain investigatable machine remains, archive shelves, type cabinets, printing tables, plaques, debris, and hidden storage. Cleaning Printing Debris with the Printer's Brush takes the pile apart: scraps come free on the first stroke, then the remainder becomes paper, ink, type, and spare press parts and the block is removed.
 
-Every generated printshop contains three almost-full chests. Beside the variant's specialist loot, the shared supply kit always includes clean paper, blank archive pages, ink balls and pads, metal type, and spare press components.
+Every generated printshop contains three almost-full chests plus a workshop tool crate. Beside the variant's specialist loot, the shared supply kit always includes clean paper, blank archive pages, ink balls and pads, metal type, and spare press components. The tool crate holds a Workshop Broom, Printer's Brush, Magnifying Lens, and Printer's Archive; those three tools also sit on and beside the crate so they are visible before you open it.
 
 Workshop walls now carry several different hanging posters (warning, woodcut, chronicle, forbidden notice, map, and type specimen). Extra dusty and crafting tables sit beside the investigation bench, each with laid paper, notes, or a finished print.
 

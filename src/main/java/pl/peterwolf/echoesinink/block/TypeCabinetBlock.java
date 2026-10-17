@@ -1,6 +1,5 @@
 package pl.peterwolf.echoesinink.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -38,7 +37,6 @@ import pl.peterwolf.echoesinink.block.entity.TypeCabinetBlockEntity;
  * (shift is unreliable in vanilla when offhand holds an item).
  */
 public class TypeCabinetBlock extends InvestigatableBlock {
-	public static final MapCodec<TypeCabinetBlock> CODEC = simpleCodec(TypeCabinetBlock::new);
 	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 	/** 0 = all closed; 1..4 = which drawer is open (top to bottom). */
 	public static final IntegerProperty OPEN_DRAWER = IntegerProperty.create("open_drawer", 0, 4);
@@ -52,10 +50,6 @@ public class TypeCabinetBlock extends InvestigatableBlock {
 			.setValue(OPEN_DRAWER, 0));
 	}
 
-	@Override
-	protected MapCodec<? extends TypeCabinetBlock> codec() {
-		return CODEC;
-	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

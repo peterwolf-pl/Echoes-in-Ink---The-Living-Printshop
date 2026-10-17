@@ -74,13 +74,13 @@ public class LaidPaperRenderer implements BlockEntityRenderer<LaidPaperBlockEnti
 	) {
 		poseStack.pushPose();
 		poseStack.translate(0.5F, 0.0F, 0.5F);
-		poseStack.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
+		poseStack.rotateDegrees(Axis.YP, -state.facing.toYRot());
 
 		if (state.pageRenderState != null) {
 			if (isFlatLaid(state.page)) {
 				poseStack.pushPose();
 				poseStack.translate(0.0F, SHEET_Y, 0.0F);
-				poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+				poseStack.rotateDegrees(Axis.XP, 90.0F);
 				float scale = isMatrixForm(state.page) ? MATRIX_SCALE : SHEET_SCALE;
 				poseStack.scale(scale, scale, scale);
 				state.pageRenderState.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
@@ -153,7 +153,7 @@ public class LaidPaperRenderer implements BlockEntityRenderer<LaidPaperBlockEnti
 
 		poseStack.pushPose();
 		poseStack.translate(0.0F, TEXT_Y, 0.0F);
-		poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		poseStack.rotateDegrees(Axis.XP, 90.0F);
 		poseStack.scale(textScale, textScale, textScale);
 
 		for (int i = 0; i < lines.length; i++) {

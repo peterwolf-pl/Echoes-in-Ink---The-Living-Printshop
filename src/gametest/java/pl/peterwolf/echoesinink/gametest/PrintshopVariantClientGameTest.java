@@ -17,15 +17,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 import pl.peterwolf.echoesinink.EchoesInInk;
 import pl.peterwolf.echoesinink.block.ModBlocks;
 import pl.peterwolf.echoesinink.block.FadedWorkshopPlaqueBlock;
 import pl.peterwolf.echoesinink.block.entity.InvestigationBlockEntity;
 import pl.peterwolf.echoesinink.block.entity.LaidPaperBlockEntity;
+import pl.peterwolf.echoesinink.item.ModItems;
 import pl.peterwolf.echoesinink.progression.InvestigationRole;
 import pl.peterwolf.echoesinink.progression.WorkshopLayoutPlan;
 import pl.peterwolf.echoesinink.progression.WorkshopVariant;
@@ -53,7 +55,7 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 			.setUseConsistentSettings(true)
 			.create()) {
 			TestServerContext serverContext = singleplayer.getServer();
-			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getConnection().waitForChunksRender();
 
 			serverContext.runOnServer(server -> {
 				var level = server.overworld();
@@ -97,7 +99,7 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 			serverContext.runCommand("time set noon");
 			serverContext.runCommand("weather clear");
 			serverContext.runCommand("gamemode spectator @a");
-			context.getInput().pressKey(GLFW.GLFW_KEY_F1);
+			context.getInput().pressKey(InputConstants.KEY_F1);
 
 			for (Scene scene : scenesRef.get()) {
 				serverContext.runCommand(
@@ -105,7 +107,7 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 						+ (scene.z() - 10.5) + " 0 35"
 				);
 				context.waitTicks(12);
-				singleplayer.getClientLevel().waitForChunksRender();
+				singleplayer.getConnection().waitForChunksRender();
 				takeScreenshot(context, "printshop_variant_" + scene.variant().id());
 				serverContext.runCommand(
 					"tp @a " + (scene.x() + 0.5) + " " + (scene.baseY() + 2.25) + " "
@@ -126,7 +128,7 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 				takeScreenshot(context, "printshop_variant_" + scene.variant().id() + "_plaque");
 			}
 
-			context.getInput().pressKey(GLFW.GLFW_KEY_F1);
+			context.getInput().pressKey(InputConstants.KEY_F1);
 		}
 	}
 
@@ -145,6 +147,10 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 		int laidPrints = 0;
 		int populatedLaidPrints = 0;
 		int chests = 0;
+		int toolCrates = 0;
+		boolean laidBroom = false;
+		boolean laidLens = false;
+		boolean laidBrush = false;
 		Block signature = signatureBlock(variant);
 		boolean signatureFound = false;
 		BlockPos plaquePos = null;
@@ -165,12 +171,23 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 						cobwebs++;
 					} else if (block == Blocks.CHEST) {
 						chests++;
+					} else if (block == Blocks.BARREL
+						&& level.getBlockEntity(pos) instanceof RandomizableContainer container
+						&& AbandonedPrintshopPiece.TOOLS_LOOT.equals(container.getLootTable())) {
+						toolCrates++;
 					} else if (block == ModBlocks.HANGING_POSTER) {
 						hangingPrints++;
 					} else if (block == ModBlocks.LAID_PAPER) {
 						laidPrints++;
 						if (level.getBlockEntity(pos) instanceof LaidPaperBlockEntity paper && !paper.page().isEmpty()) {
 							populatedLaidPrints++;
+							if (paper.page().is(ModItems.WORKSHOP_BROOM)) {
+								laidBroom = true;
+							} else if (paper.page().is(ModItems.MAGNIFYING_LENS)) {
+								laidLens = true;
+							} else if (paper.page().is(ModItems.PRINTERS_BRUSH)) {
+								laidBrush = true;
+							}
 						}
 					}
 					if (block == ModBlocks.LOOSE_INK_STAINED_FLOORBOARDS) {
@@ -211,6 +228,14 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 		if (chests != 3) {
 			throw new AssertionError(variant.id() + " expected 3 workshop chests, got " + chests);
 		}
+		if (toolCrates != 1) {
+			throw new AssertionError(variant.id() + " expected 1 tool crate, got " + toolCrates);
+		}
+		if (!laidBroom || !laidLens || !laidBrush) {
+			throw new AssertionError(
+				variant.id() + " tool crate must display broom, magnifying lens, and printer's brush"
+			);
+		}
 		if (cobwebs < 4 || hangingPrints < 10 || laidPrints < 5 || populatedLaidPrints != laidPrints) {
 			throw new AssertionError(
 				variant.id() + " atmosphere: cobwebs=" + cobwebs
@@ -220,8 +245,8 @@ public final class PrintshopVariantClientGameTest implements FabricClientGameTes
 			);
 		}
 		EchoesInInk.LOGGER.info(
-			"VARIANT_GAMETEST_OK variant={} layout={} roles={} suspiciousFloors={} chests={} cobwebs={} hangingPrints={} laidPrints={}",
-			variant.id(), layout, roles, expectedFloors, chests, cobwebs, hangingPrints, laidPrints
+			"VARIANT_GAMETEST_OK variant={} layout={} roles={} suspiciousFloors={} chests={} toolCrates={} cobwebs={} hangingPrints={} laidPrints={}",
+			variant.id(), layout, roles, expectedFloors, chests, toolCrates, cobwebs, hangingPrints, laidPrints
 		);
 		return new PlaqueView(plaquePos, plaqueFacing);
 	}

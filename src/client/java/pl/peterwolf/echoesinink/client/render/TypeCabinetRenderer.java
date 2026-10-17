@@ -77,7 +77,7 @@ public class TypeCabinetRenderer implements BlockEntityRenderer<TypeCabinetBlock
 	) {
 		poseStack.pushPose();
 		poseStack.translate(0.5F, 0.0F, 0.5F);
-		poseStack.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
+		poseStack.rotateDegrees(Axis.YP, -state.facing.toYRot());
 
 		ItemStackRenderState panel = resolveItem(new ItemStack(ModItems.WOODEN_PRINTING_MATRIX), null, 7);
 
@@ -91,7 +91,7 @@ public class TypeCabinetRenderer implements BlockEntityRenderer<TypeCabinetBlock
 			if (panel != null) {
 				poseStack.pushPose();
 				poseStack.translate(0.0F, DRAWER_Y[i], z);
-				poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+				poseStack.rotateDegrees(Axis.XP, 90.0F);
 				poseStack.scale(0.78F, isOpen ? 0.72F : 0.48F, 0.12F);
 				panel.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 				poseStack.popPose();
@@ -109,7 +109,7 @@ public class TypeCabinetRenderer implements BlockEntityRenderer<TypeCabinetBlock
 			poseStack.pushPose();
 			if (isOpen && state.openAnim > 0.15F) {
 				poseStack.translate(0.0F, DRAWER_Y[i] + 0.08F, z - 0.06F);
-				poseStack.mulPose(Axis.XP.rotationDegrees(75.0F));
+				poseStack.rotateDegrees(Axis.XP, 75.0F);
 				float s = 0.55F;
 				poseStack.scale(s, s, s);
 			} else {

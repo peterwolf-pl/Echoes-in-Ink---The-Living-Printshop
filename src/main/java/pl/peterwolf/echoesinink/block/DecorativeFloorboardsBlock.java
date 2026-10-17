@@ -1,6 +1,5 @@
 package pl.peterwolf.echoesinink.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
  * but cleaning them never creates investigation loot.
  */
 public final class DecorativeFloorboardsBlock extends Block implements Investigatable {
-	public static final MapCodec<DecorativeFloorboardsBlock> CODEC = simpleCodec(DecorativeFloorboardsBlock::new);
 
 	public DecorativeFloorboardsBlock(Properties properties) {
 		super(properties);
@@ -23,10 +21,6 @@ public final class DecorativeFloorboardsBlock extends Block implements Investiga
 		));
 	}
 
-	@Override
-	protected MapCodec<? extends Block> codec() {
-		return CODEC;
-	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

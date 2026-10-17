@@ -29,6 +29,13 @@ class PrintshopSupplyLootTest {
 		"echoes_in_ink:press_carriage"
 	);
 
+	private static final List<String> TOOLS = List.of(
+		"echoes_in_ink:workshop_broom",
+		"echoes_in_ink:printers_brush",
+		"echoes_in_ink:magnifying_lens",
+		"echoes_in_ink:printers_archive"
+	);
+
 	@Test
 	void everyPrintshopChestTableSuppliesPaperInkAndPressParts() throws IOException {
 		String supplies = readChest("printshop_supplies");
@@ -62,6 +69,20 @@ class PrintshopSupplyLootTest {
 		assertTrue(source.contains("ModItems.PRESS_HANDLE"));
 		assertTrue(source.contains("ModItems.PRESS_PLATEN"));
 		assertTrue(source.contains("ModItems.PRESS_CARRIAGE"));
+	}
+
+	@Test
+	void printshopToolCrateContainsBroomBrushLensAndArchive() throws IOException {
+		String tools = readChest("printshop_tools");
+		for (String item : TOOLS) {
+			assertTrue(tools.contains(item), "printshop_tools missing " + item);
+		}
+		assertTrue(
+			Files.readString(Path.of(
+				"src/main/java/pl/peterwolf/echoesinink/structure/AbandonedPrintshopPiece.java"
+			)).contains("TOOLS_LOOT"),
+			"generated printshops must place the tool crate"
+		);
 	}
 
 	private static String readChest(String name) throws IOException {

@@ -1,0 +1,94 @@
+name: CurseForge Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Czy faktycznie wysłać plik na CurseForge? (true = publikacja, false = tylko weryfikacja i build)'
+        required: true
+        type: boolean
+        default: false
+      release_type:
+        description: 'Typ wydania CurseForge (alpha, beta, release)'
+        required: false
+        type: choice
+        options:
+          - default
+          - alpha
+          - beta
+          - release
+        default: default
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup sibling dependencies if needed
+        run: |
+          # Auto-resolve Groundworks Core if required
+          if [ -f gradle.properties ] && grep -q "pw_groundworks" gradle.properties 2>/dev/null; then
+            echo "Groundworks submod detected. Resolving Groundworks Core..."
+            git clone --depth 1 https://github.com/peterwolf-pl/peterwolfs-groundworks.git ../Peterwolfs-Groundworks || true
+            if [ -d ../Peterwolfs-Groundworks ]; then
+              cd ../Peterwolfs-Groundworks && chmod +x gradlew && ./gradlew publishToMavenLocal && cd -
+            fi
+          fi
+          # Auto-resolve Wind & Sails if required
+          if [ -f build.gradle ] && grep -q "pw_wind_n_sails" build.gradle 2>/dev/null; then
+            echo "Wind & Sails dependency detected. Resolving pw_wind_n_sails..."
+            git clone --depth 1 https://github.com/peterwolf-pl/pw_wind_n_sails.git ../pw_wind_n_sails || true
+            if [ -d ../pw_wind_n_sails ]; then
+              cd ../pw_wind_n_sails && chmod +x gradlew && ./gradlew build -x test && cd -
+            fi
+          fi
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: |
+          echo "Building mod distribution JAR..."
+          ./gradlew remapJar 2>/dev/null || ./gradlew build -x test
+
+      - name: Verify and Upload to CurseForge
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          GITHUB_RELEASE_BODY: ${{ github.event.release.body }}
+        run: |
+          PUBLISH_FLAG=""
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.publish }}" = "true" ]; then
+            PUBLISH_FLAG="--publish"
+          elif [ "${{ github.event_name }}" = "release" ]; then
+            PUBLISH_FLAG="--publish"
+          else
+            PUBLISH_FLAG="--dry-run"
+          fi
+
+          RELEASE_TYPE_ARG=""
+          if [ "${{ inputs.release_type }}" != "" ] && [ "${{ inputs.release_type }}" != "default" ]; then
+            RELEASE_TYPE_ARG="--release-type=${{ inputs.release_type }}"
+          fi
+
+          echo "Executing CurseForge upload automation: $PUBLISH_FLAG $RELEASE_TYPE_ARG"
+          node .github/scripts/curseforge-upload.js $PUBLISH_FLAG $RELEASE_TYPE_ARG

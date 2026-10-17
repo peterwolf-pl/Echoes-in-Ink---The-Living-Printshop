@@ -56,7 +56,7 @@ public final class EchoesInInk implements ModInitializer {
 			server.execute(() -> EchoManager.syncPlayer(handler.player))
 		);
 
-		LOGGER.info("{} v{} initialized (Minecraft 26.2 / Fabric).", MOD_NAME, getModVersion());
+		LOGGER.info("{} v{} initialized (Minecraft 26.3 / Fabric).", MOD_NAME, getModVersion());
 	}
 
 	public static Identifier id(String path) {

@@ -12,7 +12,7 @@
     },
     "has_recipe": {
       "trigger": "minecraft:recipe_unlocked",
-      "conditions": { "recipe": "echoes_in_ink:forbidden_notice_forme" }
+      "conditions": { "recipes": "echoes_in_ink:forbidden_notice_forme" }
     }
   },
   "requirements": [["has_fragment", "has_recipe"]],

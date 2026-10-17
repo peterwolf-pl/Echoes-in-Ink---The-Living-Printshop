@@ -1,6 +1,5 @@
 package pl.peterwolf.echoesinink.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,7 +33,6 @@ import pl.peterwolf.echoesinink.item.ModItems;
  * FACING = direction the printed face points (away from the wall).
  */
 public class HangingPosterBlock extends HorizontalDirectionalBlock {
-	public static final MapCodec<HangingPosterBlock> CODEC = simpleCodec(HangingPosterBlock::new);
 	public static final EnumProperty<PosterKind> KIND = EnumProperty.create("kind", PosterKind.class);
 
 	private static final VoxelShape NORTH = Block.box(1, 1, 15, 15, 15, 16);
@@ -49,10 +47,6 @@ public class HangingPosterBlock extends HorizontalDirectionalBlock {
 			.setValue(KIND, PosterKind.WARNING));
 	}
 
-	@Override
-	protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-		return CODEC;
-	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

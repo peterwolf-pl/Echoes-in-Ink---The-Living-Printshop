@@ -4,7 +4,7 @@
 
 - macOS ARM, Windows, Linux
 - Java 25+
-- Minecraft 26.2 + Fabric Loader + Fabric API
+- Minecraft 26.3 + Fabric Loader + Fabric API
 - Single-player integrated server and dedicated Fabric server
 
 ## Build tests

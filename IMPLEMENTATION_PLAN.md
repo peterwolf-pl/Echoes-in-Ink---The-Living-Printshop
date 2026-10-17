@@ -1,7 +1,7 @@
 # Implementation Plan — Echoes in Ink: The Living Printshop
 
 **ModJam 2026 theme:** Echoes of the Past  
-**Target:** Minecraft Java 26.2 · Fabric Loader · Fabric API · Java 25  
+**Target:** Minecraft Java 26.3 · Fabric Loader · Fabric API · Java 25  
 **Mod ID:** `echoes_in_ink`  
 **Package:** `pl.peterwolf.echoesinink`  
 **Author:** Peter Wolf  
@@ -157,6 +157,14 @@ impression. This prevents an abandoned ruin from stranding the shared world.
   readable historical press emblem and explicit lens/brush instructions.
 - [x] Extend automated progression, item-description, orientation, and visual
   screenshot coverage.
+
+## Visible workshop tool crate — version 1.1.3
+
+- [x] Place a dedicated tool crate in every generated printshop variant.
+- [x] Guarantee Workshop Broom, Printer's Brush, Magnifying Lens, and Printer's
+  Archive in the crate loot table.
+- [x] Lay the broom on the lid and the lens and brush beside the crate.
+- [x] Grant the physical starter kit from barrels as well as chests.
 
 ---
 

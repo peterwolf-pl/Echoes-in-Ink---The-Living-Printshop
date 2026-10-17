@@ -72,7 +72,8 @@ public final class LegacyWorkshopBinder {
 			.lookupOrThrow(Registries.STRUCTURE)
 			.getValue(ModStructures.ABANDONED_PRINTSHOP);
 		if (structure != null) {
-			StructureStart start = level.structureManager().getStructureWithPieceAt(origin, structure);
+			StructureStart start = level.structureManager().getStructureWithPieceAt(
+				origin.getX(), origin.getY(), origin.getZ(), structure);
 			if (start != null && start.isValid()) {
 				WorkshopVariant variant = WorkshopVariant.RURAL_WOODCUT;
 				String workshopId = WorkshopIdentity.idForChunk(start.getChunkPos());

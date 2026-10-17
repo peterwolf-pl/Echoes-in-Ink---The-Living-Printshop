@@ -54,7 +54,7 @@ public final class StarterProgressionClientGameTest implements FabricClientGameT
 			.setUseConsistentSettings(true)
 			.create()) {
 			TestServerContext serverContext = singleplayer.getServer();
-			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getConnection().waitForChunksRender();
 
 			serverContext.runOnServer(server -> {
 				ServerPlayer player = requirePlayer(server.getPlayerList().getPlayers());

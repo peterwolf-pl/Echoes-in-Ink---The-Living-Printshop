@@ -1,9 +1,9 @@
 package pl.peterwolf.echoesinink.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +40,6 @@ import pl.peterwolf.echoesinink.item.RestoredChroniclePageItem;
  * or small upright prop for machine parts).
  */
 public class LaidPaperBlock extends BaseEntityBlock {
-	public static final MapCodec<LaidPaperBlock> CODEC = simpleCodec(LaidPaperBlock::new);
 	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
 	private static final VoxelShape SHAPE = Block.box(1, 0, 1, 15, 1, 15);
@@ -50,10 +49,6 @@ public class LaidPaperBlock extends BaseEntityBlock {
 		registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -194,7 +189,7 @@ public class LaidPaperBlock extends BaseEntityBlock {
 		level.removeBlock(pos, false);
 		if (!PressFrameBlock.convertAndInstall(level, pos.below(), player, misplacedPart)) {
 			if (!player.getInventory().add(misplacedPart)) {
-				player.drop(misplacedPart, false);
+				player.drop(misplacedPart, false, Prediction.SERVER_ONLY);
 			}
 			return InteractionResult.FAIL;
 		}
